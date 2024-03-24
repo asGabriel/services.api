@@ -3,10 +3,10 @@ use std::sync::Arc;
 use handlers::Handler;
 use repositories::SqlxRepository;
 use sqlx::postgres::PgPoolOptions;
-mod routes;
 mod domain;
 mod handlers;
 mod repositories;
+mod routes;
 
 #[tokio::main]
 async fn main() {
@@ -21,9 +21,7 @@ async fn main() {
         .expect("Couldn't connect to the database");
 
     let sqlx_repository = Arc::new(SqlxRepository::new(pool));
-    let handler = Handler::new(
-        sqlx_repository
-    );
+    let handler = Handler::new(sqlx_repository);
 
     let app = routes::configure_routes().with_state(handler);
 

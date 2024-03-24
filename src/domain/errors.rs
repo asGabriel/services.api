@@ -5,6 +5,8 @@ use uuid::Uuid;
 pub enum Error {
     #[error("Databse error")]
     DatabaseError(#[from] sqlx::Error),
+    #[error("Work note not found")]
+    WorkNoteNotFound(Uuid),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
