@@ -26,3 +26,12 @@ pub struct CreateWorkNote {
     pub work_hours: f64,
     pub observation: Option<String>,
 }
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all="camelCase")]
+pub struct UpdateWorkNote {
+    pub category: Option<String>,
+    pub work_date: Option<NaiveDate>,
+    pub work_hours: Option<f64>,
+    pub observation: Option<String>,
+}

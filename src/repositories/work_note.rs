@@ -1,6 +1,6 @@
 use crate::domain::{
     errors::Result,
-    work_note::{CreateWorkNote, WorkNote},
+    work_note::{CreateWorkNote, UpdateWorkNote, WorkNote},
 };
 
 use super::SqlxRepository;
@@ -11,6 +11,11 @@ pub trait WorkNoteRepository {
     async fn create_work_note(&self, work_note: CreateWorkNote) -> Result<WorkNote>;
     async fn list_work_notes(&self) -> Result<Vec<WorkNote>>;
     async fn get_work_note_by_id(&self, work_note_id: Uuid) -> Result<Option<WorkNote>>;
+    async fn update_work_note_by_id(
+        &self,
+        work_note_id: Uuid,
+        work_note: UpdateWorkNote,
+    ) -> Result<Option<WorkNote>>;
 }
 
 #[async_trait::async_trait]
@@ -60,6 +65,35 @@ impl WorkNoteRepository for SqlxRepository {
             r#"
             SELECT * FROM WORKNOTES WHERE WORK_NOTE_ID = $1
             "#,
+            work_note_id
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(work_note)
+    }
+
+    async fn update_work_note_by_id(
+        &self,
+        work_note_id: Uuid,
+        work_note: UpdateWorkNote,
+    ) -> Result<Option<WorkNote>> {
+        let work_note = sqlx::query_as!(
+            WorkNote,
+            r#"
+            UPDATE WORKNOTES SET
+                CATEGORY = COALESCE($1, CATEGORY),
+                WORK_DATE = COALESCE($2, WORK_DATE),
+                WORK_HOURS = COALESCE($3, WORK_HOURS),
+                OBSERVATION = COALESCE($4,OBSERVATION)
+            WHERE
+                WORK_NOTE_ID = $5
+            RETURNING *
+            "#,
+            work_note.category,
+            work_note.work_date,
+            work_note.work_hours,
+            work_note.observation,
             work_note_id
         )
         .fetch_optional(&self.pool)
