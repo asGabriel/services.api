@@ -28,7 +28,7 @@ pub struct CreateWorkNote {
 }
 
 #[derive(Deserialize, Debug)]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct UpdateWorkNote {
     pub category: Option<String>,
     pub work_date: Option<NaiveDate>,

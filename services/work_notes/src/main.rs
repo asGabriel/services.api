@@ -27,7 +27,7 @@ async fn main() {
 
     let port = std::env::var("PORT").expect("Could not fetch port data.");
     let url = format!("0.0.0.0:{}", port);
-    
+
     let listener = tokio::net::TcpListener::bind(url).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
