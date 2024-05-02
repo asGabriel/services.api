@@ -13,6 +13,7 @@ use uuid::Uuid;
 pub trait TransactionRepository {
     async fn create_transaction(&self, transaction: CreateTransactionDto) -> Result<Transaction>;
     async fn list_transactions(&self) -> Result<Vec<Transaction>>;
+    async fn get_transaction_by_id(&self, transaction_id: Uuid) -> Result<Option<Transaction>>;
 }
 
 #[async_trait::async_trait]
@@ -94,6 +95,37 @@ impl TransactionRepository for SqlxRepository {
             transaction.status as TransactionStatus
         )
         .fetch_one(&self.pool)
+        .await?;
+
+        Ok(transaction)
+    }
+
+    async fn get_transaction_by_id(&self, transaction_id: Uuid) -> Result<Option<Transaction>> {
+        let transaction = sqlx::query_as!(
+            Transaction,
+            r#"
+            SELECT
+                transaction_id, 
+                movement_type as "movement_type!: TransactionType",
+                description, 
+                amount, 
+                due_date, 
+                category as "category: TransactionCategory", 
+                account_id, 
+                recurring, 
+                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
+                recurrence_duration_months, 
+                status as "status: TransactionStatus", 
+                note, 
+                created_at, 
+                updated_at, 
+                deleted_at
+            FROM TRANSACTIONS
+            WHERE transaction_id = $1
+            "#,
+            transaction_id
+        )
+        .fetch_optional(&self.pool)
         .await?;
 
         Ok(transaction)
