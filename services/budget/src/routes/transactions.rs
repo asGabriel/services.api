@@ -1,4 +1,9 @@
-use axum::{extract::State, response::IntoResponse, routing::post, Json, Router};
+use axum::{
+    extract::State,
+    response::IntoResponse,
+    routing::{get, post},
+    Json, Router,
+};
 
 use crate::{
     domains::{errors::Result, transactions::CreateTransactionDto},
@@ -8,7 +13,9 @@ use crate::{
 pub(super) fn configure_routes() -> Router<Handler> {
     Router::new().nest(
         "/transactions",
-        Router::new().route("/", post(create_transaction)),
+        Router::new()
+            .route("/", post(create_transaction))
+            .route("/", get(list_transactions)),
     )
 }
 
@@ -19,4 +26,10 @@ async fn create_transaction(
     let transaction = handler.create_transaction(transaction).await?;
 
     Ok(Json(transaction))
+}
+
+async fn list_transactions(State(handler): State<Handler>) -> Result<impl IntoResponse> {
+    let transactions = handler.list_transactions().await?;
+
+    Ok(Json(transactions))
 }

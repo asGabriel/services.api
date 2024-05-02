@@ -14,4 +14,8 @@ impl Handler {
             .create_transaction(transaction)
             .await
     }
+
+    pub async fn list_transactions(&self) -> Result<Vec<Transaction>> {
+        self.transactions_repository.list_transactions().await
+    }
 }

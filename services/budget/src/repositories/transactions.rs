@@ -1,6 +1,9 @@
 use crate::domains::{
     errors::Result,
-    transactions::{CreateTransactionDto, Transaction, TransactionCategory, TransactionRecurrency, TransactionStatus, TransactionType},
+    transactions::{
+        CreateTransactionDto, Transaction, TransactionCategory, TransactionRecurrency,
+        TransactionStatus, TransactionType,
+    },
 };
 
 use super::SqlxRepository;
@@ -9,10 +12,40 @@ use uuid::Uuid;
 #[async_trait::async_trait]
 pub trait TransactionRepository {
     async fn create_transaction(&self, transaction: CreateTransactionDto) -> Result<Transaction>;
+    async fn list_transactions(&self) -> Result<Vec<Transaction>>;
 }
 
 #[async_trait::async_trait]
 impl TransactionRepository for SqlxRepository {
+    async fn list_transactions(&self) -> Result<Vec<Transaction>> {
+        let transactions = sqlx::query_as!(
+            Transaction,
+            r#"
+            SELECT
+                transaction_id, 
+                movement_type as "movement_type!: TransactionType",
+                description, 
+                amount, 
+                due_date, 
+                category as "category: TransactionCategory", 
+                account_id, 
+                recurring, 
+                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
+                recurrence_duration_months, 
+                status as "status: TransactionStatus", 
+                note, 
+                created_at, 
+                updated_at, 
+                deleted_at
+            FROM TRANSACTIONS
+            "#
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(transactions)
+    }
+
     async fn create_transaction(&self, transaction: CreateTransactionDto) -> Result<Transaction> {
         let transaction = sqlx::query_as!(
             Transaction,
@@ -37,12 +70,12 @@ impl TransactionRepository for SqlxRepository {
                 description, 
                 amount, 
                 due_date, 
-                category as "category: _", 
+                category as "category: TransactionCategory", 
                 account_id, 
                 recurring, 
-                recurrence_frequency as "recurrence_frequency: _", 
+                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
                 recurrence_duration_months, 
-                status as "status: _", 
+                status as "status: TransactionStatus", 
                 note, 
                 created_at, 
                 updated_at, 
@@ -59,8 +92,9 @@ impl TransactionRepository for SqlxRepository {
             transaction.recurrence_frequency as TransactionRecurrency,
             transaction.recurrence_duration_months,
             transaction.status as TransactionStatus
-            
-        ).fetch_one(&self.pool).await?;
+        )
+        .fetch_one(&self.pool)
+        .await?;
 
         Ok(transaction)
     }
