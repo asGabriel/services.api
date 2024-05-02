@@ -1,7 +1,7 @@
 use axum::{
     extract::{Path, State},
     response::IntoResponse,
-    routing::{get, post},
+    routing::{delete, get, post},
     Json, Router,
 };
 use uuid::Uuid;
@@ -17,7 +17,8 @@ pub(super) fn configure_routes() -> Router<Handler> {
         Router::new()
             .route("/", post(create_transaction))
             .route("/", get(list_transactions))
-            .route("/:transaction_id", get(get_transaction_by_id)),
+            .route("/:transaction_id", get(get_transaction_by_id))
+            .route("/:transaction_id", delete(delete_transaction_by_id)),
     )
 }
 
@@ -41,6 +42,15 @@ async fn get_transaction_by_id(
     Path(transaction_id): Path<Uuid>,
 ) -> Result<impl IntoResponse> {
     let transaction = handler.get_transaction_by_id(transaction_id).await?;
+
+    Ok(Json(transaction))
+}
+
+async fn delete_transaction_by_id(
+    State(handler): State<Handler>,
+    Path(transaction_id): Path<Uuid>,
+) -> Result<impl IntoResponse> {
+    let transaction = handler.delete_transaction_by_id(transaction_id).await?;
 
     Ok(Json(transaction))
 }

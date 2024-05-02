@@ -14,6 +14,7 @@ pub trait TransactionRepository {
     async fn create_transaction(&self, transaction: CreateTransactionDto) -> Result<Transaction>;
     async fn list_transactions(&self) -> Result<Vec<Transaction>>;
     async fn get_transaction_by_id(&self, transaction_id: Uuid) -> Result<Option<Transaction>>;
+    async fn delete_transaction_by_id(&self, transaction_id: Uuid) -> Result<Option<Transaction>>;
 }
 
 #[async_trait::async_trait]
@@ -122,6 +123,41 @@ impl TransactionRepository for SqlxRepository {
                 deleted_at
             FROM TRANSACTIONS
             WHERE transaction_id = $1
+            "#,
+            transaction_id
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(transaction)
+    }
+
+    async fn delete_transaction_by_id(&self, transaction_id: Uuid) -> Result<Option<Transaction>> {
+        let transaction = sqlx::query_as!(
+            Transaction,
+            r#"
+            UPDATE TRANSACTIONS SET
+                updated_at = now(),
+                deleted_at = now()
+            WHERE
+                transaction_id = $1
+                AND deleted_at is null
+            RETURNING 
+                transaction_id, 
+                movement_type as "movement_type!: TransactionType",
+                description, 
+                amount, 
+                due_date, 
+                category as "category: TransactionCategory", 
+                account_id, 
+                recurring, 
+                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
+                recurrence_duration_months, 
+                status as "status: TransactionStatus", 
+                note, 
+                created_at, 
+                updated_at, 
+                deleted_at
             "#,
             transaction_id
         )

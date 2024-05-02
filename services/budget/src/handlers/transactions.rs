@@ -27,4 +27,13 @@ impl Handler {
             .await?
             .ok_or(Error::TransactionNotFound(transaction_id))
     }
+
+    pub async fn delete_transaction_by_id(&self, transaction_id: Uuid) -> Result<Transaction> {
+        self.get_transaction_by_id(transaction_id).await?;
+
+        self.transactions_repository
+            .delete_transaction_by_id(transaction_id)
+            .await?
+            .ok_or(Error::TransactionNotFound(transaction_id))
+    }
 }
