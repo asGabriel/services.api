@@ -1,4 +1,7 @@
-use axum::Router;
+use std::sync::Arc;
+
+use handlers::Handler;
+use repositories::SqlxRepository;
 use sqlx::postgres::PgPoolOptions;
 mod domains;
 mod handlers;
@@ -17,11 +20,14 @@ async fn main() {
         .await
         .expect("Couldn't connect to the database");
 
-        let app = Router::new();
+    let sqlx_repository = Arc::new(SqlxRepository::new(pool));
+    let handler = Handler::new(sqlx_repository);
 
-        let port = std::env::var("PORT").expect("Could not fetch port data.");
-        let url = format!("0.0.0.0:{}", port);
-    
-        let listener = tokio::net::TcpListener::bind(url).await.unwrap();
-        axum::serve(listener, app).await.unwrap();
+    let app = routes::configure_routes().with_state(handler);
+
+    let port = std::env::var("PORT").expect("Could not fetch port data.");
+    let url = format!("0.0.0.0:{}", port);
+
+    let listener = tokio::net::TcpListener::bind(url).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
