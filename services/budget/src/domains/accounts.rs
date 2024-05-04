@@ -18,6 +18,7 @@ pub struct Account {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
+#[warn(dead_code)]
 #[derive(Debug, Serialize)]
 enum Currency {
     BRL,
