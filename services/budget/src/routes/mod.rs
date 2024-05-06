@@ -1,3 +1,4 @@
+pub mod accounts;
 pub mod transactions;
 
 use axum::{http::StatusCode, response::IntoResponse, Router};
@@ -5,7 +6,9 @@ use axum::{http::StatusCode, response::IntoResponse, Router};
 use crate::{domains::errors::Error, handlers::Handler};
 
 pub(super) fn configure_routes() -> Router<Handler> {
-    Router::new().merge(transactions::configure_routes())
+    Router::new()
+        .merge(transactions::configure_routes())
+        .merge(accounts::configure_routes())
 }
 
 impl IntoResponse for Error {

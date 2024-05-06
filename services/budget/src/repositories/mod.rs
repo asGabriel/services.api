@@ -1,4 +1,5 @@
 use sqlx::PgPool;
+pub mod accounts;
 pub mod transactions;
 
 #[derive(Clone)]
