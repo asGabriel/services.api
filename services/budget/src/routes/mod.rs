@@ -19,6 +19,10 @@ impl IntoResponse for Error {
                 StatusCode::NOT_FOUND,
                 format!("Transaction id {transaction_id} not found."),
             ),
+            Self::AccountNotFound(account_id) => (
+                StatusCode::NOT_FOUND,
+                format!("Account id {account_id} not found."),
+            ),
         }
         .into_response()
     }

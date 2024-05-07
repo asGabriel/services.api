@@ -5,8 +5,10 @@ use uuid::Uuid;
 pub enum Error {
     #[error("Databse error")]
     DatabaseError(#[from] sqlx::Error),
-    #[error("Databse error")]
+    #[error("Transaction not found")]
     TransactionNotFound(Uuid),
+    #[error("Account not found")]
+    AccountNotFound(Uuid),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

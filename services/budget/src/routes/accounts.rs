@@ -1,9 +1,10 @@
 use axum::{
-    extract::State,
+    extract::{Path, State},
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
+use uuid::Uuid;
 
 use crate::{
     domains::{accounts::CreateAccount, errors::Result},
@@ -15,7 +16,8 @@ pub(super) fn configure_routes() -> Router<Handler> {
         "/accounts",
         Router::new()
             .route("/", get(list_accounts))
-            .route("/", post(create_account)),
+            .route("/", post(create_account))
+            .route("/:account_id", get(get_account_by_id)),
     )
 }
 
@@ -30,6 +32,12 @@ async fn create_account(
     Json(payload): Json<CreateAccount>,
 ) -> Result<impl IntoResponse> {
     let account = handler.create_account(payload).await?;
+
+    Ok(Json(account))
+}
+
+async fn get_account_by_id(State(handler): State<Handler>, Path(account_id): Path<Uuid>) -> Result<impl IntoResponse> {
+    let account = handler.get_account_by_id(account_id).await?;
 
     Ok(Json(account))
 }

@@ -25,6 +25,14 @@ pub struct CreateAccount {
     pub account_type: AccountType,
 }
 
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateAccount {
+    pub bank_name: Option<Bank>,
+    pub owner: Option<String>,
+    pub account_type: Option<AccountType>,
+}
+
 #[derive(Debug, Serialize, Deserialize, Type)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[sqlx(type_name = "bank_name", rename_all = "SCREAMING_SNAKE_CASE")]
