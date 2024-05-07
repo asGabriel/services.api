@@ -97,7 +97,34 @@ impl AccountRepository for SqlxRepository {
         account: Account,
         payload: UpdateAccount,
     ) -> Result<Option<Account>> {
-        todo!()
+        let account = sqlx::query_as!(
+            Account,
+            r#"
+            UPDATE accounts SET
+                updated_at = now(),
+                bank_name = $2,
+                owner = $3,
+                account_type = $4
+            WHERE
+                account_id = $1 AND deleted_at is null
+            RETURNING
+                account_id,
+                bank_name as "bank_name!: Bank",
+                owner,
+                account_type as "account_type!: AccountType",
+                created_at, 
+                updated_at, 
+                deleted_at 
+            "#,
+            account.account_id,
+            payload.bank_name.unwrap_or(account.bank_name) as Bank,
+            payload.owner.unwrap_or(account.owner),
+            payload.account_type.unwrap_or(account.account_type) as AccountType
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(account)
     }
 
     async fn delete_account_by_id(&self, account_id: Uuid) -> Result<Option<Account>> {

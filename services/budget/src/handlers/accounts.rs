@@ -1,7 +1,7 @@
 use uuid::Uuid;
 
 use crate::domains::{
-    accounts::{Account, CreateAccount},
+    accounts::{Account, CreateAccount, UpdateAccount},
     errors::{Error, Result},
 };
 
@@ -28,6 +28,19 @@ impl Handler {
 
         self.account_repository
             .delete_account_by_id(account_id)
+            .await?
+            .ok_or(Error::AccountAlreadyDeleted(account_id))
+    }
+
+    pub async fn update_account_by_id(
+        &self,
+        account_id: Uuid,
+        payload: UpdateAccount,
+    ) -> Result<Account> {
+        let result = self.get_account_by_id(account_id).await?;
+
+        self.account_repository
+            .update_account_by_id(result, payload)
             .await?
             .ok_or(Error::AccountAlreadyDeleted(account_id))
     }
