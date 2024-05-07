@@ -9,6 +9,8 @@ pub enum Error {
     TransactionNotFound(Uuid),
     #[error("Account not found")]
     AccountNotFound(Uuid),
+    #[error("Account has been already deleted")]
+    AccountAlreadyDeleted(Uuid),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

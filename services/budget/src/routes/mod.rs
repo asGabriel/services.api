@@ -23,6 +23,10 @@ impl IntoResponse for Error {
                 StatusCode::NOT_FOUND,
                 format!("Account id {account_id} not found."),
             ),
+            Self::AccountAlreadyDeleted(account_id) => (
+                StatusCode::NOT_FOUND,
+                format!("Account id {account_id} has been already deleted."),
+            ),
         }
         .into_response()
     }

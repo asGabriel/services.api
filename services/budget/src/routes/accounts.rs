@@ -1,7 +1,7 @@
 use axum::{
     extract::{Path, State},
     response::IntoResponse,
-    routing::{get, post},
+    routing::{delete, get, post},
     Json, Router,
 };
 use uuid::Uuid;
@@ -17,7 +17,8 @@ pub(super) fn configure_routes() -> Router<Handler> {
         Router::new()
             .route("/", get(list_accounts))
             .route("/", post(create_account))
-            .route("/:account_id", get(get_account_by_id)),
+            .route("/:account_id", get(get_account_by_id))
+            .route("/:account_id", delete(delete_account_by_id)),
     )
 }
 
@@ -36,8 +37,20 @@ async fn create_account(
     Ok(Json(account))
 }
 
-async fn get_account_by_id(State(handler): State<Handler>, Path(account_id): Path<Uuid>) -> Result<impl IntoResponse> {
+async fn get_account_by_id(
+    State(handler): State<Handler>,
+    Path(account_id): Path<Uuid>,
+) -> Result<impl IntoResponse> {
     let account = handler.get_account_by_id(account_id).await?;
+
+    Ok(Json(account))
+}
+
+async fn delete_account_by_id(
+    State(handler): State<Handler>,
+    Path(account_id): Path<Uuid>,
+) -> Result<impl IntoResponse> {
+    let account = handler.delete_account_by_id(account_id).await?;
 
     Ok(Json(account))
 }

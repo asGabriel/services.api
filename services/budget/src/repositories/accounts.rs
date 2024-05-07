@@ -11,7 +11,11 @@ pub trait AccountRepository {
     async fn list_accounts(&self) -> Result<Vec<Account>>;
     async fn create_account(&self, account: CreateAccount) -> Result<Account>;
     async fn get_account_by_id(&self, account_id: Uuid) -> Result<Option<Account>>;
-    async fn update_account_by_id(&self, account: Account, payload: UpdateAccount) -> Result<Option<Account>>;
+    async fn update_account_by_id(
+        &self,
+        account: Account,
+        payload: UpdateAccount,
+    ) -> Result<Option<Account>>;
     async fn delete_account_by_id(&self, account_id: Uuid) -> Result<Option<Account>>;
 }
 
@@ -81,16 +85,44 @@ impl AccountRepository for SqlxRepository {
             FROM accounts WHERE account_id = $1
             "#,
             account_id
-        ).fetch_optional(&self.pool).await?;
+        )
+        .fetch_optional(&self.pool)
+        .await?;
 
         Ok(account)
     }
 
-    async fn update_account_by_id(&self, account: Account, payload: UpdateAccount) -> Result<Option<Account>> {
+    async fn update_account_by_id(
+        &self,
+        account: Account,
+        payload: UpdateAccount,
+    ) -> Result<Option<Account>> {
         todo!()
     }
 
     async fn delete_account_by_id(&self, account_id: Uuid) -> Result<Option<Account>> {
-        todo!()
+        let account = sqlx::query_as!(
+            Account,
+            r#"
+            UPDATE accounts SET
+                updated_at = now(),
+                deleted_at = now()
+            WHERE
+                account_id = $1 and deleted_at is null
+            RETURNING
+                account_id,
+                bank_name as "bank_name!: Bank",
+                owner,
+                account_type as "account_type!: AccountType",
+                created_at, 
+                updated_at, 
+                deleted_at 
+            "#,
+            account_id
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(account)
     }
 }
