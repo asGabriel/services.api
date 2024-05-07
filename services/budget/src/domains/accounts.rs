@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::Type;
 use uuid::Uuid;
 
@@ -7,9 +7,9 @@ use uuid::Uuid;
 #[serde(rename_all = "camelCase")]
 pub struct Account {
     pub account_id: Uuid,
-    pub name: String,
     pub bank_name: Bank,
     pub owner: String,
+    pub account_type: AccountType,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -17,7 +17,15 @@ pub struct Account {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
-#[derive(Debug, Serialize, Type)]
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateAccount {
+    pub bank_name: Bank,
+    pub owner: String,
+    pub account_type: AccountType,
+}
+
+#[derive(Debug, Serialize, Deserialize, Type)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[sqlx(type_name = "bank_name", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Bank {
@@ -27,4 +35,13 @@ pub enum Bank {
     Itau,
     Bradesco,
     BancoDoBrasil,
+}
+
+#[derive(Debug, Serialize, Deserialize, Type)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[sqlx(type_name = "account_type", rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum AccountType {
+    Debit,
+    Credit,
+    Hybrid,
 }

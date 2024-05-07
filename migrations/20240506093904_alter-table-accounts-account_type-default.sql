@@ -1,0 +1,2 @@
+ALTER TABLE accounts
+ALTER COLUMN account_type SET NOT NULL;
