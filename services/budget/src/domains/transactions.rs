@@ -72,13 +72,20 @@ pub enum TransactionCategory {
     Food,
     Home,
     Education,
-    PersonalExpense,
-    Sporadic,
     Entertainment,
     Transport,
     Healthy,
     Salary,
-    Other,
+    Utilities,
+    Insurance,
+    Savings,
+    DebtPayments,
+    ChildCare,
+    Gifts,
+    Subscriptions,
+    Travel,
+    Clothing,
+    Maintenance,
 }
 
 #[derive(Debug, Serialize, Deserialize, Type, Clone, PartialEq, Eq, Copy)]
