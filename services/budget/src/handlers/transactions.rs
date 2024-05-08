@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::domains::{
     errors::{Error, Result},
-    transactions::{CreateTransaction, Transaction, UpdateTransaction},
+    transactions::{CreateTransaction, Transaction, TransactionStatus, UpdateTransaction},
 };
 
 use super::Handler;
@@ -44,6 +44,23 @@ impl Handler {
 
         self.transaction_repository
             .update_transaction_by_id(result, payload)
+            .await?
+            .ok_or(Error::TransactionNotFound(transaction_id))
+    }
+
+    pub async fn finish_transaction(
+        &self,
+        transaction_id: Uuid,
+        status: TransactionStatus,
+    ) -> Result<Transaction> {
+        let result = self.get_transaction_by_id(transaction_id).await?;
+
+        if result.is_finished() {
+            return Err(Error::TransactionFinished(result.transaction_id));
+        }
+
+        self.transaction_repository
+            .update_status(transaction_id, status)
             .await?
             .ok_or(Error::TransactionNotFound(transaction_id))
     }

@@ -20,6 +20,11 @@ pub trait TransactionRepository {
         transaction: Transaction,
         payload: UpdateTransaction,
     ) -> Result<Option<Transaction>>;
+    async fn update_status(
+        &self,
+        transaction_id: Uuid,
+        status: TransactionStatus,
+    ) -> Result<Option<Transaction>>;
 }
 
 #[async_trait::async_trait]
@@ -228,6 +233,42 @@ impl TransactionRepository for SqlxRepository {
                 .unwrap_or(transaction.recurrence_duration_months),
             payload.note.unwrap_or(transaction.note),
             payload.status.unwrap_or(transaction.status) as TransactionStatus
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(transaction)
+    }
+
+    async fn update_status(
+        &self,
+        transaction_id: Uuid,
+        status: TransactionStatus,
+    ) -> Result<Option<Transaction>> {
+        let transaction = sqlx::query_as!(
+            Transaction,
+            r#"
+            UPDATE transactions SET status = $2 WHERE transaction_id = $1
+            RETURNING
+                transaction_id, 
+                movement_type as "movement_type!: TransactionType",
+                description, 
+                amount, 
+                due_date, 
+                category as "category: TransactionCategory", 
+                account_id, 
+                recurring, 
+                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
+                recurrence_duration_months, 
+                status as "status: TransactionStatus", 
+                note, 
+                created_at, 
+                updated_at, 
+                deleted_at
+
+            "#,
+            transaction_id,
+            status as TransactionStatus
         )
         .fetch_optional(&self.pool)
         .await?;

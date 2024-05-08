@@ -9,7 +9,7 @@ use uuid::Uuid;
 use crate::{
     domains::{
         errors::Result,
-        transactions::{CreateTransaction, UpdateTransaction},
+        transactions::{CreateTransaction, TransactionStatus, UpdateTransaction},
     },
     handlers::Handler,
 };
@@ -22,7 +22,8 @@ pub(super) fn configure_routes() -> Router<Handler> {
             .route("/", get(list_transactions))
             .route("/:transaction_id", get(get_transaction_by_id))
             .route("/:transaction_id", delete(delete_transaction_by_id))
-            .route("/:transaction_id", patch(update_transaction_by_id)),
+            .route("/:transaction_id", patch(update_transaction_by_id))
+            .route("/:transaction_id/:status", post(finish_transaction)),
     )
 }
 
@@ -67,6 +68,15 @@ async fn update_transaction_by_id(
     let transaction = handler
         .update_transaction_by_id(transaction_id, payload)
         .await?;
+
+    Ok(Json(transaction))
+}
+
+async fn finish_transaction(
+    State(handler): State<Handler>,
+    Path((transaction_id, status)): Path<(Uuid, TransactionStatus)>,
+) -> Result<impl IntoResponse> {
+    let transaction = handler.finish_transaction(transaction_id, status).await?;
 
     Ok(Json(transaction))
 }
