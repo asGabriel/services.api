@@ -110,3 +110,13 @@ pub enum TransactionRecurrency {
     SemiAnnually,
     Annually,
 }
+
+impl Transaction {
+    /// FINISHED transaction is when the status equals to COMPLETED or CANCELED
+    pub fn is_finished(&self) -> bool {
+        match self.status {
+            TransactionStatus::Completed | TransactionStatus::Canceled => true,
+            _ => false,
+        }
+    }
+}

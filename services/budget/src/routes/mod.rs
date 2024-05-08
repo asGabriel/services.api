@@ -27,6 +27,10 @@ impl IntoResponse for Error {
                 StatusCode::NOT_FOUND,
                 format!("Account id {account_id} has been already deleted."),
             ),
+            Self::TransactionFinished(transaction_id) => (
+                StatusCode::BAD_REQUEST,
+                format!("Transaction id {transaction_id} has been already finished."),
+            ),
         }
         .into_response()
     }
