@@ -39,6 +39,7 @@ impl Handler {
         transaction_id: Uuid,
         payload: UpdateTransaction,
     ) -> Result<Transaction> {
+        // REFAC this route when the rules is defined
         let result = self.get_transaction_by_id(transaction_id).await?;
 
         self.transaction_repository

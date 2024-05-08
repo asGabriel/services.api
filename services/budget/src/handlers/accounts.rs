@@ -37,6 +37,7 @@ impl Handler {
         account_id: Uuid,
         payload: UpdateAccount,
     ) -> Result<Account> {
+        // REFAC this route when the rules is defined
         let result = self.get_account_by_id(account_id).await?;
 
         self.account_repository
