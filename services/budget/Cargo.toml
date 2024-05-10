@@ -15,3 +15,4 @@ uuid.workspace = true
 async-trait.workspace = true
 dotenv.workspace = true
 thiserror.workspace = true
+bigdecimal.workspace = true

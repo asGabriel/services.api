@@ -21,7 +21,6 @@ async fn main() {
     let tes = execute_migration(&pool).await;
     println!("{tes:?}");
 
-    
     let sqlx_repository = Arc::new(SqlxRepository::new(pool));
 }
 
