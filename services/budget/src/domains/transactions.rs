@@ -1,7 +1,10 @@
+use bigdecimal::BigDecimal;
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
 use uuid::Uuid;
+
+pub mod report;
 
 #[derive(Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -18,6 +21,8 @@ pub struct Transaction {
     pub recurrence_duration_months: i32,
     pub note: String,
     pub status: TransactionStatus,
+    pub month_reference: MonthReference,
+    pub year_reference: BigDecimal,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -39,6 +44,8 @@ pub struct CreateTransaction {
     pub recurrence_duration_months: Option<i32>,
     pub note: Option<String>,
     pub status: TransactionStatus,
+    pub month_reference: MonthReference,
+    pub year_reference: BigDecimal
 }
 
 #[derive(Debug, Deserialize)]
@@ -109,6 +116,24 @@ pub enum TransactionRecurrency {
     Quarterly,
     SemiAnnually,
     Annually,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, serde::Serialize, serde::Deserialize)]
+#[sqlx(type_name = "month_reference", rename_all = "SCREAMING_SNAKE_CASE")]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum MonthReference {
+    January,
+    February,
+    March,
+    April,
+    May,
+    June,
+    July,
+    August,
+    September,
+    October,
+    November,
+    December,
 }
 
 impl Transaction {

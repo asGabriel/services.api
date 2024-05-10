@@ -6,6 +6,7 @@ use crate::domains::{
 };
 
 use super::Handler;
+pub mod report;
 
 impl Handler {
     pub async fn create_transaction(&self, transaction: CreateTransaction) -> Result<Transaction> {

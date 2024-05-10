@@ -1,8 +1,8 @@
 use crate::domains::{
     errors::Result,
     transactions::{
-        CreateTransaction, Transaction, TransactionCategory, TransactionRecurrency,
-        TransactionStatus, TransactionType, UpdateTransaction,
+        report::PeriodFilter, CreateTransaction, MonthReference, Transaction, TransactionCategory,
+        TransactionRecurrency, TransactionStatus, TransactionType, UpdateTransaction,
     },
 };
 
@@ -25,6 +25,7 @@ pub trait TransactionRepository {
         transaction_id: Uuid,
         status: TransactionStatus,
     ) -> Result<Option<Transaction>>;
+    async fn list_transactions_by_period(&self, period: PeriodFilter) -> Result<Vec<Transaction>>;
 }
 
 #[async_trait::async_trait]
@@ -46,6 +47,8 @@ impl TransactionRepository for SqlxRepository {
                 recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
+                month_reference as "month_reference!: MonthReference",
+                year_reference,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -73,9 +76,11 @@ impl TransactionRepository for SqlxRepository {
                 recurring,
                 recurrence_frequency,
                 recurrence_duration_months,
+                month_reference,
+                year_reference,
                 status
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
             ) RETURNING 
                 transaction_id, 
                 movement_type as "movement_type!: TransactionType",
@@ -89,6 +94,8 @@ impl TransactionRepository for SqlxRepository {
                 recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
+                month_reference as "month_reference!: MonthReference",
+                year_reference,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -103,6 +110,8 @@ impl TransactionRepository for SqlxRepository {
             transaction.recurring,
             transaction.recurrence_frequency as TransactionRecurrency,
             transaction.recurrence_duration_months,
+            transaction.month_reference as MonthReference,
+            transaction.year_reference,
             transaction.status as TransactionStatus
         )
         .fetch_one(&self.pool)
@@ -128,6 +137,8 @@ impl TransactionRepository for SqlxRepository {
                 recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
+                month_reference as "month_reference!: MonthReference",
+                year_reference,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -165,6 +176,8 @@ impl TransactionRepository for SqlxRepository {
                 recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
+                month_reference as "month_reference!: MonthReference",
+                year_reference,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -213,6 +226,8 @@ impl TransactionRepository for SqlxRepository {
                 recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
+                month_reference as "month_reference!: MonthReference",
+                year_reference,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -262,6 +277,8 @@ impl TransactionRepository for SqlxRepository {
                 recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
+                month_reference as "month_reference!: MonthReference",
+                year_reference,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -274,5 +291,40 @@ impl TransactionRepository for SqlxRepository {
         .await?;
 
         Ok(transaction)
+    }
+
+    async fn list_transactions_by_period(&self, period: PeriodFilter) -> Result<Vec<Transaction>> {
+        let transactions = sqlx::query_as!(
+            Transaction,
+            r#"
+            SELECT
+                transaction_id, 
+                movement_type as "movement_type!: TransactionType",
+                description, 
+                amount, 
+                due_date, 
+                category as "category: TransactionCategory", 
+                account_id, 
+                recurring, 
+                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
+                recurrence_duration_months, 
+                status as "status: TransactionStatus", 
+                note, 
+                month_reference as "month_reference!: MonthReference",
+                year_reference,
+                created_at, 
+                updated_at, 
+                deleted_at
+            FROM transactions
+            WHERE
+                month_reference = $1 AND year_reference = $2
+            "#,
+            period.transform_month() as MonthReference,
+            period.year
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(transactions)
     }
 }
