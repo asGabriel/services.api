@@ -2,6 +2,7 @@ use uuid::Uuid;
 
 use crate::domains::{
     errors::{Error, Result},
+    installments::CreateInstallment,
     transactions::{CreateTransaction, Transaction, TransactionStatus, UpdateTransaction},
 };
 
@@ -10,9 +11,25 @@ pub mod report;
 
 impl Handler {
     pub async fn create_transaction(&self, transaction: CreateTransaction) -> Result<Transaction> {
-        self.transaction_repository
+        let transaction = self
+            .transaction_repository
             .create_transaction(transaction)
-            .await
+            .await?;
+
+        if let Some(step) = transaction.installment_number {
+            let installment_payload = CreateInstallment {
+                transaction_id: transaction.transaction_id.clone(),
+                amount: transaction.amount.clone(),
+                due_date: transaction.due_date.clone(),
+                month_reference: transaction.month_reference.clone(),
+                status: transaction.status.clone(),
+                year_reference: transaction.year_reference.clone(),
+            };
+
+            self.create_installment(installment_payload, step).await?;
+        }
+
+        Ok(transaction)
     }
 
     pub async fn list_transactions(&self) -> Result<Vec<Transaction>> {
