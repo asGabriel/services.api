@@ -12,7 +12,7 @@ pub struct Transaction {
     pub transaction_id: Uuid,
     pub movement_type: TransactionType,
     pub description: String,
-    pub amount: f64,
+    pub amount: BigDecimal,
     pub due_date: NaiveDate,
     pub category: TransactionCategory,
     pub account_id: Uuid,
@@ -22,7 +22,7 @@ pub struct Transaction {
     pub note: String,
     pub status: TransactionStatus,
     pub month_reference: MonthReference,
-    pub year_reference: BigDecimal,
+    pub year_reference: i16,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -35,7 +35,7 @@ pub struct Transaction {
 pub struct CreateTransaction {
     pub movement_type: TransactionType,
     pub description: Option<String>,
-    pub amount: f64,
+    pub amount: BigDecimal,
     pub due_date: Option<NaiveDate>,
     pub category: TransactionCategory,
     pub account_id: Uuid,
@@ -45,7 +45,7 @@ pub struct CreateTransaction {
     pub note: Option<String>,
     pub status: TransactionStatus,
     pub month_reference: MonthReference,
-    pub year_reference: BigDecimal,
+    pub year_reference: i16,
 }
 
 #[derive(Debug, Deserialize)]
@@ -53,7 +53,7 @@ pub struct CreateTransaction {
 pub struct UpdateTransaction {
     pub movement_type: Option<TransactionType>,
     pub description: Option<String>,
-    pub amount: Option<f64>,
+    pub amount: Option<BigDecimal>,
     pub due_date: Option<NaiveDate>,
     pub category: Option<TransactionCategory>,
     pub account_id: Option<Uuid>,
