@@ -24,6 +24,7 @@ async fn main() {
     let handler = Handler::new(
         sqlx_repository.clone(),
         sqlx_repository.clone(),
+        sqlx_repository.clone(),
         sqlx_repository,
     );
 
