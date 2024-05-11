@@ -1,7 +1,14 @@
 use bigdecimal::BigDecimal;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-use super::MonthReference;
+use super::{MonthReference, Transaction};
+
+#[derive(Debug, Serialize)]
+pub struct Report {
+    pub month: MonthReference,
+    pub year: BigDecimal,
+    pub transactions: Vec<Transaction>,
+}
 
 #[derive(Debug, Deserialize)]
 pub struct PeriodFilter {
