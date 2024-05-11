@@ -45,7 +45,7 @@ pub struct CreateTransaction {
     pub note: Option<String>,
     pub status: TransactionStatus,
     pub month_reference: MonthReference,
-    pub year_reference: BigDecimal
+    pub year_reference: BigDecimal,
 }
 
 #[derive(Debug, Deserialize)]

@@ -7,10 +7,7 @@ use axum::{
 use serde::Deserialize;
 
 use crate::{
-    domains::{
-        errors::Result,
-        transactions::report::PeriodFilter,
-    },
+    domains::{errors::Result, transactions::report::PeriodFilter},
     handlers::Handler,
 };
 

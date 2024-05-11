@@ -25,7 +25,7 @@ pub trait TransactionRepository {
         transaction_id: Uuid,
         status: TransactionStatus,
     ) -> Result<Option<Transaction>>;
-    async fn list_transactions_by_period(&self, period: PeriodFilter) -> Result<Vec<Transaction>>;
+    async fn list_transactions_by_period(&self, period: &PeriodFilter) -> Result<Vec<Transaction>>;
 }
 
 #[async_trait::async_trait]
@@ -293,7 +293,7 @@ impl TransactionRepository for SqlxRepository {
         Ok(transaction)
     }
 
-    async fn list_transactions_by_period(&self, period: PeriodFilter) -> Result<Vec<Transaction>> {
+    async fn list_transactions_by_period(&self, period: &PeriodFilter) -> Result<Vec<Transaction>> {
         let transactions = sqlx::query_as!(
             Transaction,
             r#"
