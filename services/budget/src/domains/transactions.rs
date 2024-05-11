@@ -18,11 +18,11 @@ pub struct Transaction {
     pub account_id: Uuid,
     pub recurring: bool,
     pub recurrence_frequency: TransactionRecurrency,
-    pub recurrence_duration_months: i32,
     pub note: String,
     pub status: TransactionStatus,
     pub month_reference: MonthReference,
     pub year_reference: i16,
+    pub installment_number: Option<i16>,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -46,6 +46,7 @@ pub struct CreateTransaction {
     pub status: TransactionStatus,
     pub month_reference: MonthReference,
     pub year_reference: i16,
+    pub installment_number: Option<i16>,
 }
 
 #[derive(Debug, Deserialize)]

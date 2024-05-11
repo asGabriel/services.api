@@ -44,11 +44,11 @@ impl TransactionRepository for SqlxRepository {
                 account_id, 
                 recurring, 
                 recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
-                recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
                 month_reference as "month_reference!: MonthReference",
                 year_reference,
+                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -75,10 +75,10 @@ impl TransactionRepository for SqlxRepository {
                 account_id,
                 recurring,
                 recurrence_frequency,
-                recurrence_duration_months,
                 month_reference,
                 year_reference,
-                status
+                status,
+                installment_number
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
             ) RETURNING 
@@ -91,11 +91,11 @@ impl TransactionRepository for SqlxRepository {
                 account_id, 
                 recurring, 
                 recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
-                recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
                 month_reference as "month_reference!: MonthReference",
                 year_reference,
+                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -109,10 +109,10 @@ impl TransactionRepository for SqlxRepository {
             transaction.account_id,
             transaction.recurring,
             transaction.recurrence_frequency as TransactionRecurrency,
-            transaction.recurrence_duration_months,
             transaction.month_reference as MonthReference,
             transaction.year_reference,
-            transaction.status as TransactionStatus
+            transaction.status as TransactionStatus,
+            transaction.installment_number
         )
         .fetch_one(&self.pool)
         .await?;
@@ -134,11 +134,11 @@ impl TransactionRepository for SqlxRepository {
                 account_id, 
                 recurring, 
                 recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
-                recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
                 month_reference as "month_reference!: MonthReference",
                 year_reference,
+                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -173,11 +173,11 @@ impl TransactionRepository for SqlxRepository {
                 account_id, 
                 recurring, 
                 recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
-                recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
                 month_reference as "month_reference!: MonthReference",
                 year_reference,
+                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -199,17 +199,6 @@ impl TransactionRepository for SqlxRepository {
             Transaction,
             r#"
             UPDATE TRANSACTIONS SET
-                movement_type = $2,
-                description = $3,
-                amount = $4,
-                due_date = $5,
-                category = $6,
-                account_id = $7,
-                recurring = $8,
-                recurrence_frequency = $9,
-                recurrence_duration_months = $10,
-                note = $11,
-                status = $12,
                 updated_at = now()
             WHERE 
                 transaction_id = $1
@@ -223,31 +212,16 @@ impl TransactionRepository for SqlxRepository {
                 account_id, 
                 recurring, 
                 recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
-                recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
                 month_reference as "month_reference!: MonthReference",
                 year_reference,
+                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
             "#,
-            transaction.transaction_id,
-            payload.movement_type.unwrap_or(transaction.movement_type) as TransactionType,
-            payload.description.unwrap_or(transaction.description),
-            payload.amount.unwrap_or(transaction.amount),
-            payload.due_date.unwrap_or(transaction.due_date),
-            payload.category.unwrap_or(transaction.category) as TransactionCategory,
-            payload.account_id.unwrap_or(transaction.account_id),
-            payload.recurring.unwrap_or(transaction.recurring),
-            payload
-                .recurrence_frequency
-                .unwrap_or(transaction.recurrence_frequency) as TransactionRecurrency,
-            payload
-                .recurrence_duration_months
-                .unwrap_or(transaction.recurrence_duration_months),
-            payload.note.unwrap_or(transaction.note),
-            payload.status.unwrap_or(transaction.status) as TransactionStatus
+            transaction.transaction_id
         )
         .fetch_optional(&self.pool)
         .await?;
@@ -274,11 +248,11 @@ impl TransactionRepository for SqlxRepository {
                 account_id, 
                 recurring, 
                 recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
-                recurrence_duration_months, 
                 status as "status: TransactionStatus", 
                 note, 
                 month_reference as "month_reference!: MonthReference",
                 year_reference,
+                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -307,7 +281,7 @@ impl TransactionRepository for SqlxRepository {
                 account_id, 
                 recurring, 
                 recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
-                recurrence_duration_months, 
+                installment_number,
                 status as "status: TransactionStatus", 
                 note, 
                 month_reference as "month_reference!: MonthReference",
