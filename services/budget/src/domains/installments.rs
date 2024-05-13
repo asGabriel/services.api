@@ -40,6 +40,7 @@ impl CreateInstallment {
     pub fn next_due_date_by_frequency(&self, reference_date: NaiveDate) -> NaiveDate {
         // SAFE unwrap, reference date is always Some()
         match self.recurrence_frequency {
+            TransactionRecurrency::SingleOccurrence => reference_date,
             TransactionRecurrency::Monthly => {
                 reference_date.checked_add_months(Months::new(1)).unwrap()
             }

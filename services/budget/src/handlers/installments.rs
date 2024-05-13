@@ -23,9 +23,9 @@ impl Handler {
 
         for step in 1..=steps {
             let result = self
-            .installment_repository
-            .create_installment(&payload, step)
-            .await?;
+                .installment_repository
+                .create_installment(&payload, step)
+                .await?;
 
             reference_date = payload.next_due_date_by_frequency(reference_date);
             payload.due_date = reference_date;

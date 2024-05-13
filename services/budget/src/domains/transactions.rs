@@ -17,7 +17,7 @@ pub struct Transaction {
     pub category: TransactionCategory,
     pub account_id: Uuid,
     pub recurring: bool,
-    pub recurrence_frequency: TransactionRecurrency,
+    pub recurrence_frequency: Option<TransactionRecurrency>,
     pub note: String,
     pub status: TransactionStatus,
     pub month_reference: MonthReference,
@@ -40,7 +40,7 @@ pub struct CreateTransaction {
     pub category: TransactionCategory,
     pub account_id: Uuid,
     pub recurring: Option<bool>,
-    pub recurrence_frequency: TransactionRecurrency,
+    pub recurrence_frequency: Option<TransactionRecurrency>,
     pub recurrence_duration_months: Option<i32>,
     pub note: Option<String>,
     pub status: TransactionStatus,
@@ -65,7 +65,7 @@ pub struct UpdateTransaction {
     pub status: Option<TransactionStatus>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Type, Clone)]
+#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[sqlx(type_name = "movement_type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum TransactionType {
@@ -73,7 +73,7 @@ pub enum TransactionType {
     Expense,
 }
 
-#[derive(Debug, Serialize, Deserialize, Type, Clone)]
+#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[sqlx(type_name = "category", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum TransactionCategory {
@@ -105,13 +105,14 @@ pub enum TransactionStatus {
     Completed,
 }
 
-#[derive(Debug, Serialize, Deserialize, Type, Clone)]
+#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[sqlx(
     type_name = "recurrence_frequency",
     rename_all = "SCREAMING_SNAKE_CASE"
 )]
 pub enum TransactionRecurrency {
+    SingleOccurrence,
     Weekly,
     Monthly,
     Quarterly,
@@ -143,6 +144,23 @@ impl Transaction {
         match self.status {
             TransactionStatus::Completed | TransactionStatus::Canceled => true,
             _ => false,
+        }
+    }
+
+    pub fn generate_installment(&self) -> bool {
+        if self.installment_number.is_some() && self.recurrence_frequency.is_some() {
+            return true;
+        }
+
+        false
+    }
+}
+
+impl CreateTransaction {
+    pub fn get_transaction_recurrence(&self) -> TransactionRecurrency {
+        match self.recurrence_frequency {
+            Some(r) => r,
+            None => TransactionRecurrency::SingleOccurrence,
         }
     }
 }
