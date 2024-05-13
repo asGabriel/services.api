@@ -16,7 +16,7 @@ impl Handler {
             .create_transaction(transaction)
             .await?;
 
-        if let Some(step) = transaction.installment_number {
+        if transaction.generate_installment() {
             let installment_payload = CreateInstallment {
                 transaction_id: transaction.transaction_id.clone(),
                 amount: transaction.amount.clone(),
@@ -24,10 +24,12 @@ impl Handler {
                 month_reference: transaction.month_reference.clone(),
                 status: transaction.status.clone(),
                 year_reference: transaction.year_reference.clone(),
-                recurrence_frequency: transaction.recurrence_frequency.clone(),
+                recurrence_frequency: transaction.recurrence_frequency.clone().unwrap(),
             };
 
-            self.create_installment(installment_payload, step).await?;
+            // SAFE unwrap because the "generate_installment" validation
+            self.create_installment(installment_payload, transaction.installment_number.unwrap())
+                .await?;
         }
 
         Ok(transaction)
