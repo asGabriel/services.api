@@ -24,6 +24,7 @@ impl Handler {
                 month_reference: transaction.month_reference.clone(),
                 status: transaction.status.clone(),
                 year_reference: transaction.year_reference.clone(),
+                recurrence_frequency: transaction.recurrence_frequency.clone(),
             };
 
             self.create_installment(installment_payload, step).await?;

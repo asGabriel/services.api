@@ -1,9 +1,9 @@
 use bigdecimal::BigDecimal;
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Days, Months, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use super::transactions::{MonthReference, TransactionStatus};
+use super::transactions::{MonthReference, TransactionRecurrency, TransactionStatus};
 
 #[derive(Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -33,4 +33,26 @@ pub struct CreateInstallment {
     pub month_reference: MonthReference,
     pub status: TransactionStatus,
     pub year_reference: i16,
+    pub recurrence_frequency: TransactionRecurrency,
+}
+
+impl CreateInstallment {
+    pub fn next_due_date_by_frequency(&self, reference_date: NaiveDate) -> NaiveDate {
+        // SAFE unwrap, reference date is always Some()
+        match self.recurrence_frequency {
+            TransactionRecurrency::Monthly => {
+                reference_date.checked_add_months(Months::new(1)).unwrap()
+            }
+            TransactionRecurrency::Weekly => reference_date.checked_add_days(Days::new(7)).unwrap(),
+            TransactionRecurrency::Quarterly => {
+                reference_date.checked_add_months(Months::new(3)).unwrap()
+            }
+            TransactionRecurrency::SemiAnnually => {
+                reference_date.checked_add_months(Months::new(6)).unwrap()
+            }
+            TransactionRecurrency::Annually => {
+                reference_date.checked_add_months(Months::new(12)).unwrap()
+            }
+        }
+    }
 }
