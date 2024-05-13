@@ -6,7 +6,7 @@ use crate::repositories::{
 };
 
 pub mod accounts;
-pub mod installment;
+pub mod installments;
 pub mod transactions;
 
 #[derive(Clone)]
