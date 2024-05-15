@@ -2,6 +2,7 @@ use bigdecimal::BigDecimal;
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
+use thiserror::Error;
 use uuid::Uuid;
 
 pub mod report;
@@ -17,7 +18,7 @@ pub struct Transaction {
     pub category: TransactionCategory,
     pub account_id: Uuid,
     pub recurring: bool,
-    pub recurrence_frequency: Option<TransactionRecurrency>,
+    pub recurrence_frequency: TransactionRecurrency,
     pub note: String,
     pub status: TransactionStatus,
     pub month_reference: MonthReference,
@@ -40,7 +41,7 @@ pub struct CreateTransaction {
     pub category: TransactionCategory,
     pub account_id: Uuid,
     pub recurring: Option<bool>,
-    pub recurrence_frequency: Option<TransactionRecurrency>,
+    pub recurrence_frequency: TransactionRecurrency,
     pub recurrence_duration_months: Option<i32>,
     pub note: Option<String>,
     pub status: TransactionStatus,
@@ -105,7 +106,7 @@ pub enum TransactionStatus {
     Completed,
 }
 
-#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy)]
+#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy, PartialEq)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[sqlx(
     type_name = "recurrence_frequency",
@@ -138,6 +139,12 @@ pub enum MonthReference {
     December,
 }
 
+#[derive(Debug, Error)]
+pub enum DataValidationError {
+    #[error("Installment number must be informed to installments.")]
+    InstallmentNumberSmallerThanZero,
+}
+
 impl Transaction {
     /// FINISHED transaction is when the status equals to COMPLETED or CANCELED
     pub fn is_finished(&self) -> bool {
@@ -147,20 +154,10 @@ impl Transaction {
         }
     }
 
-    pub fn generate_installment(&self) -> bool {
-        if self.installment_number.is_some() && self.recurrence_frequency.is_some() {
-            return true;
-        }
-
-        false
-    }
-}
-
-impl CreateTransaction {
-    pub fn get_transaction_recurrence(&self) -> TransactionRecurrency {
-        match self.recurrence_frequency {
-            Some(r) => r,
-            None => TransactionRecurrency::SingleOccurrence,
+    pub fn validate_installment_data(&self) -> Result<(), DataValidationError> {
+        match self.installment_number {
+            Some(n) if n > 0 && self.recurrence_frequency != TransactionRecurrency::SingleOccurrence => Ok(()),
+            _ => Err(DataValidationError::InstallmentNumberSmallerThanZero)
         }
     }
 }
