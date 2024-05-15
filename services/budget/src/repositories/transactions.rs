@@ -108,7 +108,7 @@ impl TransactionRepository for SqlxRepository {
             transaction.category as TransactionCategory,
             transaction.account_id,
             transaction.recurring,
-            transaction.get_transaction_recurrence() as TransactionRecurrency,
+            transaction.recurrence_frequency as TransactionRecurrency,
             transaction.month_reference as MonthReference,
             transaction.year_reference,
             transaction.status as TransactionStatus,

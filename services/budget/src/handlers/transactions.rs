@@ -16,7 +16,7 @@ impl Handler {
             .create_transaction(transaction)
             .await?;
 
-        if transaction.generate_installment() {
+        if transaction.validate_installment_data().is_ok() {
             let installment_payload = CreateInstallment {
                 transaction_id: transaction.transaction_id.clone(),
                 amount: transaction.amount.clone(),
@@ -24,7 +24,7 @@ impl Handler {
                 month_reference: transaction.month_reference.clone(),
                 status: transaction.status.clone(),
                 year_reference: transaction.year_reference.clone(),
-                recurrence_frequency: transaction.recurrence_frequency.clone().unwrap(),
+                recurrence_frequency: transaction.recurrence_frequency.clone(),
             };
 
             // SAFE unwrap because the "generate_installment" validation
@@ -47,7 +47,11 @@ impl Handler {
     }
 
     pub async fn delete_transaction_by_id(&self, transaction_id: Uuid) -> Result<Transaction> {
-        self.get_transaction_by_id(transaction_id).await?;
+        let result = self.get_transaction_by_id(transaction_id).await?;
+
+        if result.is_finished() {
+            return Err(Error::TransactionFinished(result.transaction_id));
+        }
 
         self.transaction_repository
             .delete_transaction_by_id(transaction_id)
