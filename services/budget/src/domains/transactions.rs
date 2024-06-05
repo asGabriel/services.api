@@ -17,12 +17,7 @@ pub struct Transaction {
     pub due_date: NaiveDate,
     pub category: TransactionCategory,
     pub account_id: Uuid,
-    pub recurring: bool,
-    pub recurrence_frequency: TransactionRecurrency,
-    pub note: String,
     pub status: TransactionStatus,
-    pub month_reference: MonthReference,
-    pub year_reference: i16,
     pub installment_number: Option<i16>,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,18 +30,12 @@ pub struct Transaction {
 #[serde(rename_all = "camelCase")]
 pub struct CreateTransaction {
     pub movement_type: TransactionType,
-    pub description: Option<String>,
+    pub description: String,
     pub amount: BigDecimal,
     pub due_date: Option<NaiveDate>,
     pub category: TransactionCategory,
     pub account_id: Uuid,
-    pub recurring: Option<bool>,
-    pub recurrence_frequency: TransactionRecurrency,
-    pub recurrence_duration_months: Option<i32>,
-    pub note: Option<String>,
     pub status: TransactionStatus,
-    pub month_reference: MonthReference,
-    pub year_reference: i16,
     pub installment_number: Option<i16>,
 }
 
@@ -154,10 +143,11 @@ impl Transaction {
         }
     }
 
-    pub fn validate_installment_data(&self) -> Result<(), DataValidationError> {
-        match self.installment_number {
-            Some(n) if n > 0 && self.recurrence_frequency != TransactionRecurrency::SingleOccurrence => Ok(()),
-            _ => Err(DataValidationError::InstallmentNumberSmallerThanZero)
-        }
-    }
+    // TODO: revisar necessidade da função
+    // pub fn validate_installment_data(&self) -> Result<(), DataValidationError> {
+    //     match self.installment_number {
+    //         Some(n) if n > 0 && self.recurrence_frequency != TransactionRecurrency::SingleOccurrence => Ok(()),
+    //         _ => Err(DataValidationError::InstallmentNumberSmallerThanZero)
+    //     }
+    // }
 }

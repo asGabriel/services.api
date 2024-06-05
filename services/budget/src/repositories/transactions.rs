@@ -42,12 +42,7 @@ impl TransactionRepository for SqlxRepository {
                 due_date, 
                 category as "category: TransactionCategory", 
                 account_id, 
-                recurring, 
-                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
                 status as "status: TransactionStatus", 
-                note, 
-                month_reference as "month_reference!: MonthReference",
-                year_reference,
                 installment_number,
                 created_at, 
                 updated_at, 
@@ -73,14 +68,10 @@ impl TransactionRepository for SqlxRepository {
                 due_date,
                 category,
                 account_id,
-                recurring,
-                recurrence_frequency,
-                month_reference,
-                year_reference,
                 status,
                 installment_number
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+                $1, $2, $3, $4, $5, $6, $7, $8, $9
             ) RETURNING 
                 transaction_id, 
                 movement_type as "movement_type!: TransactionType",
@@ -89,12 +80,7 @@ impl TransactionRepository for SqlxRepository {
                 due_date, 
                 category as "category: TransactionCategory", 
                 account_id, 
-                recurring, 
-                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
                 status as "status: TransactionStatus", 
-                note, 
-                month_reference as "month_reference!: MonthReference",
-                year_reference,
                 installment_number,
                 created_at, 
                 updated_at, 
@@ -107,10 +93,6 @@ impl TransactionRepository for SqlxRepository {
             transaction.due_date,
             transaction.category as TransactionCategory,
             transaction.account_id,
-            transaction.recurring,
-            transaction.recurrence_frequency as TransactionRecurrency,
-            transaction.month_reference as MonthReference,
-            transaction.year_reference,
             transaction.status as TransactionStatus,
             transaction.installment_number
         )
@@ -132,12 +114,7 @@ impl TransactionRepository for SqlxRepository {
                 due_date, 
                 category as "category: TransactionCategory", 
                 account_id, 
-                recurring, 
-                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
                 status as "status: TransactionStatus", 
-                note, 
-                month_reference as "month_reference!: MonthReference",
-                year_reference,
                 installment_number,
                 created_at, 
                 updated_at, 
@@ -171,12 +148,7 @@ impl TransactionRepository for SqlxRepository {
                 due_date, 
                 category as "category: TransactionCategory", 
                 account_id, 
-                recurring, 
-                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
                 status as "status: TransactionStatus", 
-                note, 
-                month_reference as "month_reference!: MonthReference",
-                year_reference,
                 installment_number,
                 created_at, 
                 updated_at, 
@@ -210,12 +182,7 @@ impl TransactionRepository for SqlxRepository {
                 due_date, 
                 category as "category: TransactionCategory", 
                 account_id, 
-                recurring, 
-                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
                 status as "status: TransactionStatus", 
-                note, 
-                month_reference as "month_reference!: MonthReference",
-                year_reference,
                 installment_number,
                 created_at, 
                 updated_at, 
@@ -246,12 +213,7 @@ impl TransactionRepository for SqlxRepository {
                 due_date, 
                 category as "category: TransactionCategory", 
                 account_id, 
-                recurring, 
-                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
                 status as "status: TransactionStatus", 
-                note, 
-                month_reference as "month_reference!: MonthReference",
-                year_reference,
                 installment_number,
                 created_at, 
                 updated_at, 
@@ -267,6 +229,7 @@ impl TransactionRepository for SqlxRepository {
         Ok(transaction)
     }
 
+    // TODO: revisar essa função; mover para o consolidation
     async fn list_transactions_by_period(&self, period: &PeriodFilter) -> Result<Vec<Transaction>> {
         let transactions = sqlx::query_as!(
             Transaction,
@@ -279,22 +242,13 @@ impl TransactionRepository for SqlxRepository {
                 due_date, 
                 category as "category: TransactionCategory", 
                 account_id, 
-                recurring, 
-                recurrence_frequency as "recurrence_frequency: TransactionRecurrency", 
                 installment_number,
                 status as "status: TransactionStatus", 
-                note, 
-                month_reference as "month_reference!: MonthReference",
-                year_reference,
                 created_at, 
                 updated_at, 
                 deleted_at
             FROM transactions
-            WHERE
-                month_reference = $1 AND year_reference = $2
-            "#,
-            period.transform_month() as MonthReference,
-            period.year
+            "#
         )
         .fetch_all(&self.pool)
         .await?;

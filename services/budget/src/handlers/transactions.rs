@@ -16,21 +16,22 @@ impl Handler {
             .create_transaction(transaction)
             .await?;
 
-        if transaction.validate_installment_data().is_ok() {
-            let installment_payload = CreateInstallment {
-                transaction_id: transaction.transaction_id.clone(),
-                amount: transaction.amount.clone(),
-                due_date: transaction.due_date.clone(),
-                month_reference: transaction.month_reference.clone(),
-                status: transaction.status.clone(),
-                year_reference: transaction.year_reference.clone(),
-                recurrence_frequency: transaction.recurrence_frequency.clone(),
-            };
+        // TODO: recriar a nova função após refatoração de todas as tabelas;
+        // if transaction.validate_installment_data().is_ok() {
+        //     let installment_payload = CreateInstallment {
+        //         transaction_id: transaction.transaction_id.clone(),
+        //         amount: transaction.amount.clone(),
+        //         due_date: transaction.due_date.clone(),
+        //         month_reference: transaction.month_reference.clone(),
+        //         status: transaction.status.clone(),
+        //         year_reference: transaction.year_reference.clone(),
+        //         recurrence_frequency: transaction.recurrence_frequency.clone(),
+        //     };
 
-            // SAFE unwrap because the "generate_installment" validation
-            self.create_installment(installment_payload, transaction.installment_number.unwrap())
-                .await?;
-        }
+        //     // SAFE unwrap because the "generate_installment" validation
+        //     self.create_installment(installment_payload, transaction.installment_number.unwrap())
+        //         .await?;
+        // }
 
         Ok(transaction)
     }
