@@ -2,8 +2,9 @@ use bigdecimal::BigDecimal;
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
-use thiserror::Error;
 use uuid::Uuid;
+
+use super::installments::CreateInstallment;
 
 pub mod report;
 
@@ -18,7 +19,7 @@ pub struct Transaction {
     pub category: TransactionCategory,
     pub account_id: Uuid,
     pub status: TransactionStatus,
-    pub installment_number: Option<i16>,
+    pub installment_number: i16,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -26,7 +27,7 @@ pub struct Transaction {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateTransaction {
     pub movement_type: TransactionType,
@@ -37,6 +38,8 @@ pub struct CreateTransaction {
     pub account_id: Uuid,
     pub status: TransactionStatus,
     pub installment_number: Option<i16>,
+    pub month_reference: MonthReference,
+    pub year_reference: i16
 }
 
 #[derive(Debug, Deserialize)]
@@ -128,12 +131,6 @@ pub enum MonthReference {
     December,
 }
 
-#[derive(Debug, Error)]
-pub enum DataValidationError {
-    #[error("Installment number must be informed to installments.")]
-    InstallmentNumberSmallerThanZero,
-}
-
 impl Transaction {
     /// FINISHED transaction is when the status equals to COMPLETED or CANCELED
     pub fn is_finished(&self) -> bool {
@@ -143,11 +140,13 @@ impl Transaction {
         }
     }
 
-    // TODO: revisar necessidade da função
-    // pub fn validate_installment_data(&self) -> Result<(), DataValidationError> {
-    //     match self.installment_number {
-    //         Some(n) if n > 0 && self.recurrence_frequency != TransactionRecurrency::SingleOccurrence => Ok(()),
-    //         _ => Err(DataValidationError::InstallmentNumberSmallerThanZero)
-    //     }
-    // }
+    pub fn generate_installment_payload(&self) -> CreateInstallment {
+        CreateInstallment {
+            transaction_id: self.transaction_id,
+            due_date: self.due_date,
+            step: self.installment_number,
+            amount: self.amount.normalized() / self.installment_number,
+            status: TransactionStatus::Pending
+        }
+    }
 }

@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::domains::{
     errors::{Error, Result},
-    installments::CreateInstallment,
+    installments::InstallmentParams,
     transactions::{CreateTransaction, Transaction, TransactionStatus, UpdateTransaction},
 };
 
@@ -10,28 +10,19 @@ use super::Handler;
 pub mod report;
 
 impl Handler {
-    pub async fn create_transaction(&self, transaction: CreateTransaction) -> Result<Transaction> {
+    pub async fn create_transaction(&self, payload: CreateTransaction) -> Result<Transaction> {
         let transaction = self
             .transaction_repository
-            .create_transaction(transaction)
+            .create_transaction(payload.clone())
             .await?;
 
-        // TODO: recriar a nova função após refatoração de todas as tabelas;
-        // if transaction.validate_installment_data().is_ok() {
-        //     let installment_payload = CreateInstallment {
-        //         transaction_id: transaction.transaction_id.clone(),
-        //         amount: transaction.amount.clone(),
-        //         due_date: transaction.due_date.clone(),
-        //         month_reference: transaction.month_reference.clone(),
-        //         status: transaction.status.clone(),
-        //         year_reference: transaction.year_reference.clone(),
-        //         recurrence_frequency: transaction.recurrence_frequency.clone(),
-        //     };
+        let params = InstallmentParams {
+            month_reference: payload.month_reference,
+            year_reference: payload.year_reference,
+            recurrence_frequency: crate::domains::transactions::TransactionRecurrency::Monthly,
+        };
 
-        //     // SAFE unwrap because the "generate_installment" validation
-        //     self.create_installment(installment_payload, transaction.installment_number.unwrap())
-        //         .await?;
-        // }
+        self.create_installment(&transaction, params).await?;
 
         Ok(transaction)
     }

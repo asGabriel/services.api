@@ -1,5 +1,5 @@
 use bigdecimal::BigDecimal;
-use chrono::{DateTime, Days, Months, NaiveDate, Utc};
+use chrono::{DateTime, Months, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -26,34 +26,23 @@ pub struct Installment {
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct CreateInstallment {
-    pub transaction_id: Uuid,
-    pub due_date: NaiveDate,
-    pub amount: BigDecimal,
+pub struct InstallmentParams {
     pub month_reference: MonthReference,
-    pub status: TransactionStatus,
     pub year_reference: i16,
     pub recurrence_frequency: TransactionRecurrency,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct CreateInstallment {
+    pub transaction_id: Uuid,
+    pub step: i16,
+    pub due_date: NaiveDate,
+    pub amount: BigDecimal,
+    pub status: TransactionStatus
+}
+
 impl CreateInstallment {
-    pub fn next_due_date_by_frequency(&self, reference_date: NaiveDate) -> NaiveDate {
-        // SAFE unwrap, reference date is always Some()
-        match self.recurrence_frequency {
-            TransactionRecurrency::SingleOccurrence => reference_date,
-            TransactionRecurrency::Monthly => {
-                reference_date.checked_add_months(Months::new(1)).unwrap()
-            }
-            TransactionRecurrency::Weekly => reference_date.checked_add_days(Days::new(7)).unwrap(),
-            TransactionRecurrency::Quarterly => {
-                reference_date.checked_add_months(Months::new(3)).unwrap()
-            }
-            TransactionRecurrency::SemiAnnually => {
-                reference_date.checked_add_months(Months::new(6)).unwrap()
-            }
-            TransactionRecurrency::Annually => {
-                reference_date.checked_add_months(Months::new(12)).unwrap()
-            }
-        }
+    pub fn next_due_date_by_frequency(&mut self) {
+        self.due_date = self.due_date.checked_add_months(Months::new(1)).unwrap()
     }
 }
