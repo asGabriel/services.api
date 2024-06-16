@@ -1,17 +1,32 @@
-use sqlx::postgres::PgPoolOptions;
+use std::sync::Arc;
 
+use gateways::budget::ApiBudgetGateway;
+use handlers::budget::BudgetHandlerImpl;
+use routes::AppState;
+pub mod gateways;
+pub mod handlers;
+pub mod routes;
+pub mod domains;
+
+fn create_budget_handler() -> BudgetHandlerImpl {
+    let budget_gateway = Arc::new(ApiBudgetGateway::default());
+
+    BudgetHandlerImpl { budget_gateway }
+}
 
 #[tokio::main]
 async fn main() {
-    dotenv::dotenv().ok();
+    println!("bff-service");
 
-    let conn_str = std::env::var("DATABASE_URL").expect("Could not fetch connection string.");
+    let budget = create_budget_handler();
 
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&conn_str)
-        .await
-        .expect("Couldn't connect to the database");
+    let app_state = AppState {
+        budget_handler: Arc::new(budget),
+    };
 
-    
+    let router = routes::configure_services().with_state(app_state);
+
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3001").await.unwrap();
+
+    axum::serve(listener, router).await.unwrap();
 }

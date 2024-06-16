@@ -195,6 +195,7 @@ dependencies = [
  "bigdecimal",
  "chrono",
  "dotenv",
+ "finance",
  "reqwest",
  "serde",
  "sqlx",
