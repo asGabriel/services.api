@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::Type;
 use uuid::Uuid;
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub transaction_id: Uuid,
