@@ -1,4 +1,4 @@
-use finance::{installment::PartialInstallment, transaction::Transaction};
+use finance::transaction::Transaction;
 
 use super::Handler;
 use crate::domains::{
