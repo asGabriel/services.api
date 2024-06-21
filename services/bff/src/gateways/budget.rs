@@ -27,7 +27,8 @@ impl BudgetGateway for ApiBudgetGateway {
             .get("http://localhost:8000/transactions")
             .send()
             .await?
-            .json::<Vec<Transaction>>().await?;
+            .json::<Vec<Transaction>>()
+            .await?;
 
         Ok(transactions)
     }

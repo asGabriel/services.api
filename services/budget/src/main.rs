@@ -29,7 +29,9 @@ async fn main() {
         sqlx_repository,
     );
 
-    let app = routes::configure_routes().with_state(handler).layer(CorsLayer::permissive());
+    let app = routes::configure_routes()
+        .with_state(handler)
+        .layer(CorsLayer::permissive());
 
     let port = std::env::var("PORT").expect("Could not fetch port data.");
     let url = format!("0.0.0.0:{}", port);

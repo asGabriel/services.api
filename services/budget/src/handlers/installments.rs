@@ -1,10 +1,10 @@
+use finance::{installment::PartialInstallment, transaction::Transaction};
+
+use super::Handler;
 use crate::domains::{
     errors::Result,
     installments::{Installment, InstallmentParams},
-    transactions::Transaction,
 };
-
-use super::Handler;
 
 impl Handler {
     pub async fn create_installment(

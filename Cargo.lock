@@ -250,6 +250,7 @@ dependencies = [
  "bigdecimal",
  "chrono",
  "dotenv",
+ "finance",
  "serde",
  "sqlx",
  "thiserror",

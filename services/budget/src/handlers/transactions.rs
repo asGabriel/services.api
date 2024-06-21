@@ -1,9 +1,10 @@
+use finance::{status::TransactionStatus, transaction::Transaction};
 use uuid::Uuid;
 
 use crate::domains::{
     errors::{Error, Result},
     installments::InstallmentParams,
-    transactions::{CreateTransaction, Transaction, TransactionStatus, UpdateTransaction},
+    transactions::{CreateTransaction, UpdateTransaction},
 };
 
 use super::Handler;

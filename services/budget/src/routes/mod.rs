@@ -1,5 +1,6 @@
 pub mod accounts;
 pub mod transactions;
+pub mod views;
 
 use axum::{http::StatusCode, response::IntoResponse, Router};
 
@@ -9,6 +10,7 @@ pub(super) fn configure_routes() -> Router<Handler> {
     Router::new()
         .merge(transactions::configure_routes())
         .merge(accounts::configure_routes())
+        .merge(views::configure_routes())
 }
 
 impl IntoResponse for Error {

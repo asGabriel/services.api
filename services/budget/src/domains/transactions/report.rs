@@ -1,6 +1,7 @@
+use finance::transaction::Transaction;
 use serde::{Deserialize, Serialize};
 
-use super::{MonthReference, Transaction};
+use super::MonthReference;
 
 #[derive(Debug, Serialize)]
 pub struct Report {

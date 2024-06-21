@@ -1,9 +1,10 @@
+use finance::{installment::PartialInstallment, status::TransactionStatus};
 use uuid::Uuid;
 
 use crate::domains::{
     errors::Result,
-    installments::{CreateInstallment, Installment, InstallmentParams},
-    transactions::{MonthReference, TransactionStatus},
+    installments::{Installment, InstallmentParams},
+    transactions::MonthReference,
 };
 
 use super::SqlxRepository;
@@ -12,9 +13,9 @@ use super::SqlxRepository;
 pub trait InstallmentRepository {
     async fn create_installment(
         &self,
-        payload: &CreateInstallment,
+        payload: &PartialInstallment,
         params: &InstallmentParams,
-        step: i16
+        step: i16,
     ) -> Result<Installment>;
 }
 
@@ -22,9 +23,9 @@ pub trait InstallmentRepository {
 impl InstallmentRepository for SqlxRepository {
     async fn create_installment(
         &self,
-        payload: &CreateInstallment,
+        payload: &PartialInstallment,
         params: &InstallmentParams,
-        step: i16
+        step: i16,
     ) -> Result<Installment> {
         let installment = sqlx::query_as!(
             Installment,

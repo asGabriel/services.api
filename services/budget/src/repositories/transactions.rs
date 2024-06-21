@@ -1,12 +1,13 @@
 use crate::domains::{
     errors::Result,
-    transactions::{
-        report::PeriodFilter, CreateTransaction, Transaction, TransactionCategory,
-        TransactionStatus, TransactionType, UpdateTransaction,
-    },
+    transactions::{report::PeriodFilter, CreateTransaction, UpdateTransaction},
 };
 
 use super::SqlxRepository;
+use finance::{
+    category::TransactionCategory, movement_type::MovementType, status::TransactionStatus,
+    transaction::Transaction,
+};
 use uuid::Uuid;
 
 #[async_trait::async_trait]
@@ -36,7 +37,7 @@ impl TransactionRepository for SqlxRepository {
             r#"
             SELECT
                 transaction_id, 
-                movement_type as "movement_type!: TransactionType",
+                movement_type as "movement_type!: MovementType",
                 description, 
                 amount, 
                 due_date, 
@@ -74,7 +75,7 @@ impl TransactionRepository for SqlxRepository {
                 $1, $2, $3, $4, $5, $6, $7, $8, $9
             ) RETURNING 
                 transaction_id, 
-                movement_type as "movement_type!: TransactionType",
+                movement_type as "movement_type!: MovementType",
                 description, 
                 amount, 
                 due_date, 
@@ -87,7 +88,7 @@ impl TransactionRepository for SqlxRepository {
                 deleted_at
             "#,
             Uuid::new_v4(),
-            transaction.movement_type as TransactionType,
+            transaction.movement_type as MovementType,
             transaction.description,
             transaction.amount,
             transaction.due_date,
@@ -108,7 +109,7 @@ impl TransactionRepository for SqlxRepository {
             r#"
             SELECT
                 transaction_id, 
-                movement_type as "movement_type!: TransactionType",
+                movement_type as "movement_type!: MovementType",
                 description, 
                 amount, 
                 due_date, 
@@ -142,7 +143,7 @@ impl TransactionRepository for SqlxRepository {
                 AND deleted_at is null
             RETURNING 
                 transaction_id, 
-                movement_type as "movement_type!: TransactionType",
+                movement_type as "movement_type!: MovementType",
                 description, 
                 amount, 
                 due_date, 
@@ -176,7 +177,7 @@ impl TransactionRepository for SqlxRepository {
                 transaction_id = $1
             RETURNING
                 transaction_id, 
-                movement_type as "movement_type!: TransactionType",
+                movement_type as "movement_type!: MovementType",
                 description, 
                 amount, 
                 due_date, 
@@ -207,7 +208,7 @@ impl TransactionRepository for SqlxRepository {
             UPDATE transactions SET status = $2 WHERE transaction_id = $1
             RETURNING
                 transaction_id, 
-                movement_type as "movement_type!: TransactionType",
+                movement_type as "movement_type!: MovementType",
                 description, 
                 amount, 
                 due_date, 
@@ -236,7 +237,7 @@ impl TransactionRepository for SqlxRepository {
             r#"
             SELECT
                 transaction_id, 
-                movement_type as "movement_type!: TransactionType",
+                movement_type as "movement_type!: MovementType",
                 description, 
                 amount, 
                 due_date, 

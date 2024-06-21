@@ -1,10 +1,9 @@
 use bigdecimal::BigDecimal;
-use chrono::{DateTime, NaiveDate, Utc};
-use finance::status::TransactionStatus;
+use chrono::{DateTime, Months, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use super::transactions::{MonthReference, TransactionRecurrency};
+use crate::{month::MonthReference, status::TransactionStatus};
 
 #[derive(Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -26,18 +25,16 @@ pub struct Installment {
 }
 
 #[derive(Debug, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct InstallmentParams {
-    pub month_reference: MonthReference,
-    pub year_reference: i16,
-    pub recurrence_frequency: TransactionRecurrency,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct CreateInstallment {
+pub struct PartialInstallment {
     pub transaction_id: Uuid,
     pub step: i16,
     pub due_date: NaiveDate,
     pub amount: BigDecimal,
     pub status: TransactionStatus,
+}
+
+impl PartialInstallment {
+    pub fn next_due_date_by_frequency(&mut self) {
+        self.due_date = self.due_date.checked_add_months(Months::new(1)).unwrap()
+    }
 }

@@ -1,14 +1,19 @@
 use bigdecimal::BigDecimal;
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::Type;
 use uuid::Uuid;
+
+use crate::installment::PartialInstallment;
+
+use super::{
+    category::TransactionCategory, movement_type::MovementType, status::TransactionStatus,
+};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub transaction_id: Uuid,
-    pub movement_type: TransactionType,
+    pub movement_type: MovementType,
     pub description: String,
     pub amount: BigDecimal,
     pub due_date: NaiveDate,
@@ -23,42 +28,22 @@ pub struct Transaction {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Type, Clone, PartialEq, Eq, Copy)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-#[sqlx(type_name = "status", rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum TransactionStatus {
-    Pending,
-    Canceled,
-    Completed,
-}
+impl Transaction {
+    /// FINISHED transaction is when the status equals to COMPLETED or CANCELED
+    pub fn is_finished(&self) -> bool {
+        match self.status {
+            TransactionStatus::Completed | TransactionStatus::Canceled => true,
+            _ => false,
+        }
+    }
 
-#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-#[sqlx(type_name = "category", rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum TransactionCategory {
-    Food,
-    Home,
-    Education,
-    Entertainment,
-    Transport,
-    Healthy,
-    Salary,
-    Utilities,
-    Insurance,
-    Savings,
-    DebtPayments,
-    ChildCare,
-    Gifts,
-    Subscriptions,
-    Travel,
-    Clothing,
-    Maintenance,
-}
-
-#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-#[sqlx(type_name = "movement_type", rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum TransactionType {
-    Income,
-    Expense,
+    pub fn generate_installment_payload(&self) -> PartialInstallment {
+        PartialInstallment {
+            transaction_id: self.transaction_id,
+            due_date: self.due_date,
+            step: self.installment_number,
+            amount: self.amount.normalized() / self.installment_number,
+            status: TransactionStatus::Pending,
+        }
+    }
 }

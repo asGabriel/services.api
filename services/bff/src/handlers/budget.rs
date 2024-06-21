@@ -7,7 +7,7 @@ use crate::{domains::errors::Result, gateways::budget::BudgetGateway};
 pub type DynBudgetHandler = dyn BudgetHandler + Send + Sync;
 
 pub struct BudgetHandlerImpl {
-    pub budget_gateway: Arc<dyn BudgetGateway + Send + Sync>
+    pub budget_gateway: Arc<dyn BudgetGateway + Send + Sync>,
 }
 
 #[async_trait::async_trait]

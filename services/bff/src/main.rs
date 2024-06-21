@@ -3,10 +3,10 @@ use std::sync::Arc;
 use gateways::budget::ApiBudgetGateway;
 use handlers::budget::BudgetHandlerImpl;
 use routes::AppState;
+pub mod domains;
 pub mod gateways;
 pub mod handlers;
 pub mod routes;
-pub mod domains;
 
 fn create_budget_handler() -> BudgetHandlerImpl {
     let budget_gateway = Arc::new(ApiBudgetGateway::default());
