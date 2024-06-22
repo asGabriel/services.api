@@ -3,8 +3,7 @@ use chrono::NaiveDate;
 use finance::{
     category::TransactionCategory, frequency::Frequency, movement_type::MovementType, status::TransactionStatus
 };
-use serde::{Deserialize, Serialize};
-use sqlx::Type;
+use serde::Deserialize;
 use uuid::Uuid;
 
 pub mod report;
