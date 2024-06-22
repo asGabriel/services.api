@@ -1,7 +1,7 @@
 use bigdecimal::BigDecimal;
 use chrono::NaiveDate;
 use finance::{
-    category::TransactionCategory, movement_type::MovementType, status::TransactionStatus,
+    category::TransactionCategory, frequency::Frequency, movement_type::MovementType, status::TransactionStatus
 };
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
@@ -34,25 +34,10 @@ pub struct UpdateTransaction {
     pub category: Option<TransactionCategory>,
     pub account_id: Option<Uuid>,
     pub recurring: Option<bool>,
-    pub recurrence_frequency: Option<TransactionRecurrency>,
+    pub recurrence_frequency: Option<Frequency>,
     pub recurrence_duration_months: Option<i32>,
     pub note: Option<String>,
     pub status: Option<TransactionStatus>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy, PartialEq)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-#[sqlx(
-    type_name = "recurrence_frequency",
-    rename_all = "SCREAMING_SNAKE_CASE"
-)]
-pub enum TransactionRecurrency {
-    SingleOccurrence,
-    Weekly,
-    Monthly,
-    Quarterly,
-    SemiAnnually,
-    Annually,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, serde::Serialize, serde::Deserialize)]

@@ -20,7 +20,7 @@ impl Handler {
         let params = InstallmentParams {
             month_reference: payload.month_reference,
             year_reference: payload.year_reference,
-            recurrence_frequency: crate::domains::transactions::TransactionRecurrency::Monthly,
+            recurrence_frequency: finance::frequency::Frequency::Monthly,
         };
 
         self.create_installment(&transaction, params).await?;

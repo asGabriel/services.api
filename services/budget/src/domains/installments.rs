@@ -1,10 +1,10 @@
 use bigdecimal::BigDecimal;
 use chrono::{DateTime, NaiveDate, Utc};
-use finance::status::TransactionStatus;
+use finance::{frequency::Frequency, status::TransactionStatus};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use super::transactions::{MonthReference, TransactionRecurrency};
+use super::transactions::MonthReference;
 
 #[derive(Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -30,7 +30,7 @@ pub struct Installment {
 pub struct InstallmentParams {
     pub month_reference: MonthReference,
     pub year_reference: i16,
-    pub recurrence_frequency: TransactionRecurrency,
+    pub recurrence_frequency: Frequency,
 }
 
 #[derive(Debug, Deserialize)]
