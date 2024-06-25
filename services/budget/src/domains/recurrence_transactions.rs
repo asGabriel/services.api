@@ -12,7 +12,7 @@ pub struct RecurrenceTransaction {
     pub description: String,
     pub amount: BigDecimal,
     pub frequency: Frequency,
-    pub due_date: NaiveDate,
+    pub reference: i32,
     pub category: Category,
     pub is_active: bool,
     pub created_at: DateTime<Utc>,
@@ -40,6 +40,6 @@ pub struct CreateRecurrenceTransaction {
     pub description: String,
     pub amount: BigDecimal,
     pub frequency: Frequency,
-    pub due_date: NaiveDate,
+    pub reference: i32,
     pub category: Category,
 }

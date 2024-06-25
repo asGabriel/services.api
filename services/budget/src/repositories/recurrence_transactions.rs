@@ -31,7 +31,7 @@ impl RecurrenceTransactionRepository for SqlxRepository {
                     description,
                     amount,
                     frequency,
-                    due_date,
+                    reference,
                     category
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6, $7
@@ -41,7 +41,7 @@ impl RecurrenceTransactionRepository for SqlxRepository {
                 description,
                 amount,
                 frequency as "frequency!: Frequency",
-                due_date,
+                reference,
                 is_active,
                 category as "category!: Category",
                 created_at,
@@ -53,7 +53,7 @@ impl RecurrenceTransactionRepository for SqlxRepository {
             payload.description,
             payload.amount,
             payload.frequency as Frequency,
-            payload.due_date,
+            payload.reference,
             payload.category as Category
         )
         .fetch_one(&self.pool)
