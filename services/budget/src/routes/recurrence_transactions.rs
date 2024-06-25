@@ -28,3 +28,4 @@ async fn list_recurrence_transactions(
 
     Ok(Json::from(result))
 }
+    

@@ -34,7 +34,8 @@ impl RecurrenceTransactionRepository for SqlxRepository {
                     updated_at,
                     deleted_at,
                     category as "category: Category",
-                    reference
+                    reference,
+                    start_date
                 FROM recurrence_transactions
             "#
         )
@@ -58,9 +59,10 @@ impl RecurrenceTransactionRepository for SqlxRepository {
                     amount,
                     frequency,
                     reference,
-                    category
+                    category,
+                    start_date
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7
+                    $1, $2, $3, $4, $5, $6, $7, $8
                 ) RETURNING 
                 recurrence_transaction_id,
                 account_id,
@@ -72,7 +74,8 @@ impl RecurrenceTransactionRepository for SqlxRepository {
                 category as "category!: Category",
                 created_at,
                 updated_at,
-                deleted_at
+                deleted_at,
+                start_date
             "#,
             Uuid::new_v4(),
             payload.account_id,
@@ -80,7 +83,8 @@ impl RecurrenceTransactionRepository for SqlxRepository {
             payload.amount,
             payload.frequency as Frequency,
             payload.reference,
-            payload.category as Category
+            payload.category as Category,
+            payload.start_date
         )
         .fetch_one(&self.pool)
         .await?;

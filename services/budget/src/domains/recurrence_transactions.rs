@@ -15,6 +15,7 @@ pub struct RecurrenceTransaction {
     pub reference: i32,
     pub category: Category,
     pub is_active: bool,
+    pub start_date: NaiveDate,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -42,4 +43,5 @@ pub struct CreateRecurrenceTransaction {
     pub frequency: Frequency,
     pub reference: i32,
     pub category: Category,
+    pub start_date: NaiveDate,
 }
