@@ -9,7 +9,6 @@ use uuid::Uuid;
 pub struct RecurrenceTransaction {
     pub recurrence_transaction_id: Uuid,
     pub account_id: Uuid,
-    pub transaction_id: Uuid,
     pub description: String,
     pub amount: BigDecimal,
     pub frequency: Frequency,
@@ -38,7 +37,6 @@ pub struct GeneratedTransaction {
 #[serde(rename_all = "camelCase")]
 pub struct CreateRecurrenceTransaction {
     pub account_id: Uuid,
-    pub transaction_id: Uuid,
     pub description: String,
     pub amount: BigDecimal,
     pub frequency: Frequency,

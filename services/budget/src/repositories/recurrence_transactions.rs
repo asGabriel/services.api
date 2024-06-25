@@ -28,18 +28,16 @@ impl RecurrenceTransactionRepository for SqlxRepository {
                 INSERT INTO recurrence_transactions(
                     recurrence_transaction_id,
                     account_id,
-                    transaction_id,
                     description,
                     amount,
                     frequency,
                     due_date,
                     category
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8
+                    $1, $2, $3, $4, $5, $6, $7
                 ) RETURNING 
                 recurrence_transaction_id,
                 account_id,
-                transaction_id,
                 description,
                 amount,
                 frequency as "frequency!: Frequency",
@@ -52,7 +50,6 @@ impl RecurrenceTransactionRepository for SqlxRepository {
             "#,
             Uuid::new_v4(),
             payload.account_id,
-            payload.transaction_id,
             payload.description,
             payload.amount,
             payload.frequency as Frequency,

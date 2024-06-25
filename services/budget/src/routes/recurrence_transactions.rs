@@ -1,4 +1,4 @@
-use axum::{extract::State, response::IntoResponse, routing::get, Json, Router};
+use axum::{extract::State, response::IntoResponse, routing::{get, post}, Json, Router};
 
 use crate::{
     domains::{errors::Result, recurrence_transactions::CreateRecurrenceTransaction},
@@ -7,8 +7,8 @@ use crate::{
 
 pub(super) fn configure_routes() -> Router<Handler> {
     Router::new().nest(
-        "/recurrence_transaction",
-        Router::new().route("/", get(create_recurrence_transaction)),
+        "/recurrence_transactions",
+        Router::new().route("/", post(create_recurrence_transaction)),
     )
 }
 
