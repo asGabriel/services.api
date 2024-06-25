@@ -1,7 +1,7 @@
 use bigdecimal::BigDecimal;
 use chrono::NaiveDate;
 use finance::{
-    category::TransactionCategory, frequency::Frequency, movement_type::MovementType, status::TransactionStatus
+    category::Category, frequency::Frequency, movement_type::MovementType, status::TransactionStatus
 };
 use serde::Deserialize;
 use uuid::Uuid;
@@ -15,7 +15,7 @@ pub struct CreateTransaction {
     pub description: String,
     pub amount: BigDecimal,
     pub due_date: Option<NaiveDate>,
-    pub category: TransactionCategory,
+    pub category: Category,
     pub account_id: Uuid,
     pub status: TransactionStatus,
     pub installment_number: Option<i16>,
@@ -30,7 +30,7 @@ pub struct UpdateTransaction {
     pub description: Option<String>,
     pub amount: Option<BigDecimal>,
     pub due_date: Option<NaiveDate>,
-    pub category: Option<TransactionCategory>,
+    pub category: Option<Category>,
     pub account_id: Option<Uuid>,
     pub recurring: Option<bool>,
     pub recurrence_frequency: Option<Frequency>,

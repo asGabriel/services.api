@@ -1,0 +1,1 @@
+ALTER TABLE reccurence_transactions RENAME TO recurrence_transactions;
