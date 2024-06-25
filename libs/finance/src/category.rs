@@ -4,7 +4,7 @@ use sqlx::Type;
 #[derive(Debug, Serialize, Deserialize, Type, Clone, Copy)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[sqlx(type_name = "category", rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum TransactionCategory {
+pub enum Category {
     Food,
     Home,
     Education,

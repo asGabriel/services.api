@@ -6,7 +6,7 @@ use uuid::Uuid;
 use crate::installment::PartialInstallment;
 
 use super::{
-    category::TransactionCategory, movement_type::MovementType, status::TransactionStatus,
+    category::Category, movement_type::MovementType, status::TransactionStatus,
 };
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -17,7 +17,7 @@ pub struct Transaction {
     pub description: String,
     pub amount: BigDecimal,
     pub due_date: NaiveDate,
-    pub category: TransactionCategory,
+    pub category: Category,
     pub account_id: Uuid,
     pub status: TransactionStatus,
     pub installment_number: i16,
