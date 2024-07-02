@@ -26,7 +26,7 @@ pub struct RecurrenceTransaction {
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GeneratedTransaction {
-    pub id: i16,
+    pub id: i32,
     pub recurrence_transaction_id: Uuid,
     pub transaction_id: Uuid,
     pub created_at: DateTime<Utc>,

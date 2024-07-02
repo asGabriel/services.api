@@ -1,8 +1,8 @@
 use sqlx::PgPool;
 pub mod accounts;
 pub mod installments;
-pub mod transactions;
 pub mod recurrence_transactions;
+pub mod transactions;
 
 #[derive(Clone)]
 pub struct SqlxRepository {

@@ -5,9 +5,7 @@ use uuid::Uuid;
 
 use crate::installment::PartialInstallment;
 
-use super::{
-    category::Category, movement_type::MovementType, status::TransactionStatus,
-};
+use super::{category::Category, movement_type::MovementType, status::TransactionStatus};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]

@@ -1,4 +1,9 @@
-use axum::{extract::State, response::IntoResponse, routing::{get, post}, Json, Router};
+use axum::{
+    extract::State,
+    response::IntoResponse,
+    routing::{get, post},
+    Json, Router,
+};
 
 use crate::{
     domains::{errors::Result, recurrence_transactions::CreateRecurrenceTransaction},
@@ -8,7 +13,9 @@ use crate::{
 pub(super) fn configure_routes() -> Router<Handler> {
     Router::new().nest(
         "/recurrence_transactions",
-        Router::new().route("/", post(create_recurrence_transaction)).route("/", get(list_recurrence_transactions))
+        Router::new()
+            .route("/", post(create_recurrence_transaction))
+            .route("/", get(list_recurrence_transactions)),
     )
 }
 
@@ -21,11 +28,8 @@ async fn create_recurrence_transaction(
     Ok(Json::from(result))
 }
 
-async fn list_recurrence_transactions(
-    State(handler): State<Handler>
-) -> Result<impl IntoResponse> {
+async fn list_recurrence_transactions(State(handler): State<Handler>) -> Result<impl IntoResponse> {
     let result = handler.list_recurrence_transactions().await?;
 
     Ok(Json::from(result))
 }
-    

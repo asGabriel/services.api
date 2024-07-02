@@ -1,9 +1,14 @@
+use std::collections::BTreeMap;
+
+use chrono::NaiveDate;
 use finance::{category::Category, frequency::Frequency};
 use uuid::Uuid;
 
 use crate::domains::{
     errors::Result,
-    recurrence_transactions::{CreateRecurrenceTransaction, RecurrenceTransaction},
+    recurrence_transactions::{
+        CreateRecurrenceTransaction, GeneratedTransaction, RecurrenceTransaction,
+    },
 };
 
 use super::SqlxRepository;
@@ -15,6 +20,9 @@ pub trait RecurrenceTransactionRepository {
         payload: CreateRecurrenceTransaction,
     ) -> Result<RecurrenceTransaction>;
     async fn list_recurrence_transactions(&self) -> Result<Vec<RecurrenceTransaction>>;
+    async fn list_generated_transactions_from_recurrence(
+        &self,
+    ) -> Result<BTreeMap<NaiveDate, GeneratedTransaction>>;
 }
 
 #[async_trait::async_trait]
@@ -90,5 +98,38 @@ impl RecurrenceTransactionRepository for SqlxRepository {
         .await?;
 
         Ok(result)
+    }
+
+    async fn list_generated_transactions_from_recurrence(
+        &self,
+    ) -> Result<BTreeMap<NaiveDate, GeneratedTransaction>> {
+        let active_generated_transactions = sqlx::query!(
+            r#"
+            SELECT
+                gt.id, gt.recurrence_transaction_id, gt.transaction_id, gt.created_at, gt.deleted_at, t.due_date
+            FROM generated_transactions gt
+            INNER JOIN recurrence_transactions rt ON gt.recurrence_transaction_id = rt.recurrence_transaction_id
+            INNER JOIN transactions t ON gt.transaction_id = t.transaction_id
+            WHERE
+                rt.is_active = true AND
+                t.deleted_at IS NULL
+            "#
+        ).fetch_all(&self.pool).await?;
+
+        let mut generated_transactions: BTreeMap<NaiveDate, GeneratedTransaction> = BTreeMap::new();
+        for record in active_generated_transactions {
+            generated_transactions.insert(
+                record.due_date,
+                GeneratedTransaction {
+                    id: record.id,
+                    recurrence_transaction_id: record.recurrence_transaction_id,
+                    transaction_id: record.transaction_id,
+                    created_at: record.created_at,
+                    deleted_at: record.deleted_at,
+                },
+            );
+        }
+
+        Ok(generated_transactions)
     }
 }

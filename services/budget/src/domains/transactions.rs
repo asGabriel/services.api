@@ -1,7 +1,8 @@
 use bigdecimal::BigDecimal;
 use chrono::NaiveDate;
 use finance::{
-    category::Category, frequency::Frequency, movement_type::MovementType, status::TransactionStatus
+    category::Category, frequency::Frequency, movement_type::MovementType,
+    status::TransactionStatus,
 };
 use serde::Deserialize;
 use uuid::Uuid;
