@@ -33,24 +33,19 @@ impl InstallmentRepository for SqlxRepository {
             INSERT INTO installments (
                 installment_id,
                 transaction_id, 
-                step, 
+                installment_number, 
                 due_date, 
-                amount, 
-                month_reference, 
-                status, 
-                year_reference
+                value, 
+                status 
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8
+                $1, $2, $3, $4, $5, $6
             ) RETURNING
                 installment_id,
                 transaction_id,
-                step,
+                installment_number,
                 due_date,
-                amount,
-                month_reference as "month_reference!: MonthReference",
+                value,
                 status as "status!: TransactionStatus",
-                year_reference,
-                payment_date,
                 created_at,
                 updated_at,
                 deleted_at
@@ -59,10 +54,8 @@ impl InstallmentRepository for SqlxRepository {
             payload.transaction_id,
             step,
             payload.due_date,
-            payload.amount,
-            params.month_reference as MonthReference,
-            payload.status as TransactionStatus,
-            params.year_reference
+            payload.value,
+            payload.status as TransactionStatus
         )
         .fetch_one(&self.pool)
         .await?;

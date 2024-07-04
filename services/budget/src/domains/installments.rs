@@ -11,13 +11,10 @@ use super::transactions::MonthReference;
 pub struct Installment {
     pub installment_id: Uuid,
     pub transaction_id: Uuid,
-    pub step: i16,
+    pub installment_number: i16,
     pub due_date: NaiveDate,
-    pub amount: BigDecimal,
+    pub value: BigDecimal,
     pub status: TransactionStatus,
-    pub payment_date: Option<NaiveDate>,
-    pub month_reference: MonthReference,
-    pub year_reference: i16,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -36,8 +33,8 @@ pub struct InstallmentParams {
 #[derive(Debug, Deserialize)]
 pub struct CreateInstallment {
     pub transaction_id: Uuid,
-    pub step: i16,
+    pub installment_number: i16,
     pub due_date: NaiveDate,
-    pub amount: BigDecimal,
+    pub value: BigDecimal,
     pub status: TransactionStatus,
 }

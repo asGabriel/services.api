@@ -3,20 +3,17 @@ use chrono::{DateTime, Months, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::{month::MonthReference, status::TransactionStatus};
+use crate::status::TransactionStatus;
 
 #[derive(Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Installment {
     pub installment_id: Uuid,
     pub transaction_id: Uuid,
-    pub step: i16,
+    pub installment_number: i16,
     pub due_date: NaiveDate,
-    pub amount: BigDecimal,
+    pub value: BigDecimal,
     pub status: TransactionStatus,
-    pub payment_date: Option<NaiveDate>,
-    pub month_reference: MonthReference,
-    pub year_reference: i16,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -27,9 +24,9 @@ pub struct Installment {
 #[derive(Debug, Deserialize)]
 pub struct PartialInstallment {
     pub transaction_id: Uuid,
-    pub step: i16,
+    pub installment_number: i16,
     pub due_date: NaiveDate,
-    pub amount: BigDecimal,
+    pub value: BigDecimal,
     pub status: TransactionStatus,
 }
 
