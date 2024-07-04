@@ -15,13 +15,11 @@ pub struct CreateTransaction {
     pub movement_type: MovementType,
     pub description: String,
     pub value: BigDecimal,
-    pub due_date: Option<NaiveDate>,
+    pub due_date: NaiveDate,
     pub category: Category,
     pub account_id: Uuid,
     pub status: TransactionStatus,
-    pub installment_number: Option<i16>,
-    pub month_reference: MonthReference,
-    pub year_reference: i16,
+    pub installments: i16,
 }
 
 #[derive(Debug, Deserialize)]

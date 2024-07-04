@@ -1,7 +1,6 @@
 use sqlx::PgPool;
 pub mod accounts;
 pub mod installments;
-pub mod recurrence_transactions;
 pub mod transactions;
 
 #[derive(Clone)]

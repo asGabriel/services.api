@@ -1,32 +1,21 @@
-use finance::{installment::PartialInstallment, status::TransactionStatus};
+use finance::{
+    installment::{Installment, PartialInstallment},
+    status::TransactionStatus,
+};
 use uuid::Uuid;
 
-use crate::domains::{
-    errors::Result,
-    installments::{Installment, InstallmentParams},
-    transactions::MonthReference,
-};
+use crate::domains::errors::Result;
 
 use super::SqlxRepository;
 
 #[async_trait::async_trait]
 pub trait InstallmentRepository {
-    async fn create_installment(
-        &self,
-        payload: &PartialInstallment,
-        params: &InstallmentParams,
-        step: i16,
-    ) -> Result<Installment>;
+    async fn create_installment(&self, payload: &PartialInstallment) -> Result<Installment>;
 }
 
 #[async_trait::async_trait]
 impl InstallmentRepository for SqlxRepository {
-    async fn create_installment(
-        &self,
-        payload: &PartialInstallment,
-        params: &InstallmentParams,
-        step: i16,
-    ) -> Result<Installment> {
+    async fn create_installment(&self, payload: &PartialInstallment) -> Result<Installment> {
         let installment = sqlx::query_as!(
             Installment,
             r#"
@@ -36,13 +25,15 @@ impl InstallmentRepository for SqlxRepository {
                 installment_number, 
                 due_date, 
                 value, 
-                status 
+                status,
+                total_installment
             ) VALUES (
-                $1, $2, $3, $4, $5, $6
+                $1, $2, $3, $4, $5, $6, $7
             ) RETURNING
                 installment_id,
                 transaction_id,
                 installment_number,
+                total_installment,
                 due_date,
                 value,
                 status as "status!: TransactionStatus",
@@ -52,10 +43,11 @@ impl InstallmentRepository for SqlxRepository {
             "#,
             Uuid::new_v4(),
             payload.transaction_id,
-            step,
+            payload.params.installment_number,
             payload.due_date,
             payload.value,
-            payload.status as TransactionStatus
+            payload.status as TransactionStatus,
+            payload.params.total_installment
         )
         .fetch_one(&self.pool)
         .await?;

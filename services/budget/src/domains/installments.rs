@@ -12,6 +12,7 @@ pub struct Installment {
     pub installment_id: Uuid,
     pub transaction_id: Uuid,
     pub installment_number: i16,
+    pub total_installment: i16,
     pub due_date: NaiveDate,
     pub value: BigDecimal,
     pub status: TransactionStatus,

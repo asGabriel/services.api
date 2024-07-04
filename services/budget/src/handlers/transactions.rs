@@ -1,9 +1,9 @@
+use bigdecimal::Zero;
 use finance::{status::TransactionStatus, transaction::Transaction};
 use uuid::Uuid;
 
 use crate::domains::{
     errors::{Error, Result},
-    installments::InstallmentParams,
     transactions::{CreateTransaction, UpdateTransaction},
 };
 
@@ -12,18 +12,17 @@ pub mod report;
 
 impl Handler {
     pub async fn create_transaction(&self, payload: CreateTransaction) -> Result<Transaction> {
+        let total_installments = payload.installments;
+
         let transaction = self
             .transaction_repository
-            .create_transaction(payload.clone())
+            .create_transaction(payload)
             .await?;
 
-        let params = InstallmentParams {
-            month_reference: payload.month_reference,
-            year_reference: payload.year_reference,
-            recurrence_frequency: finance::frequency::Frequency::Monthly,
-        };
-
-        self.create_installment(&transaction, params).await?;
+        if !total_installments.is_zero() {
+            self.create_installment(&transaction, total_installments)
+                .await?;
+        }
 
         Ok(transaction)
     }
