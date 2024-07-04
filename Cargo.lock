@@ -278,11 +278,14 @@ dependencies = [
  "chrono",
  "dotenv",
  "finance",
+ "prost",
  "reqwest",
  "serde",
  "sqlx",
  "thiserror",
  "tokio",
+ "tonic",
+ "tonic-build",
  "tower-http",
  "uuid",
 ]
@@ -297,6 +300,17 @@ dependencies = [
  "num-integer",
  "num-traits",
  "serde",
+]
+
+[[package]]
+name = "bills"
+version = "0.1.0"
+dependencies = [
+ "prost",
+ "tokio",
+ "tonic",
+ "tonic-build",
+ "uuid",
 ]
 
 [[package]]
@@ -333,10 +347,13 @@ dependencies = [
  "chrono",
  "dotenv",
  "finance",
+ "prost",
  "serde",
  "sqlx",
  "thiserror",
  "tokio",
+ "tonic",
+ "tonic-build",
  "tower-http",
  "uuid",
 ]
@@ -1377,17 +1394,6 @@ name = "paste"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
-
-[[package]]
-name = "payments"
-version = "0.1.0"
-dependencies = [
- "prost",
- "tokio",
- "tonic",
- "tonic-build",
- "uuid",
-]
 
 [[package]]
 name = "pem-rfc7468"

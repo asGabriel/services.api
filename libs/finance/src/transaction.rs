@@ -13,12 +13,11 @@ pub struct Transaction {
     pub transaction_id: Uuid,
     pub movement_type: MovementType,
     pub description: String,
-    pub amount: BigDecimal,
+    pub value: BigDecimal,
     pub due_date: NaiveDate,
     pub category: Category,
     pub account_id: Uuid,
     pub status: TransactionStatus,
-    pub installment_number: i16,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -35,13 +34,13 @@ impl Transaction {
         }
     }
 
-    pub fn generate_installment_payload(&self) -> PartialInstallment {
-        PartialInstallment {
-            transaction_id: self.transaction_id,
-            due_date: self.due_date,
-            step: self.installment_number,
-            amount: self.amount.normalized() / self.installment_number,
-            status: TransactionStatus::Pending,
-        }
-    }
+    // pub fn generate_installment_payload(&self) -> PartialInstallment {
+    //     PartialInstallment {
+    //         transaction_id: self.transaction_id,
+    //         due_date: self.due_date,
+    //         step: self.installment_number,
+    //         amount: self.value.normalized() / self.installment_number,
+    //         status: TransactionStatus::Pending,
+    //     }
+    // }
 }

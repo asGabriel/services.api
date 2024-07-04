@@ -39,12 +39,11 @@ impl TransactionRepository for SqlxRepository {
                 transaction_id, 
                 movement_type as "movement_type!: MovementType",
                 description, 
-                amount, 
+                value, 
                 due_date, 
                 category as "category: Category", 
                 account_id, 
                 status as "status: TransactionStatus", 
-                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -65,24 +64,22 @@ impl TransactionRepository for SqlxRepository {
                 transaction_id,
                 movement_type,
                 description,
-                amount,
+                value,
                 due_date,
                 category,
                 account_id,
-                status,
-                installment_number
+                status
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9
+                $1, $2, $3, $4, $5, $6, $7, $8
             ) RETURNING 
                 transaction_id, 
                 movement_type as "movement_type!: MovementType",
                 description, 
-                amount, 
+                value, 
                 due_date, 
                 category as "category: Category", 
                 account_id, 
                 status as "status: TransactionStatus", 
-                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -90,12 +87,11 @@ impl TransactionRepository for SqlxRepository {
             Uuid::new_v4(),
             transaction.movement_type as MovementType,
             transaction.description,
-            transaction.amount,
+            transaction.value,
             transaction.due_date,
             transaction.category as Category,
             transaction.account_id,
-            transaction.status as TransactionStatus,
-            transaction.installment_number
+            transaction.status as TransactionStatus
         )
         .fetch_one(&self.pool)
         .await?;
@@ -111,12 +107,11 @@ impl TransactionRepository for SqlxRepository {
                 transaction_id, 
                 movement_type as "movement_type!: MovementType",
                 description, 
-                amount, 
+                value, 
                 due_date, 
                 category as "category: Category", 
                 account_id, 
                 status as "status: TransactionStatus", 
-                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -145,12 +140,11 @@ impl TransactionRepository for SqlxRepository {
                 transaction_id, 
                 movement_type as "movement_type!: MovementType",
                 description, 
-                amount, 
+                value, 
                 due_date, 
                 category as "category: Category", 
                 account_id, 
                 status as "status: TransactionStatus", 
-                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -179,12 +173,11 @@ impl TransactionRepository for SqlxRepository {
                 transaction_id, 
                 movement_type as "movement_type!: MovementType",
                 description, 
-                amount, 
+                value, 
                 due_date, 
                 category as "category: Category", 
                 account_id, 
                 status as "status: TransactionStatus", 
-                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -210,12 +203,11 @@ impl TransactionRepository for SqlxRepository {
                 transaction_id, 
                 movement_type as "movement_type!: MovementType",
                 description, 
-                amount, 
+                value, 
                 due_date, 
                 category as "category: Category", 
                 account_id, 
                 status as "status: TransactionStatus", 
-                installment_number,
                 created_at, 
                 updated_at, 
                 deleted_at
@@ -239,11 +231,10 @@ impl TransactionRepository for SqlxRepository {
                 transaction_id, 
                 movement_type as "movement_type!: MovementType",
                 description, 
-                amount, 
+                value, 
                 due_date, 
                 category as "category: Category", 
                 account_id, 
-                installment_number,
                 status as "status: TransactionStatus", 
                 created_at, 
                 updated_at, 

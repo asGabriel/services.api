@@ -14,7 +14,7 @@ pub mod report;
 pub struct CreateTransaction {
     pub movement_type: MovementType,
     pub description: String,
-    pub amount: BigDecimal,
+    pub value: BigDecimal,
     pub due_date: Option<NaiveDate>,
     pub category: Category,
     pub account_id: Uuid,
@@ -29,7 +29,7 @@ pub struct CreateTransaction {
 pub struct UpdateTransaction {
     pub movement_type: Option<MovementType>,
     pub description: Option<String>,
-    pub amount: Option<BigDecimal>,
+    pub value: Option<BigDecimal>,
     pub due_date: Option<NaiveDate>,
     pub category: Option<Category>,
     pub account_id: Option<Uuid>,

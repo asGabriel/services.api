@@ -13,17 +13,17 @@ impl Handler {
         params: InstallmentParams,
     ) -> Result<Vec<Installment>> {
         let mut installments: Vec<Installment> = Vec::new();
-        let mut payload = transaction.generate_installment_payload();
+        // let mut payload = transaction.generate_installment_payload();
 
-        for step in 1..=transaction.installment_number {
-            let result = self
-                .installment_repository
-                .create_installment(&payload, &params, step)
-                .await?;
+        // for step in 1..=transaction.installment_number {
+        //     let result = self
+        //         .installment_repository
+        //         .create_installment(&payload, &params, step)
+        //         .await?;
 
-            payload.next_due_date_by_frequency();
-            installments.push(result);
-        }
+        //     payload.next_due_date_by_frequency();
+        //     installments.push(result);
+        // }
 
         Ok(installments)
     }
