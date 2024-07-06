@@ -2,6 +2,7 @@ use sqlx::PgPool;
 pub mod accounts;
 pub mod installments;
 pub mod transactions;
+pub mod settlements;
 
 #[derive(Clone)]
 pub struct SqlxRepository {
