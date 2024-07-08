@@ -4,13 +4,12 @@ use axum::{
     routing::{delete, get, patch, post},
     Json, Router,
 };
-use finance::status::TransactionStatus;
 use uuid::Uuid;
 
 use crate::{
     domains::{
         errors::Result,
-        transactions::{CreateTransaction, UpdateTransaction},
+        transactions::{CreateTransaction, TransactionStatus, UpdateTransaction},
     },
     handlers::Handler,
 };

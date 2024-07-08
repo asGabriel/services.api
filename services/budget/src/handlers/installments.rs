@@ -1,12 +1,8 @@
 use chrono::Months;
-use finance::{
-    installment::{Installment, InstallmentParams, PartialInstallment},
-    transaction::Transaction,
-};
 use uuid::Uuid;
 
 use super::Handler;
-use crate::domains::errors::{Error, Result};
+use crate::domains::{errors::{Error, Result}, installments::{Installment, InstallmentParams, PartialInstallment}, transactions::Transaction};
 
 impl Handler {
     pub async fn create_installment(

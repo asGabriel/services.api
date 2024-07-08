@@ -1,10 +1,6 @@
-use finance::{
-    installment::{Installment, PartialInstallment},
-    status::TransactionStatus,
-};
 use uuid::Uuid;
 
-use crate::domains::errors::Result;
+use crate::domains::{errors::Result, installments::{Installment, PartialInstallment}, transactions::TransactionStatus};
 
 use super::SqlxRepository;
 

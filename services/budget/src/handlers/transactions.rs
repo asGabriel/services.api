@@ -1,10 +1,9 @@
 use bigdecimal::Zero;
-use finance::{status::TransactionStatus, transaction::Transaction};
 use uuid::Uuid;
 
 use crate::domains::{
     errors::{Error, Result},
-    transactions::{CreateTransaction, UpdateTransaction},
+    transactions::{CreateTransaction, Transaction, TransactionStatus, UpdateTransaction},
 };
 
 use super::Handler;
@@ -60,7 +59,7 @@ impl Handler {
         let result = self.get_transaction_by_id(transaction_id).await?;
 
         self.transaction_repository
-            .update_transaction_by_id(result, payload)
+            .update_transaction_by_id(result)
             .await?
             .ok_or(Error::TransactionNotFound(transaction_id))
     }

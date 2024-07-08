@@ -1,13 +1,9 @@
 use crate::domains::{
     errors::Result,
-    transactions::{report::PeriodFilter, CreateTransaction, UpdateTransaction},
+    transactions::{report::PeriodFilter, Category, CreateTransaction, MovementType, Transaction, TransactionStatus, UpdateTransaction},
 };
 
 use super::SqlxRepository;
-use finance::{
-    category::Category, movement_type::MovementType, status::TransactionStatus,
-    transaction::Transaction,
-};
 use uuid::Uuid;
 
 #[async_trait::async_trait]
@@ -19,7 +15,6 @@ pub trait TransactionRepository {
     async fn update_transaction_by_id(
         &self,
         transaction: Transaction,
-        payload: UpdateTransaction,
     ) -> Result<Option<Transaction>>;
     async fn update_status(
         &self,
@@ -160,7 +155,6 @@ impl TransactionRepository for SqlxRepository {
     async fn update_transaction_by_id(
         &self,
         transaction: Transaction,
-        payload: UpdateTransaction,
     ) -> Result<Option<Transaction>> {
         let transaction = sqlx::query_as!(
             Transaction,
