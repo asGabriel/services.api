@@ -1,11 +1,12 @@
 use chrono::Months;
 use finance::{
-    installment::{InstallmentParams, PartialInstallment},
+    installment::{Installment, InstallmentParams, PartialInstallment},
     transaction::Transaction,
 };
+use uuid::Uuid;
 
 use super::Handler;
-use crate::domains::errors::Result;
+use crate::domains::errors::{Error, Result};
 
 impl Handler {
     pub async fn create_installment(
@@ -18,9 +19,7 @@ impl Handler {
 
         for step in 1..=installments {
             params.installment_number = step;
-            due_date = due_date
-                .checked_add_months(Months::new(1))
-                .unwrap();
+            due_date = due_date.checked_add_months(Months::new(1)).unwrap();
 
             let mut partial_installment = PartialInstallment::from_payload(&transaction, &params);
 
@@ -33,5 +32,12 @@ impl Handler {
         }
 
         Ok(())
+    }
+
+    pub async fn get_installment_by_id(&self, installment_id: Uuid) -> Result<Installment> {
+        self.installment_repository
+            .get_installment_by_id(installment_id)
+            .await?
+            .ok_or(Error::InstallmentNotFound(installment_id))
     }
 }

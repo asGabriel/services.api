@@ -35,6 +35,10 @@ impl IntoResponse for Error {
                 StatusCode::BAD_REQUEST,
                 format!("Transaction id {transaction_id} has been already finished."),
             ),
+            Self::InstallmentNotFound(installment_id) => (
+                StatusCode::NOT_FOUND,
+                format!("Installment id {installment_id} not found."),
+            ),
         }
         .into_response()
     }

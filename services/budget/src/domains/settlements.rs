@@ -21,6 +21,7 @@ pub struct Settlement {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateSettlement {
     pub paid_date: NaiveDate,
     pub paid_value: BigDecimal,
