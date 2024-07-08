@@ -2,14 +2,14 @@ use uuid::Uuid;
 
 use crate::domains::{
     errors::Result,
-    settlements::{CreateSettlement, Settlement},
+    settlements::Settlement,
 };
 
 use super::SqlxRepository;
 
 #[async_trait::async_trait]
 pub trait SettlementRepository {
-    async fn create_settlement(&self, payload: CreateSettlement) -> Result<Settlement>;
+    async fn create_settlement(&self, payload: Settlement) -> Result<Settlement>;
     async fn list_settlements(&self) -> Result<Vec<Settlement>>;
 }
 
@@ -26,7 +26,7 @@ impl SettlementRepository for SqlxRepository {
         Ok(settlements)
     }
 
-    async fn create_settlement(&self, payload: CreateSettlement) -> Result<Settlement> {
+    async fn create_settlement(&self, payload: Settlement) -> Result<Settlement> {
         let settlement = sqlx::query_as!(
             Settlement,
             r#"

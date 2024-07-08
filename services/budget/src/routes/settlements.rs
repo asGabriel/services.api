@@ -1,12 +1,15 @@
 use axum::{
-    extract::State,
+    extract::{Query, State},
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
 
 use crate::{
-    domains::{errors::Result, settlements::CreateSettlement},
+    domains::{
+        errors::Result,
+        settlements::{CreateSettlement, SettlementParams},
+    },
     handlers::Handler,
 };
 
@@ -27,9 +30,10 @@ async fn list_settlements(State(handler): State<Handler>) -> Result<impl IntoRes
 
 async fn create_settlement(
     State(handler): State<Handler>,
+    Query(params): Query<SettlementParams>,
     Json(payload): Json<CreateSettlement>,
 ) -> Result<impl IntoResponse> {
-    let settlement = handler.create_settlement(payload).await?;
+    let settlement = handler.create_settlement(payload, params).await?;
 
     Ok(Json::from(settlement))
 }

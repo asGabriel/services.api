@@ -1,15 +1,21 @@
 use crate::domains::{
     errors::Result,
-    settlements::{CreateSettlement, Settlement},
+    settlements::{CreateSettlement, Settlement, SettlementParams},
 };
 
 use super::Handler;
 
 impl Handler {
-    pub async fn create_settlement(&self, payload: CreateSettlement) -> Result<Settlement> {
+    pub async fn create_settlement(
+        &self,
+        payload: CreateSettlement,
+        query: SettlementParams,
+    ) -> Result<Settlement> {
+        let new_settlement = Settlement::new_from_payload(payload, query);
+
         let settlement = self
             .settlement_repository
-            .create_settlement(payload)
+            .create_settlement(new_settlement)
             .await?;
 
         Ok(settlement)
