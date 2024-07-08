@@ -1,6 +1,6 @@
 use crate::domains::{
     errors::Result,
-    transactions::{report::PeriodFilter, Category, CreateTransaction, MovementType, Transaction, TransactionStatus, UpdateTransaction},
+    transactions::{report::PeriodFilter, Category, CreateTransaction, MovementType, Transaction, TransactionStatus},
 };
 
 use super::SqlxRepository;
@@ -160,7 +160,13 @@ impl TransactionRepository for SqlxRepository {
             Transaction,
             r#"
             UPDATE TRANSACTIONS SET
-                updated_at = now()
+                movement_type = $2,
+                description = $3,
+                value = $4,
+                due_date = $5,
+                category = $6,
+                account_id = $7,
+                updated_at = $8
             WHERE 
                 transaction_id = $1
             RETURNING
@@ -176,7 +182,14 @@ impl TransactionRepository for SqlxRepository {
                 updated_at, 
                 deleted_at
             "#,
-            transaction.transaction_id
+            transaction.transaction_id,
+            transaction.movement_type as MovementType,
+            transaction.description,
+            transaction.value,
+            transaction.due_date,
+            transaction.category as Category,
+            transaction.account_id,
+            transaction.updated_at
         )
         .fetch_optional(&self.pool)
         .await?;

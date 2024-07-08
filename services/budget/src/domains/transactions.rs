@@ -106,6 +106,16 @@ pub enum MonthReference {
     December,
 }
 
+macro_rules! update_fields {
+    ($self:ident, $data:ident, $( $field:ident ),*) => {
+        $(
+            if let Some(value) = $data.$field {
+                $self.$field = value;
+            }
+        )*
+    };
+}
+
 impl Transaction {
     /// FINISHED transaction is when the status equals to COMPLETED or CANCELED
     pub fn is_finished(&self) -> bool {
@@ -113,5 +123,20 @@ impl Transaction {
             TransactionStatus::Completed | TransactionStatus::Canceled => true,
             _ => false,
         }
+    }
+
+    /// prepare an transaction to be updated
+    pub fn update(&mut self, data: UpdateTransaction) {
+        update_fields!(
+            self,
+            data,
+            movement_type,
+            description,
+            value,
+            due_date,
+            category,
+            account_id
+        );
+        self.updated_at = Some(Utc::now());
     }
 }

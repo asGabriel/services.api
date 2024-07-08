@@ -56,7 +56,13 @@ impl Handler {
         payload: UpdateTransaction,
     ) -> Result<Transaction> {
         // REFAC this route when the rules is defined
-        let result = self.get_transaction_by_id(transaction_id).await?;
+        let mut result = self.get_transaction_by_id(transaction_id).await?;
+
+        if result.is_finished() {
+            return Err(Error::TransactionFinished(result.transaction_id));
+        }
+
+        result.update(payload);
 
         self.transaction_repository
             .update_transaction_by_id(result)
