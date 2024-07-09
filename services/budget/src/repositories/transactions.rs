@@ -1,6 +1,6 @@
 use crate::domains::{
     errors::Result,
-    transactions::{Category, CreateTransaction, MovementType, Transaction, TransactionStatus},
+    transactions::{Category, MovementType, Transaction, TransactionStatus},
 };
 
 use super::SqlxRepository;
