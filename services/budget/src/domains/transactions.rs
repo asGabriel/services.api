@@ -31,7 +31,6 @@ pub struct CreateTransaction {
     pub due_date: NaiveDate,
     pub category: Category,
     pub account_id: Uuid,
-    pub status: TransactionStatus,
     pub installments: i16,
 }
 
@@ -136,5 +135,21 @@ impl Transaction {
             account_id
         );
         self.updated_at = Some(Utc::now());
+    }
+
+    pub fn from_payload(payload: CreateTransaction) -> Self {
+        Transaction {
+            transaction_id: Uuid::new_v4(),
+            account_id: payload.account_id,
+            description: payload.description,
+            value: payload.value,
+            category: payload.category,
+            status: TransactionStatus::Pending,
+            due_date: payload.due_date,
+            movement_type: payload.movement_type,
+            created_at: Utc::now(),
+            updated_at: None,
+            deleted_at: None,
+        }
     }
 }

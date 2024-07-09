@@ -8,7 +8,7 @@ use uuid::Uuid;
 
 #[async_trait::async_trait]
 pub trait TransactionRepository {
-    async fn create_transaction(&self, transaction: CreateTransaction) -> Result<Transaction>;
+    async fn create_transaction(&self, transaction: Transaction) -> Result<Transaction>;
     async fn list_transactions(&self) -> Result<Vec<Transaction>>;
     async fn get_transaction_by_id(&self, transaction_id: Uuid) -> Result<Option<Transaction>>;
     async fn delete_transaction_by_id(&self, transaction_id: Uuid) -> Result<Option<Transaction>>;
@@ -50,7 +50,7 @@ impl TransactionRepository for SqlxRepository {
         Ok(transactions)
     }
 
-    async fn create_transaction(&self, transaction: CreateTransaction) -> Result<Transaction> {
+    async fn create_transaction(&self, transaction: Transaction) -> Result<Transaction> {
         let transaction = sqlx::query_as!(
             Transaction,
             r#"

@@ -12,9 +12,11 @@ impl Handler {
     pub async fn create_transaction(&self, payload: CreateTransaction) -> Result<Transaction> {
         let total_installments = payload.installments;
 
+        let transaction = Transaction::from_payload(payload);
+
         let transaction = self
             .transaction_repository
-            .create_transaction(payload)
+            .create_transaction(transaction)
             .await?;
 
         if !total_installments.is_zero() {
