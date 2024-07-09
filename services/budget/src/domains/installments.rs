@@ -56,10 +56,6 @@ impl InstallmentParams {
 }
 
 impl PartialInstallment {
-    pub fn next_due_date_by_frequency(&mut self) {
-        self.due_date = self.due_date.checked_add_months(Months::new(1)).unwrap()
-    }
-
     pub fn from_payload(payload: &Transaction, params: &InstallmentParams) -> Self {
         PartialInstallment {
             transaction_id: payload.transaction_id,

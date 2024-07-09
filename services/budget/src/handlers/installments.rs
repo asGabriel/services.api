@@ -49,7 +49,7 @@ impl Handler {
         let result = self.get_installment_by_id(installment_id).await?;
 
         if result.is_finished() {
-            return Err(Error::TransactionFinished(installment_id));
+            return Err(Error::InstallmentFinished(installment_id));
         }
 
         self.installment_repository
