@@ -70,3 +70,12 @@ impl PartialInstallment {
         }
     }
 }
+
+impl Installment {
+    pub fn is_finished(&self) -> bool {
+        match self.status {
+            TransactionStatus::Completed | TransactionStatus::Canceled => true,
+            _ => false,
+        }
+    }
+}

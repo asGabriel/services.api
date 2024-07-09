@@ -218,7 +218,6 @@ impl TransactionRepository for SqlxRepository {
                 created_at, 
                 updated_at, 
                 deleted_at
-
             "#,
             transaction_id,
             status as TransactionStatus

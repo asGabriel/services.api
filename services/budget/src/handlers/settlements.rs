@@ -1,6 +1,7 @@
 use crate::domains::{
-    errors::Result,
+    errors::{Error, Result},
     settlements::{CreateSettlement, Settlement, SettlementParams},
+    transactions::TransactionStatus,
 };
 
 use super::Handler;
@@ -11,10 +12,18 @@ impl Handler {
         payload: CreateSettlement,
         query: SettlementParams,
     ) -> Result<Settlement> {
-        let _ = self.get_transaction_by_id(query.transaction_id).await?;
+        let transaction = self.get_transaction_by_id(query.transaction_id).await?;
 
-        if let Some(installment_id) = query.installment_id {
-            let _ = self.get_installment_by_id(installment_id).await?;
+        if transaction.is_finished() {
+            return Err(Error::TransactionFinished(transaction.transaction_id));
+        }
+
+        if let Some(installment_id) = query.installment_id.clone() {
+            let installment = self.get_installment_by_id(installment_id).await?;
+
+            if installment.is_finished() {
+                return Err(Error::TransactionFinished(installment_id));
+            }
         }
 
         let new_settlement = Settlement::new_from_payload(payload, query);
@@ -23,6 +32,14 @@ impl Handler {
             .settlement_repository
             .create_settlement(new_settlement)
             .await?;
+
+        let _ = self.finish_transaction(transaction.transaction_id, TransactionStatus::Completed).await?;
+
+        if let Some(installment_id) = query.installment_id {
+            let _ = self
+                .update_installment_status(installment_id, TransactionStatus::Completed)
+                .await?;
+        }
 
         Ok(settlement)
     }

@@ -1,6 +1,10 @@
 use uuid::Uuid;
 
-use crate::domains::{errors::Result, installments::{Installment, PartialInstallment}, transactions::TransactionStatus};
+use crate::domains::{
+    errors::Result,
+    installments::{Installment, PartialInstallment},
+    transactions::TransactionStatus,
+};
 
 use super::SqlxRepository;
 
@@ -8,6 +12,11 @@ use super::SqlxRepository;
 pub trait InstallmentRepository {
     async fn create_installment(&self, payload: &PartialInstallment) -> Result<Installment>;
     async fn get_installment_by_id(&self, id: Uuid) -> Result<Option<Installment>>;
+    async fn update_status(
+        &self,
+        installment_id: Uuid,
+        status: TransactionStatus,
+    ) -> Result<Option<Installment>>;
 }
 
 #[async_trait::async_trait]
@@ -72,7 +81,39 @@ impl InstallmentRepository for SqlxRepository {
                 installment_id = $1
             "#,
             installment_id
-        ).fetch_optional(&self.pool).await?;
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(installment)
+    }
+
+    async fn update_status(
+        &self,
+        installment_id: Uuid,
+        status: TransactionStatus,
+    ) -> Result<Option<Installment>> {
+        let installment = sqlx::query_as!(
+            Installment,
+            r#"
+            UPDATE installments SET status = $2 WHERE installment_id = $1
+            RETURNING 
+                installment_id,
+                transaction_id,
+                installment_number,
+                total_installment,
+                due_date,
+                value,
+                status as "status!: TransactionStatus",
+                created_at,
+                updated_at,
+                deleted_at 
+            "#,
+            installment_id,
+            status as TransactionStatus
+        )
+        .fetch_optional(&self.pool)
+        .await?;
 
         Ok(installment)
     }

@@ -2,7 +2,11 @@ use chrono::Months;
 use uuid::Uuid;
 
 use super::Handler;
-use crate::domains::{errors::{Error, Result}, installments::{Installment, InstallmentParams, PartialInstallment}, transactions::Transaction};
+use crate::domains::{
+    errors::{Error, Result},
+    installments::{Installment, InstallmentParams, PartialInstallment},
+    transactions::{Transaction, TransactionStatus},
+};
 
 impl Handler {
     pub async fn create_installment(
@@ -33,6 +37,23 @@ impl Handler {
     pub async fn get_installment_by_id(&self, installment_id: Uuid) -> Result<Installment> {
         self.installment_repository
             .get_installment_by_id(installment_id)
+            .await?
+            .ok_or(Error::InstallmentNotFound(installment_id))
+    }
+
+    pub async fn update_installment_status(
+        &self,
+        installment_id: Uuid,
+        status: TransactionStatus,
+    ) -> Result<Installment> {
+        let result = self.get_installment_by_id(installment_id).await?;
+
+        if result.is_finished() {
+            return Err(Error::TransactionFinished(installment_id));
+        }
+
+        self.installment_repository
+            .update_status(installment_id, status)
             .await?
             .ok_or(Error::InstallmentNotFound(installment_id))
     }

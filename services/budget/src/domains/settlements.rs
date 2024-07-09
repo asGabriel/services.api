@@ -1,5 +1,5 @@
 use bigdecimal::BigDecimal;
-use chrono::{DateTime, Local, NaiveDate, Utc};
+use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -30,7 +30,7 @@ pub struct CreateSettlement {
     pub attachment: Option<Vec<u8>>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone, Copy)]
 pub struct SettlementParams {
     pub transaction_id: Uuid,
     pub installment_id: Option<Uuid>,
