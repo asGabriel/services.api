@@ -1,9 +1,6 @@
 use uuid::Uuid;
 
-use crate::domains::{
-    errors::Result,
-    settlements::Settlement,
-};
+use crate::domains::{errors::Result, settlements::Settlement};
 
 use super::SqlxRepository;
 
@@ -21,7 +18,9 @@ impl SettlementRepository for SqlxRepository {
             r#"
                 SELECT * FROM settlements
             "#
-        ).fetch_all(&self.pool).await?;
+        )
+        .fetch_all(&self.pool)
+        .await?;
 
         Ok(settlements)
     }

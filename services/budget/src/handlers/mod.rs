@@ -1,14 +1,14 @@
 use std::sync::Arc;
 
 use crate::repositories::{
-    accounts::AccountRepository, installments::InstallmentRepository, settlements::SettlementRepository, transactions::TransactionRepository
+    accounts::AccountRepository, installments::InstallmentRepository,
+    settlements::SettlementRepository, transactions::TransactionRepository,
 };
 
 pub mod accounts;
 pub mod installments;
-pub mod transactions;
 pub mod settlements;
-
+pub mod transactions;
 
 #[derive(Clone)]
 pub struct Handler {
