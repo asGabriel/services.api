@@ -1,7 +1,8 @@
 use std::num::NonZeroU16;
 
-use finance::status::TransactionStatus;
 use serde::Deserialize;
+
+use super::transactions::TransactionStatus;
 
 #[derive(Debug, Deserialize)]
 pub struct TransactionFilterParams {

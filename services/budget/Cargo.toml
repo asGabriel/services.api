@@ -20,8 +20,5 @@ tower-http.workspace = true
 tonic = { workspace = true }
 prost = { workspace = true }
 
-## libs
-finance.workspace = true
-
 [build-dependencies]
 tonic-build = "0.11"
