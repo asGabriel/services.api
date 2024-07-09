@@ -1,7 +1,6 @@
 pub mod accounts;
 pub mod settlements;
 pub mod transactions;
-pub mod views;
 
 use axum::{http::StatusCode, response::IntoResponse, Router};
 
@@ -11,7 +10,6 @@ pub(super) fn configure_routes() -> Router<Handler> {
     Router::new()
         .merge(transactions::configure_routes())
         .merge(accounts::configure_routes())
-        .merge(views::configure_routes())
         .merge(settlements::configure_routes())
 }
 
@@ -34,6 +32,10 @@ impl IntoResponse for Error {
             Self::TransactionFinished(transaction_id) => (
                 StatusCode::BAD_REQUEST,
                 format!("Transaction id {transaction_id} has been already finished."),
+            ),
+            Self::InstallmentFinished(installment_id) => (
+                StatusCode::BAD_REQUEST,
+                format!("Installment id {installment_id} has been already finished."),
             ),
             Self::InstallmentNotFound(installment_id) => (
                 StatusCode::NOT_FOUND,

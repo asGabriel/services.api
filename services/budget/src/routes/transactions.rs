@@ -14,8 +14,6 @@ use crate::{
     handlers::Handler,
 };
 
-pub mod report;
-
 pub(super) fn configure_routes() -> Router<Handler> {
     Router::new().nest(
         "/transactions",
@@ -25,8 +23,7 @@ pub(super) fn configure_routes() -> Router<Handler> {
             .route("/:transaction_id", get(get_transaction_by_id))
             .route("/:transaction_id", delete(delete_transaction_by_id))
             .route("/:transaction_id", patch(update_transaction_by_id))
-            .route("/:transaction_id/:status", post(finish_transaction))
-            .merge(report::configure_routes()),
+            .route("/:transaction_id/:status", post(finish_transaction)),
     )
 }
 

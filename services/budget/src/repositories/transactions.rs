@@ -1,9 +1,6 @@
 use crate::domains::{
     errors::Result,
-    transactions::{
-        report::PeriodFilter, Category, CreateTransaction, MovementType, Transaction,
-        TransactionStatus,
-    },
+    transactions::{Category, CreateTransaction, MovementType, Transaction, TransactionStatus},
 };
 
 use super::SqlxRepository;
@@ -24,7 +21,6 @@ pub trait TransactionRepository {
         transaction_id: Uuid,
         status: TransactionStatus,
     ) -> Result<Option<Transaction>>;
-    async fn list_transactions_by_period(&self, period: &PeriodFilter) -> Result<Vec<Transaction>>;
 }
 
 #[async_trait::async_trait]
@@ -229,31 +225,5 @@ impl TransactionRepository for SqlxRepository {
         .await?;
 
         Ok(transaction)
-    }
-
-    // TODO: revisar essa função; mover para o consolidation
-    async fn list_transactions_by_period(&self, period: &PeriodFilter) -> Result<Vec<Transaction>> {
-        let transactions = sqlx::query_as!(
-            Transaction,
-            r#"
-            SELECT
-                transaction_id, 
-                movement_type as "movement_type!: MovementType",
-                description, 
-                value, 
-                due_date, 
-                category as "category: Category", 
-                account_id, 
-                status as "status: TransactionStatus", 
-                created_at, 
-                updated_at, 
-                deleted_at
-            FROM transactions
-            "#
-        )
-        .fetch_all(&self.pool)
-        .await?;
-
-        Ok(transactions)
     }
 }

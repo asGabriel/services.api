@@ -15,6 +15,8 @@ pub enum Error {
     TransactionFinished(Uuid),
     #[error("Account not found")]
     InstallmentNotFound(Uuid),
+    #[error("Installment has been already finished")]
+    InstallmentFinished(Uuid),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
