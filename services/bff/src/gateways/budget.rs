@@ -1,6 +1,4 @@
-use finance::transaction::Transaction;
-
-use crate::domains::errors::Result;
+use crate::domains::{budget::Transaction, errors::Result};
 
 pub struct ApiBudgetGateway {
     http_client: reqwest::Client,

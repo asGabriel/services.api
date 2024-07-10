@@ -1,4 +1,6 @@
-use handlers::payments::{payments::payment_service_server::PaymentServiceServer, PaymentServiceImpl};
+use handlers::payments::{
+    payments::payment_service_server::PaymentServiceServer, PaymentServiceImpl,
+};
 use tonic::transport::Server;
 
 mod handlers;

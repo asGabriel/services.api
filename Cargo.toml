@@ -1,5 +1,5 @@
 [workspace]
-members = [ "libs/*", "services/*"]
+members = [ "services/*"]
 resolver = "2"
 
 [workspace.dependencies]
@@ -16,6 +16,3 @@ dotenv = "0.15.0"
 thiserror = "1.0.57"
 bigdecimal = { version = "0.3.0", features = ["serde"] }
 tower-http = {version = "0.5.2", features = ['cors']}
-
-## libs
-finance.path = "./libs/finance"

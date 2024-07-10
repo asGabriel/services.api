@@ -1,4 +1,6 @@
-use payments::{payment_service_server::PaymentService, CreatePaymentRequest, Payment, PaymentResponse};
+use payments::{
+    payment_service_server::PaymentService, CreatePaymentRequest, Payment, PaymentResponse,
+};
 use tonic::{Request, Response, Status};
 use uuid::Uuid;
 
@@ -16,7 +18,7 @@ impl PaymentService for PaymentServiceImpl {
         request: Request<CreatePaymentRequest>,
     ) -> Result<Response<PaymentResponse>, Status> {
         println!("{:?}", request);
-        
+
         let request = request.into_inner();
 
         let payment = Payment {
