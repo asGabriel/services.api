@@ -3,6 +3,7 @@ pub mod accounts;
 pub mod installments;
 pub mod settlements;
 pub mod transactions;
+pub mod recurrences;
 
 #[derive(Clone)]
 pub struct SqlxRepository {

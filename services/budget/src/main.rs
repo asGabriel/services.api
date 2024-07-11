@@ -26,6 +26,7 @@ async fn main() {
         sqlx_repository.clone(),
         sqlx_repository.clone(),
         sqlx_repository.clone(),
+        sqlx_repository.clone(),
         sqlx_repository,
     );
 

@@ -1,6 +1,7 @@
 pub mod accounts;
 pub mod settlements;
 pub mod transactions;
+pub mod recurrences;
 
 use axum::{http::StatusCode, response::IntoResponse, Router};
 
@@ -11,6 +12,7 @@ pub(super) fn configure_routes() -> Router<Handler> {
         .merge(transactions::configure_routes())
         .merge(accounts::configure_routes())
         .merge(settlements::configure_routes())
+        .merge(recurrences::configure_routes())
 }
 
 impl IntoResponse for Error {
