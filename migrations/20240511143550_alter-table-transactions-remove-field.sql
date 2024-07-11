@@ -1,1 +1,0 @@
-ALTER TABLE transactions DROP COLUMN recurrence_duration_months;

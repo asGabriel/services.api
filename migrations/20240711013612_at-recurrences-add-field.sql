@@ -1,1 +1,0 @@
-ALTER TABLE recurrences ADD COLUMN movement_type movement_type;
