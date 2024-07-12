@@ -25,8 +25,7 @@ pub struct Recurrence {
 }
 
 #[derive(Debug, Deserialize, Serialize, Type)]
-// #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-#[sqlx(type_name = "frequency", rename_all = "SCREAMING_SNAKE_CASE")]
+#[sqlx(type_name = "frequency")]
 pub enum Frequency {
     MONTHLY,
     WEEKLY,
