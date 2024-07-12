@@ -17,6 +17,8 @@ pub enum Error {
     InstallmentNotFound(Uuid),
     #[error("Installment has been already finished")]
     InstallmentFinished(Uuid),
+    #[error("Recurrence not found")]
+    RecurrenceNotFound(Uuid),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

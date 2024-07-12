@@ -40,3 +40,14 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind(url).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
+
+#[macro_export]
+macro_rules! update_fields {
+    ($self:ident, $data:ident, $( $field:ident ),*) => {
+        $(
+            if let Some(value) = $data.$field {
+                $self.$field = value;
+            }
+        )*
+    };
+}

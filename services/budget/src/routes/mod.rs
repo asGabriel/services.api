@@ -19,29 +19,33 @@ impl IntoResponse for Error {
     fn into_response(self) -> axum::response::Response {
         match self {
             Self::DatabaseError(err) => (StatusCode::INTERNAL_SERVER_ERROR, format!("{err:?}")),
-            Self::TransactionNotFound(transaction_id) => (
+            Self::TransactionNotFound(id) => (
                 StatusCode::NOT_FOUND,
-                format!("Transaction id {transaction_id} not found."),
+                format!("Transaction id {id} not found."),
             ),
-            Self::AccountNotFound(account_id) => (
+            Self::AccountNotFound(id) => (
                 StatusCode::NOT_FOUND,
-                format!("Account id {account_id} not found."),
+                format!("Account id {id} not found."),
             ),
-            Self::AccountAlreadyDeleted(account_id) => (
+            Self::AccountAlreadyDeleted(id) => (
                 StatusCode::NOT_FOUND,
-                format!("Account id {account_id} has been already deleted."),
+                format!("Account id {id} has been already deleted."),
             ),
-            Self::TransactionFinished(transaction_id) => (
+            Self::TransactionFinished(id) => (
                 StatusCode::BAD_REQUEST,
-                format!("Transaction id {transaction_id} has been already finished."),
+                format!("Transaction id {id} has been already finished."),
             ),
-            Self::InstallmentFinished(installment_id) => (
+            Self::InstallmentFinished(id) => (
                 StatusCode::BAD_REQUEST,
-                format!("Installment id {installment_id} has been already finished."),
+                format!("Installment id {id} has been already finished."),
             ),
-            Self::InstallmentNotFound(installment_id) => (
+            Self::InstallmentNotFound(id) => (
                 StatusCode::NOT_FOUND,
-                format!("Installment id {installment_id} not found."),
+                format!("Installment id {id} not found."),
+            ),
+            Self::RecurrenceNotFound(id) => (
+                StatusCode::NOT_FOUND,
+                format!("Recurrence id {id} not found."),
             ),
         }
         .into_response()

@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 use sqlx::Type;
 use uuid::Uuid;
 
+use crate::update_fields;
+
 use super::transactions::{Category, MovementType};
 
 #[derive(Debug, Serialize)]
@@ -46,6 +48,19 @@ pub struct CreateRecurrence {
     pub movement_type: MovementType,
 }
 
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateRecurrence {
+    pub account_id: Option<Uuid>,
+    pub title: Option<String>,
+    pub frequency: Option<Frequency>,
+    pub category: Option<Category>,
+    pub is_active: Option<bool>,
+    pub start_date: Option<NaiveDate>,
+    pub value: Option<BigDecimal>,
+    pub movement_type: Option<MovementType>,
+}
+
 impl Recurrence {
     pub fn new_from_payload(payload: CreateRecurrence) -> Self {
         Recurrence {
@@ -60,7 +75,24 @@ impl Recurrence {
             movement_type: payload.movement_type,
             created_at: Utc::now(),
             updated_at: None,
-            deleted_at: None
+            deleted_at: None,
         }
+    }
+
+    /// prepare a recurrence to be updated
+    pub fn update(&mut self, data: UpdateRecurrence) {
+        update_fields!(
+            self,
+            data,
+            account_id,
+            title,
+            frequency,
+            category,
+            is_active,
+            start_date,
+            value,
+            movement_type
+        );
+        self.updated_at = Some(Utc::now());
     }
 }

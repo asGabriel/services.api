@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 use sqlx::Type;
 use uuid::Uuid;
 
+use crate::update_fields;
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
@@ -101,16 +103,6 @@ pub enum MonthReference {
     October,
     November,
     December,
-}
-
-macro_rules! update_fields {
-    ($self:ident, $data:ident, $( $field:ident ),*) => {
-        $(
-            if let Some(value) = $data.$field {
-                $self.$field = value;
-            }
-        )*
-    };
 }
 
 impl Transaction {

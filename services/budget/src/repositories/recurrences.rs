@@ -1,3 +1,5 @@
+use uuid::Uuid;
+
 use crate::domains::{
     errors::Result,
     recurrences::{Frequency, Recurrence},
@@ -10,6 +12,8 @@ use super::SqlxRepository;
 pub trait RecurrenceRepository {
     async fn list_recurrences(&self) -> Result<Vec<Recurrence>>;
     async fn create_recurrence(&self, payload: Recurrence) -> Result<Recurrence>;
+    async fn get_recurrence_by_id(&self, recurrence_id: Uuid) -> Result<Option<Recurrence>>;
+    async fn update_recurrence(&self, payload: Recurrence) -> Result<Option<Recurrence>>;
 }
 
 #[async_trait::async_trait]
@@ -79,8 +83,89 @@ impl RecurrenceRepository for SqlxRepository {
             recurrence.start_date,
             recurrence.value,
             recurrence.movement_type as MovementType
-        ).fetch_one(&self.pool).await?;
+        )
+        .fetch_one(&self.pool)
+        .await?;
 
         Ok(recurrence)
+    }
+
+    async fn get_recurrence_by_id(&self, recurrence_id: Uuid) -> Result<Option<Recurrence>> {
+        let result = sqlx::query_as!(
+            Recurrence,
+            r#"
+            SELECT
+                recurrence_id,
+                account_id,
+                title,
+                frequency as "frequency!: Frequency",
+                is_active,
+                category as "category: Category",
+                start_date,
+                value,
+                movement_type as "movement_type!: MovementType",
+                created_at, 
+                updated_at, 
+                deleted_at
+            FROM 
+                recurrences
+            WHERE
+                recurrence_id = $1
+            "#,
+            recurrence_id
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(result)
+    }
+
+    async fn update_recurrence(&self, payload: Recurrence) -> Result<Option<Recurrence>> {
+        let result = sqlx::query_as!(
+            Recurrence,
+            r#"
+            UPDATE 
+                recurrences
+            SET
+                account_id = $2,
+                title = $3,
+                frequency = $4,
+                is_active = $5,
+                category = $6,
+                start_date = $7,
+                value = $8,
+                movement_type = $9,
+                updated_at = $10
+            WHERE
+                recurrence_id = $1
+            RETURNING
+                recurrence_id,
+                account_id,
+                title,
+                frequency as "frequency!: Frequency",
+                is_active,
+                category as "category: Category",
+                start_date,
+                value,
+                movement_type as "movement_type!: MovementType",
+                created_at, 
+                updated_at, 
+                deleted_at
+            "#,
+            payload.recurrence_id,
+            payload.account_id,
+            payload.title,
+            payload.frequency as Frequency,
+            payload.is_active,
+            payload.category as Category,
+            payload.start_date,
+            payload.value,
+            payload.movement_type as MovementType,
+            payload.updated_at
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(result)
     }
 }
