@@ -1,9 +1,11 @@
+use mockall::automock;
 use uuid::Uuid;
 
 use crate::domains::{errors::Result, settlements::Settlement};
 
 use super::SqlxRepository;
 
+#[automock]
 #[async_trait::async_trait]
 pub trait SettlementRepository {
     async fn create_settlement(&self, payload: Settlement) -> Result<Settlement>;

@@ -1,6 +1,9 @@
 use std::sync::Arc;
 
-use crate::{domains::{budget::Transaction, errors::Result}, gateways::budget::BudgetGateway};
+use crate::{
+    domains::{budget::Transaction, errors::Result},
+    gateways::budget::BudgetGateway,
+};
 
 pub type DynBudgetHandler = dyn BudgetHandler + Send + Sync;
 

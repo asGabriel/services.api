@@ -3,9 +3,12 @@ use crate::domains::{
     transactions::{Category, MovementType, Transaction, TransactionStatus},
 };
 
+use mockall::automock;
+
 use super::SqlxRepository;
 use uuid::Uuid;
 
+#[automock]
 #[async_trait::async_trait]
 pub trait TransactionRepository {
     async fn create_transaction(&self, transaction: Transaction) -> Result<Transaction>;

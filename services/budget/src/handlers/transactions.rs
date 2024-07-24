@@ -88,3 +88,45 @@ impl Handler {
             .ok_or(Error::TransactionNotFound(transaction_id))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::sync::Arc;
+
+    use super::*;
+
+    use crate::repositories::{
+        accounts::MockAccountRepository, installments::MockInstallmentRepository,
+        recurrences::MockRecurrenceRepository, settlements::MockSettlementRepository,
+        transactions::MockTransactionRepository,
+    };
+
+    #[tokio::test]
+    async fn should_list_transactions() {
+        let mut transaction_repository = MockTransactionRepository::new();
+        let account_repository = MockAccountRepository::new();
+        let installment_repository = MockInstallmentRepository::new();
+        let settlement_repository = MockSettlementRepository::new();
+        let recurrence_repository = MockRecurrenceRepository::new();
+
+        transaction_repository
+            .expect_list_transactions()
+            .returning(move || {
+                let records = vec![Transaction::default(), Transaction::default()];
+
+                Ok(records)
+            });
+
+        let handler = Handler::new(
+            Arc::new(transaction_repository),
+            Arc::new(account_repository),
+            Arc::new(installment_repository),
+            Arc::new(settlement_repository),
+            Arc::new(recurrence_repository),
+        );
+
+        let transactions = handler.list_transactions().await.unwrap();
+
+        assert_eq!(transactions.len(), 2);
+    }
+}

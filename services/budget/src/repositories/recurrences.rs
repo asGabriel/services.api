@@ -1,3 +1,4 @@
+use mockall::automock;
 use uuid::Uuid;
 
 use crate::domains::{
@@ -8,6 +9,7 @@ use crate::domains::{
 
 use super::SqlxRepository;
 
+#[automock]
 #[async_trait::async_trait]
 pub trait RecurrenceRepository {
     async fn list_recurrences(&self) -> Result<Vec<Recurrence>>;

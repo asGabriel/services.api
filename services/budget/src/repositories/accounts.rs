@@ -4,8 +4,10 @@ use crate::domains::{
 };
 
 use super::SqlxRepository;
+use mockall::automock;
 use uuid::Uuid;
 
+#[automock]
 #[async_trait::async_trait]
 pub trait AccountRepository {
     async fn list_accounts(&self) -> Result<Vec<Account>>;

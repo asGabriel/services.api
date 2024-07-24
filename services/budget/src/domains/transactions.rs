@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use crate::update_fields;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub transaction_id: Uuid,
@@ -47,7 +47,7 @@ pub struct UpdateTransaction {
     pub account_id: Option<Uuid>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy)]
+#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy, PartialEq)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[sqlx(type_name = "movement_type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum MovementType {
@@ -64,7 +64,7 @@ pub enum TransactionStatus {
     Completed,
 }
 
-#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy)]
+#[derive(Debug, Serialize, Deserialize, Type, Clone, Copy, PartialEq)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[sqlx(type_name = "category", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Category {
@@ -105,7 +105,26 @@ pub enum MonthReference {
     December,
 }
 
+impl Default for Transaction {
+    fn default() -> Self {
+        Transaction {
+            transaction_id: Uuid::new_v4(),
+            account_id: Uuid::new_v4(),
+            category: Category::Food,
+            description: String::from("default value"),
+            movement_type: MovementType::Expense,
+            due_date: NaiveDate::default(),
+            status: TransactionStatus::Pending,
+            value: BigDecimal::default(),
+            created_at: Utc::now(),
+            deleted_at: None,
+            updated_at: None
+        }
+    }
+}
+
 impl Transaction {
+
     /// FINISHED transaction is when the status equals to COMPLETED or CANCELED
     pub fn is_finished(&self) -> bool {
         match self.status {
