@@ -26,6 +26,12 @@ pub struct Recurrence {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
+#[derive(Debug, Serialize)]
+pub struct RecurrenceLink {
+    pub transaction_id: Uuid,
+    pub due_date: NaiveDate
+}
+
 #[derive(Debug, Deserialize, Serialize, Type)]
 #[sqlx(type_name = "frequency")]
 pub enum Frequency {

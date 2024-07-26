@@ -1,4 +1,5 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
+use tokio::time;
 
 use handlers::Handler;
 use repositories::SqlxRepository;
@@ -14,6 +15,8 @@ async fn main() {
     dotenv::dotenv().ok();
 
     let conn_str = std::env::var("DATABASE_URL").expect("Could not fetch connection string.");
+
+    tokio::spawn(periodic_task());
 
     let pool = PgPoolOptions::new()
         .max_connections(5)
@@ -39,6 +42,16 @@ async fn main() {
 
     let listener = tokio::net::TcpListener::bind(url).await.unwrap();
     axum::serve(listener, app).await.unwrap();
+}
+
+async fn periodic_task() {
+    loop {
+        // Sua lógica aqui
+        println!("Executando tarefa periódica...");
+
+        // Intervalo de espera antes da próxima execução (por exemplo, 1 segundo)
+        time::sleep(Duration::from_secs(1)).await;
+    }
 }
 
 #[macro_export]

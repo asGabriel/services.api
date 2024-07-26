@@ -1,9 +1,12 @@
+use std::collections::BTreeMap;
+
+use chrono::NaiveDate;
 use mockall::automock;
 use uuid::Uuid;
 
 use crate::domains::{
     errors::Result,
-    recurrences::{Frequency, Recurrence},
+    recurrences::{Frequency, Recurrence, RecurrenceLink},
     transactions::{Category, MovementType},
 };
 
@@ -16,6 +19,7 @@ pub trait RecurrenceRepository {
     async fn create_recurrence(&self, payload: Recurrence) -> Result<Recurrence>;
     async fn get_recurrence_by_id(&self, recurrence_id: Uuid) -> Result<Option<Recurrence>>;
     async fn update_recurrence(&self, payload: Recurrence) -> Result<Option<Recurrence>>;
+    async fn get_recurrence_link(&self, recurrence_id: Uuid) -> Result<BTreeMap<NaiveDate, Uuid>>;
 }
 
 #[async_trait::async_trait]
@@ -169,5 +173,26 @@ impl RecurrenceRepository for SqlxRepository {
         .await?;
 
         Ok(result)
+    }
+
+    async fn get_recurrence_link(&self, recurrence_id: Uuid) -> Result<BTreeMap<NaiveDate, Uuid>> {
+        let result = sqlx::query_as!(
+            RecurrenceLink,
+            r#"
+            SELECT
+                links.transaction_id,
+                tr.due_date
+            FROM 
+                transaction_recurrence_links links
+            INNER JOIN transactions tr ON links.transaction_id = tr.transaction_id 
+            WHERE
+                links.recurrence_id = $1
+            "#,
+            recurrence_id
+        ).fetch_all(&self.pool).await?;
+
+        let links: BTreeMap<NaiveDate, Uuid> = result.into_iter().map(|r| (r.due_date, r.transaction_id)).collect();
+
+        Ok(links)
     }
 }
