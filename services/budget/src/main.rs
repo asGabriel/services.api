@@ -16,8 +16,6 @@ async fn main() {
 
     let conn_str = std::env::var("DATABASE_URL").expect("Could not fetch connection string.");
 
-    tokio::spawn(periodic_task());
-
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(&conn_str)
@@ -30,8 +28,12 @@ async fn main() {
         sqlx_repository.clone(),
         sqlx_repository.clone(),
         sqlx_repository.clone(),
-        sqlx_repository,
+        sqlx_repository.clone(),
     );
+
+    let generator_handler = Arc::clone(&handler.clone().into());
+
+    tokio::spawn(periodic_task(generator_handler));
 
     let app = routes::configure_routes()
         .with_state(handler)
@@ -44,13 +46,13 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn periodic_task() {
+async fn periodic_task(handler: Arc<Handler>) {
     loop {
-        // Sua lógica aqui
         println!("Executando tarefa periódica...");
+        let _ = handler.generate_recurrences().await;
 
         // Intervalo de espera antes da próxima execução (por exemplo, 1 segundo)
-        time::sleep(Duration::from_secs(1)).await;
+        time::sleep(Duration::from_secs(3600)).await;
     }
 }
 
