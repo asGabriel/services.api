@@ -118,13 +118,12 @@ impl Default for Transaction {
             value: BigDecimal::default(),
             created_at: Utc::now(),
             deleted_at: None,
-            updated_at: None
+            updated_at: None,
         }
     }
 }
 
 impl Transaction {
-
     /// FINISHED transaction is when the status equals to COMPLETED or CANCELED
     pub fn is_finished(&self) -> bool {
         match self.status {

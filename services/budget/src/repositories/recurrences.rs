@@ -1,9 +1,11 @@
+use std::collections::BTreeMap;
+
 use mockall::automock;
 use uuid::Uuid;
 
 use crate::domains::{
     errors::Result,
-    recurrences::{Frequency, Recurrence},
+    recurrences::{CreateRecurrenceLink, Frequency, Recurrence, RecurrenceLink},
     transactions::{Category, MovementType},
 };
 
@@ -16,6 +18,11 @@ pub trait RecurrenceRepository {
     async fn create_recurrence(&self, payload: Recurrence) -> Result<Recurrence>;
     async fn get_recurrence_by_id(&self, recurrence_id: Uuid) -> Result<Option<Recurrence>>;
     async fn update_recurrence(&self, payload: Recurrence) -> Result<Option<Recurrence>>;
+    async fn get_recurrence_link(
+        &self,
+        recurrence_id: Vec<Uuid>,
+    ) -> Result<BTreeMap<Uuid, Vec<RecurrenceLink>>>;
+    async fn create_recurrence_link(&self, payload: CreateRecurrenceLink) -> Result<()>;
 }
 
 #[async_trait::async_trait]
@@ -169,5 +176,53 @@ impl RecurrenceRepository for SqlxRepository {
         .await?;
 
         Ok(result)
+    }
+
+    async fn get_recurrence_link(
+        &self,
+        recurrence_id: Vec<Uuid>,
+    ) -> Result<BTreeMap<Uuid, Vec<RecurrenceLink>>> {
+        let result = sqlx::query_as!(
+            RecurrenceLink,
+            r#"
+            SELECT
+                links.recurrence_id,
+                links.transaction_id,
+                tr.due_date
+            FROM 
+                transaction_recurrence_links links
+            INNER JOIN transactions tr ON links.transaction_id = tr.transaction_id 
+            WHERE
+                links.recurrence_id = any($1::uuid[])
+            "#,
+            &recurrence_id
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        let mut links: BTreeMap<Uuid, Vec<RecurrenceLink>> = BTreeMap::new();
+
+        for r in result {
+            links
+                .entry(r.recurrence_id)
+                .or_insert_with(Vec::new)
+                .push(r)
+        }
+
+        Ok(links)
+    }
+
+    async fn create_recurrence_link(&self, payload: CreateRecurrenceLink) -> Result<()> {
+        sqlx::query!(
+            r#"
+            INSERT INTO transaction_recurrence_links(transaction_id, recurrence_id) VALUES ($1, $2)
+        "#,
+            payload.transaction_id,
+            payload.recurrence_id
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(())
     }
 }

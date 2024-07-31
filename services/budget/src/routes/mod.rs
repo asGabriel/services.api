@@ -1,7 +1,7 @@
 pub mod accounts;
+pub mod recurrences;
 pub mod settlements;
 pub mod transactions;
-pub mod recurrences;
 
 use axum::{http::StatusCode, response::IntoResponse, Router};
 
@@ -23,10 +23,9 @@ impl IntoResponse for Error {
                 StatusCode::NOT_FOUND,
                 format!("Transaction id {id} not found."),
             ),
-            Self::AccountNotFound(id) => (
-                StatusCode::NOT_FOUND,
-                format!("Account id {id} not found."),
-            ),
+            Self::AccountNotFound(id) => {
+                (StatusCode::NOT_FOUND, format!("Account id {id} not found."))
+            }
             Self::AccountAlreadyDeleted(id) => (
                 StatusCode::NOT_FOUND,
                 format!("Account id {id} has been already deleted."),
