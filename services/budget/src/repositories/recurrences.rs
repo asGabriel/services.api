@@ -213,16 +213,24 @@ impl RecurrenceRepository for SqlxRepository {
     }
 
     async fn create_recurrence_link(&self, payload: CreateRecurrenceLink) -> Result<()> {
-        sqlx::query!(
+        match sqlx::query!(
             r#"
-            INSERT INTO transaction_recurrence_links(transaction_id, recurrence_id) VALUES ($1, $2)
-        "#,
+            INSERT INTO transaction_recurrence_links(transaction_id, recurrence_id) VALUES ($1, $2) RETURNING *
+            "#,
             payload.transaction_id,
             payload.recurrence_id
         )
         .fetch_one(&self.pool)
-        .await?;
-
-        Ok(())
+        .await 
+        {
+            Ok(record) => {
+                println!("Registro criado com sucesso: {:?}", record);
+                Ok(())
+            },
+            Err(e) => {
+                eprintln!("Erro ao criar registro: {:?}", e);
+                Err(e.into())
+            }
+        }
     }
 }

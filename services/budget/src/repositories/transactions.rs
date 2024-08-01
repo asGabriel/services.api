@@ -81,7 +81,7 @@ impl TransactionRepository for SqlxRepository {
                 updated_at, 
                 deleted_at
             "#,
-            Uuid::new_v4(),
+            transaction.transaction_id,
             transaction.movement_type as MovementType,
             transaction.description,
             transaction.value,

@@ -3,7 +3,7 @@ use uuid::Uuid;
 use crate::domains::{
     errors::{Error, Result},
     recurrences::{CreateRecurrence, CreateRecurrenceLink, Recurrence, UpdateRecurrence},
-    transactions::Transaction,
+    transactions::CreateTransaction,
 };
 
 use super::Handler;
@@ -50,11 +50,10 @@ impl Handler {
     }
 
     pub async fn generate_recurrences(&self) -> Result<()> {
-        println!("generate_Recurrences");
         let recurrences = self.recurrence_repository.list_recurrences().await?;
         let recurrences_data = recurrences.clone();
         let mut data: &Recurrence;
-        let mut transaction: Transaction;
+        let mut create_transaction: CreateTransaction;
         let mut link: CreateRecurrenceLink;
 
         let filtered_recurrences: Vec<Uuid> = recurrences
@@ -69,11 +68,8 @@ impl Handler {
             .await?;
 
         for recurrence in filtered_recurrences {
-            println!("entrou no for");
             if let Some(rec) = recurrence_links.get(&recurrence) {
-                println!("letsome recurrence_links");
                 if let Some(last_entry) = rec.iter().max_by_key(|r| r.due_date) {
-                    println!("last entry");
                     // safe unwrap because if we find last_entry means that we
                     // have an recurrence match at recurrences_data.
                     data = recurrences_data
@@ -81,11 +77,10 @@ impl Handler {
                         .find(|r| r.recurrence_id == last_entry.recurrence_id)
                         .unwrap();
 
-                    transaction = Recurrence::new_recurrency_transaction(data, last_entry.due_date);
+                    create_transaction =
+                        Recurrence::new_recurrency_transaction(data, last_entry.due_date);
 
-                    self.transaction_repository
-                        .create_transaction(transaction.clone())
-                        .await?;
+                    let transaction = self.create_transaction(create_transaction.clone()).await?;
 
                     link = CreateRecurrenceLink {
                         transaction_id: transaction.transaction_id,
@@ -98,17 +93,14 @@ impl Handler {
                 }
             } else {
                 // safe unwrap because filtered_recurrences is a clone of recurrences_data
-                println!("else");
                 data = recurrences_data
                     .iter()
                     .find(|rec| rec.recurrence_id == recurrence)
                     .unwrap();
 
-                transaction = Recurrence::new_recurrency_transaction(data, data.start_date);
+                create_transaction = Recurrence::new_recurrency_transaction(data, data.start_date);
 
-                self.transaction_repository
-                    .create_transaction(transaction.clone())
-                    .await?;
+                let transaction = self.create_transaction(create_transaction).await?;
 
                 link = CreateRecurrenceLink {
                     transaction_id: transaction.transaction_id,
@@ -118,6 +110,7 @@ impl Handler {
                 self.recurrence_repository
                     .create_recurrence_link(link)
                     .await?;
+
             }
         }
 

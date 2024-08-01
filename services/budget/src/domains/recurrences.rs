@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use crate::update_fields;
 
-use super::transactions::{Category, MovementType, Transaction};
+use super::transactions::{Category, CreateTransaction, MovementType};
 
 #[derive(Debug, Serialize, Clone)]
 pub struct Recurrence {
@@ -92,19 +92,15 @@ impl Recurrence {
         }
     }
 
-    pub fn new_recurrency_transaction(&self, target_date: NaiveDate) -> Transaction {
-        Transaction {
-            transaction_id: Uuid::new_v4(),
+    pub fn new_recurrency_transaction(&self, target_date: NaiveDate) -> CreateTransaction {
+        CreateTransaction {
             account_id: self.account_id,
             description: self.title.clone(),
             category: self.category,
-            movement_type: self.movement_type,
-            status: super::transactions::TransactionStatus::Pending,
             due_date: self.get_next_date_from_frequency(target_date),
-            value: self.value.normalized(),
-            created_at: Utc::now(),
-            updated_at: None,
-            deleted_at: None,
+            installments: 0,
+            movement_type: self.movement_type,
+            value: self.value.normalized()
         }
     }
 
