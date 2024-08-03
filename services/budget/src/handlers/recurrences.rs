@@ -1,9 +1,10 @@
+use chrono::Utc;
 use uuid::Uuid;
 
 use crate::domains::{
     errors::{Error, Result},
     recurrences::{CreateRecurrence, CreateRecurrenceLink, Recurrence, UpdateRecurrence},
-    transactions::CreateTransaction,
+    transactions::Transaction,
 };
 
 use super::Handler;
@@ -51,66 +52,44 @@ impl Handler {
 
     pub async fn generate_recurrences(&self) -> Result<()> {
         let recurrences = self.recurrence_repository.list_recurrences().await?;
-        let recurrences_data = recurrences.clone();
-        let mut data: &Recurrence;
-        let mut create_transaction: CreateTransaction;
-        let mut link: CreateRecurrenceLink;
 
-        let filtered_recurrences: Vec<Uuid> = recurrences
-            .iter()
-            .filter(|rec| rec.is_active())
-            .map(|rec| rec.recurrence_id)
-            .collect();
+        let active_recurrences: Vec<&Recurrence> =
+            recurrences.iter().filter(|r| r.is_active()).collect();
+        let recurrence_ids: Vec<Uuid> =
+            active_recurrences.iter().map(|r| r.recurrence_id).collect();
 
-        let recurrence_links = self
+        let references = self
             .recurrence_repository
-            .get_recurrence_link(filtered_recurrences.clone())
+            .get_recurrence_link(recurrence_ids)
             .await?;
 
-        for recurrence in filtered_recurrences {
-            if let Some(rec) = recurrence_links.get(&recurrence) {
-                if let Some(last_entry) = rec.iter().max_by_key(|r| r.due_date) {
-                    // safe unwrap because if we find last_entry means that we
-                    // have an recurrence match at recurrences_data.
-                    data = recurrences_data
-                        .iter()
-                        .find(|r| r.recurrence_id == last_entry.recurrence_id)
-                        .unwrap();
+        for recurrence in active_recurrences {
+            let last_recurrency = references
+                .get(&recurrence.recurrence_id)
+                .and_then(|r| r.iter().max_by_key(|item| item.due_date));
 
-                    create_transaction =
-                        Recurrence::new_recurrency_transaction(data, last_entry.due_date);
+            let next_due_date = match last_recurrency {
+                Some(r) => recurrence.get_next_date_from_frequency(r.due_date),
+                None => recurrence.get_next_date_from_frequency(recurrence.start_date),
+            };
 
-                    let transaction = self.create_transaction(create_transaction.clone()).await?;
+            let today = Utc::now().date_naive();
+            if next_due_date <= today {
+                let payload = recurrence.new_recurrency_transaction(next_due_date);
 
-                    link = CreateRecurrenceLink {
-                        transaction_id: transaction.transaction_id,
-                        recurrence_id: data.recurrence_id,
-                    };
+                let transaction = self
+                    .transaction_repository
+                    .create_transaction(Transaction::from_payload(payload))
+                    .await?;
 
-                    self.recurrence_repository
-                        .create_recurrence_link(link)
-                        .await?;
-                }
-            } else {
-                // safe unwrap because filtered_recurrences is a clone of recurrences_data
-                data = recurrences_data
-                    .iter()
-                    .find(|rec| rec.recurrence_id == recurrence)
-                    .unwrap();
-
-                create_transaction = Recurrence::new_recurrency_transaction(data, data.start_date);
-
-                let transaction = self.create_transaction(create_transaction).await?;
-
-                link = CreateRecurrenceLink {
+                let link = CreateRecurrenceLink {
+                    recurrence_id: recurrence.recurrence_id,
                     transaction_id: transaction.transaction_id,
-                    recurrence_id: data.recurrence_id,
                 };
 
                 self.recurrence_repository
                     .create_recurrence_link(link)
                     .await?;
-
             }
         }
 
