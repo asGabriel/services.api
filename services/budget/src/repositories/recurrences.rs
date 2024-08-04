@@ -90,7 +90,7 @@ impl RecurrenceRepository for SqlxRepository {
             recurrence.is_active,
             recurrence.category as Category,
             recurrence.start_date,
-            recurrence.value,
+            recurrence.value.normalized(),
             recurrence.movement_type as MovementType
         )
         .fetch_one(&self.pool)
@@ -168,7 +168,7 @@ impl RecurrenceRepository for SqlxRepository {
             payload.is_active,
             payload.category as Category,
             payload.start_date,
-            payload.value,
+            payload.value.normalized(),
             payload.movement_type as MovementType,
             payload.updated_at
         )

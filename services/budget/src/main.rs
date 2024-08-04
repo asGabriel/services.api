@@ -51,8 +51,7 @@ async fn periodic_task(handler: Arc<Handler>) {
         println!("Executando tarefa periódica...");
         let _ = handler.generate_recurrences().await;
 
-        // Intervalo de espera antes da próxima execução (por exemplo, 1 segundo)
-        time::sleep(Duration::from_secs(3600)).await;
+        time::sleep(Duration::from_secs(10)).await;
     }
 }
 

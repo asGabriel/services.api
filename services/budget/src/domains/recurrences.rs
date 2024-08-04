@@ -92,19 +92,19 @@ impl Recurrence {
         }
     }
 
-    pub fn new_recurrency_transaction(&self, target_date: NaiveDate) -> CreateTransaction {
+    pub fn new_recurrency_transaction(&self, next_due_date: NaiveDate) -> CreateTransaction {
         CreateTransaction {
             account_id: self.account_id,
             description: self.title.clone(),
             category: self.category,
-            due_date: self.get_next_date_from_frequency(target_date),
+            due_date: next_due_date,
             installments: 0,
             movement_type: self.movement_type,
             value: self.value.normalized()
         }
     }
 
-    fn get_next_date_from_frequency(&self, target_date: NaiveDate) -> NaiveDate {
+    pub fn get_next_date_from_frequency(&self, target_date: NaiveDate) -> NaiveDate {
         match self.frequency {
             Frequency::WEEKLY => target_date + Duration::days(7),
             Frequency::MONTHLY => target_date + Duration::days(30),
