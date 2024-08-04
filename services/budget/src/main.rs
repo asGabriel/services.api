@@ -9,12 +9,15 @@ mod domains;
 mod handlers;
 mod repositories;
 mod routes;
+mod logger;
 
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
 
     let conn_str = std::env::var("DATABASE_URL").expect("Could not fetch connection string.");
+
+    logger::init().expect("Failed to initialize logger");
 
     let pool = PgPoolOptions::new()
         .max_connections(5)

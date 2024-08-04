@@ -17,3 +17,5 @@ thiserror = "1.0.57"
 bigdecimal = { version = "0.3.0", features = ["serde"] }
 tower-http = {version = "0.5.2", features = ['cors']}
 mockall = "0.12.1"
+log = "0.4"
+fern = "0.6"

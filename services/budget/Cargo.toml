@@ -20,6 +20,8 @@ tower-http.workspace = true
 tonic = { workspace = true }
 prost = { workspace = true }
 mockall = { workspace = true }
+log = { workspace = true }
+fern = { workspace = true }
 
 [build-dependencies]
 tonic-build = "0.11"
