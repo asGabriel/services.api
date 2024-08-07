@@ -92,9 +92,10 @@ impl Recurrence {
         }
     }
 
-    pub fn new_recurrency_transaction(&self, next_due_date: NaiveDate) -> CreateTransaction {
+    pub fn new_recurrency_transaction(&self, next_due_date: NaiveDate, financial_plan_id: Uuid) -> CreateTransaction {
         CreateTransaction {
             account_id: self.account_id,
+            financial_plan_id: financial_plan_id,
             description: self.title.clone(),
             category: self.category,
             due_date: next_due_date,

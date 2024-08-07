@@ -24,6 +24,7 @@ pub trait TransactionRepository {
         transaction_id: Uuid,
         status: TransactionStatus,
     ) -> Result<Option<Transaction>>;
+    async fn bulk_transactions_into_financial_plan(&self, payload: Vec<Transaction>);
 }
 
 #[async_trait::async_trait]
@@ -34,6 +35,7 @@ impl TransactionRepository for SqlxRepository {
             r#"
             SELECT
                 transaction_id, 
+                financial_plan_id,
                 movement_type as "movement_type!: MovementType",
                 description, 
                 value, 
@@ -59,6 +61,7 @@ impl TransactionRepository for SqlxRepository {
             r#"
             INSERT INTO TRANSACTIONS (
                 transaction_id,
+                financial_plan_id,
                 movement_type,
                 description,
                 value,
@@ -67,9 +70,10 @@ impl TransactionRepository for SqlxRepository {
                 account_id,
                 status
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8
+                $1, $2, $3, $4, $5, $6, $7, $8, $9
             ) RETURNING 
                 transaction_id, 
+                financial_plan_id,
                 movement_type as "movement_type!: MovementType",
                 description, 
                 value, 
@@ -82,6 +86,7 @@ impl TransactionRepository for SqlxRepository {
                 deleted_at
             "#,
             transaction.transaction_id,
+            transaction.financial_plan_id,
             transaction.movement_type as MovementType,
             transaction.description,
             transaction.value.normalized(),
@@ -102,6 +107,7 @@ impl TransactionRepository for SqlxRepository {
             r#"
             SELECT
                 transaction_id, 
+                financial_plan_id,
                 movement_type as "movement_type!: MovementType",
                 description, 
                 value, 
@@ -135,6 +141,7 @@ impl TransactionRepository for SqlxRepository {
                 AND deleted_at is null
             RETURNING 
                 transaction_id, 
+                financial_plan_id, 
                 movement_type as "movement_type!: MovementType",
                 description, 
                 value, 
@@ -173,6 +180,7 @@ impl TransactionRepository for SqlxRepository {
                 transaction_id = $1
             RETURNING
                 transaction_id, 
+                financial_plan_id,
                 movement_type as "movement_type!: MovementType",
                 description, 
                 value, 
@@ -210,6 +218,7 @@ impl TransactionRepository for SqlxRepository {
             UPDATE transactions SET status = $2 WHERE transaction_id = $1
             RETURNING
                 transaction_id, 
+                financial_plan_id,
                 movement_type as "movement_type!: MovementType",
                 description, 
                 value, 
@@ -228,5 +237,9 @@ impl TransactionRepository for SqlxRepository {
         .await?;
 
         Ok(transaction)
+    }
+
+    async fn bulk_transactions_into_financial_plan(&self, payload: Vec<Transaction>) {
+        todo!()
     }
 }

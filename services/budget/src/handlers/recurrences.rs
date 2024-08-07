@@ -50,49 +50,51 @@ impl Handler {
         Ok(result)
     }
 
+    // REFAC: change logic to financial_plan
     pub async fn generate_recurrences(&self) -> Result<()> {
-        let recurrences = self.recurrence_repository.list_recurrences().await?;
+        todo!()
+        // let recurrences = self.recurrence_repository.list_recurrences().await?;
 
-        let active_recurrences: Vec<&Recurrence> =
-            recurrences.iter().filter(|r| r.is_active()).collect();
-        let recurrence_ids: Vec<Uuid> =
-            active_recurrences.iter().map(|r| r.recurrence_id).collect();
+        // let active_recurrences: Vec<&Recurrence> =
+        //     recurrences.iter().filter(|r| r.is_active()).collect();
+        // let recurrence_ids: Vec<Uuid> =
+        //     active_recurrences.iter().map(|r| r.recurrence_id).collect();
 
-        let references = self
-            .recurrence_repository
-            .get_recurrence_link(recurrence_ids)
-            .await?;
+        // let references = self
+        //     .recurrence_repository
+        //     .get_recurrence_link(recurrence_ids)
+        //     .await?;
 
-        for recurrence in active_recurrences {
-            let last_recurrency = references
-                .get(&recurrence.recurrence_id)
-                .and_then(|r| r.iter().max_by_key(|item| item.due_date));
+        // for recurrence in active_recurrences {
+        //     let last_recurrency = references
+        //         .get(&recurrence.recurrence_id)
+        //         .and_then(|r| r.iter().max_by_key(|item| item.due_date));
 
-            let next_due_date = match last_recurrency {
-                Some(r) => recurrence.get_next_date_from_frequency(r.due_date),
-                None => recurrence.get_next_date_from_frequency(recurrence.start_date),
-            };
+        //     let next_due_date = match last_recurrency {
+        //         Some(r) => recurrence.get_next_date_from_frequency(r.due_date),
+        //         None => recurrence.get_next_date_from_frequency(recurrence.start_date),
+        //     };
 
-            let today = Utc::now().date_naive();
-            if next_due_date <= today {
-                let payload = recurrence.new_recurrency_transaction(next_due_date);
+        //     let today = Utc::now().date_naive();
+        //     if next_due_date <= today {
+        //         let payload = recurrence.new_recurrency_transaction(next_due_date);
 
-                let transaction = self
-                    .transaction_repository
-                    .create_transaction(Transaction::from_payload(payload))
-                    .await?;
+        //         let transaction = self
+        //             .transaction_repository
+        //             .create_transaction(Transaction::from_payload(payload))
+        //             .await?;
 
-                let link = CreateRecurrenceLink {
-                    recurrence_id: recurrence.recurrence_id,
-                    transaction_id: transaction.transaction_id,
-                };
+        //         let link = CreateRecurrenceLink {
+        //             recurrence_id: recurrence.recurrence_id,
+        //             transaction_id: transaction.transaction_id,
+        //         };
 
-                self.recurrence_repository
-                    .create_recurrence_link(link)
-                    .await?;
-            }
-        }
+        //         self.recurrence_repository
+        //             .create_recurrence_link(link)
+        //             .await?;
+        //     }
+        // }
 
-        Ok(())
+        // Ok(())
     }
 }

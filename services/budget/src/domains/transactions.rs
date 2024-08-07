@@ -10,6 +10,7 @@ use crate::update_fields;
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub transaction_id: Uuid,
+    pub financial_plan_id: Uuid,
     pub movement_type: MovementType,
     pub description: String,
     pub value: BigDecimal,
@@ -27,6 +28,7 @@ pub struct Transaction {
 #[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateTransaction {
+    pub financial_plan_id: Uuid,
     pub movement_type: MovementType,
     pub description: String,
     pub value: BigDecimal,
@@ -91,6 +93,7 @@ impl Default for Transaction {
     fn default() -> Self {
         Transaction {
             transaction_id: Uuid::new_v4(),
+            financial_plan_id: Uuid::new_v4(),
             account_id: Uuid::new_v4(),
             category: Category::Food,
             description: String::from("default value"),
@@ -132,6 +135,7 @@ impl Transaction {
     pub fn from_payload(payload: CreateTransaction) -> Self {
         Transaction {
             transaction_id: Uuid::new_v4(),
+            financial_plan_id: payload.financial_plan_id,
             account_id: payload.account_id,
             description: payload.description,
             value: payload.value,
