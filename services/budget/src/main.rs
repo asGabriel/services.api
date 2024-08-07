@@ -32,6 +32,7 @@ async fn main() {
         sqlx_repository.clone(),
         sqlx_repository.clone(),
         sqlx_repository.clone(),
+        sqlx_repository.clone(),
     );
 
     let generator_handler = Arc::clone(&handler.clone().into());

@@ -96,9 +96,7 @@ mod tests {
     use super::*;
 
     use crate::repositories::{
-        accounts::MockAccountRepository, installments::MockInstallmentRepository,
-        recurrences::MockRecurrenceRepository, settlements::MockSettlementRepository,
-        transactions::MockTransactionRepository,
+        accounts::MockAccountRepository, financial_plans::MockFinancialPlanRepository, installments::MockInstallmentRepository, recurrences::MockRecurrenceRepository, settlements::MockSettlementRepository, transactions::MockTransactionRepository
     };
 
     #[tokio::test]
@@ -108,6 +106,7 @@ mod tests {
         let installment_repository = MockInstallmentRepository::new();
         let settlement_repository = MockSettlementRepository::new();
         let recurrence_repository = MockRecurrenceRepository::new();
+        let financial_plans_repository = MockFinancialPlanRepository::new();
 
         transaction_repository
             .expect_list_transactions()
@@ -123,6 +122,7 @@ mod tests {
             Arc::new(installment_repository),
             Arc::new(settlement_repository),
             Arc::new(recurrence_repository),
+            Arc::new(financial_plans_repository),
         );
 
         let transactions = handler.list_transactions().await.unwrap();
