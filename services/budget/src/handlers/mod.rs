@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
 use crate::repositories::{
-    accounts::AccountRepository, installments::InstallmentRepository,
-    recurrences::RecurrenceRepository, settlements::SettlementRepository,
-    transactions::TransactionRepository,
+    accounts::AccountRepository, financial_plans::FinancialPlanRepository,
+    installments::InstallmentRepository, recurrences::RecurrenceRepository,
+    settlements::SettlementRepository, transactions::TransactionRepository,
 };
 
 pub mod accounts;
@@ -11,6 +11,7 @@ pub mod installments;
 pub mod recurrences;
 pub mod settlements;
 pub mod transactions;
+pub mod financial_plans;
 
 #[derive(Clone)]
 pub struct Handler {
@@ -19,6 +20,7 @@ pub struct Handler {
     installment_repository: Arc<dyn InstallmentRepository + Send + Sync>,
     settlement_repository: Arc<dyn SettlementRepository + Send + Sync>,
     recurrence_repository: Arc<dyn RecurrenceRepository + Send + Sync>,
+    financial_plan_repository: Arc<dyn FinancialPlanRepository + Send + Sync>,
 }
 
 impl Handler {
@@ -28,6 +30,7 @@ impl Handler {
         installment_repository: Arc<dyn InstallmentRepository + Send + Sync>,
         settlement_repository: Arc<dyn SettlementRepository + Send + Sync>,
         recurrence_repository: Arc<dyn RecurrenceRepository + Send + Sync>,
+        financial_plan_repository: Arc<dyn FinancialPlanRepository + Send + Sync>,
     ) -> Self {
         Self {
             transaction_repository: transactions_repository,
@@ -35,6 +38,7 @@ impl Handler {
             installment_repository: installment_repository,
             settlement_repository: settlement_repository,
             recurrence_repository: recurrence_repository,
+            financial_plan_repository: financial_plan_repository,
         }
     }
 }

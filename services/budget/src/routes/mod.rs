@@ -1,4 +1,5 @@
 pub mod accounts;
+pub mod financial_plans;
 pub mod recurrences;
 pub mod settlements;
 pub mod transactions;
@@ -13,6 +14,7 @@ pub(super) fn configure_routes() -> Router<Handler> {
         .merge(accounts::configure_routes())
         .merge(settlements::configure_routes())
         .merge(recurrences::configure_routes())
+        .merge(financial_plans::configure_routes())
 }
 
 impl IntoResponse for Error {
