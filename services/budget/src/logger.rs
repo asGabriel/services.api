@@ -1,7 +1,5 @@
-// src/logger.rs
-
 use std::env;
-// use std::fs;
+use std::fs;
 use log::{debug, error, info, trace, warn};
 
 pub fn init() -> Result<(), fern::InitError> {
@@ -10,7 +8,7 @@ pub fn init() -> Result<(), fern::InitError> {
         .parse::<log::LevelFilter>()
         .unwrap_or(log::LevelFilter::Info);
 
-    let builder = fern::Dispatch::new()
+    let mut builder = fern::Dispatch::new()
         .format(|out, message, record| {
             out.finish(format_args!(
                 "[{}][{}][{}] {}",
@@ -23,10 +21,10 @@ pub fn init() -> Result<(), fern::InitError> {
         .level(log_level)
         .chain(std::io::stderr());
 
-    // if let Ok(log_file) = env::var("LOG_FILE") {
-    //     let log_file = fs::File::create(log_file)?;
-    //     builder = builder.chain(log_file);
-    // }
+    if let Ok(log_file) = env::var("LOG_FILE") {
+        let log_file = fs::File::create(log_file)?;
+        builder = builder.chain(log_file);
+    }
 
     builder.apply()?;
 

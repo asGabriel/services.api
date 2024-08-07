@@ -49,12 +49,12 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
+#[warn(unused_variables)]
 async fn periodic_task(handler: Arc<Handler>) {
     loop {
-        println!("Executando tarefa periódica...");
-        let _ = handler.generate_recurrences().await;
+        println!("Executando scheduler");
 
-        time::sleep(Duration::from_secs(10)).await;
+        time::sleep(Duration::from_secs(3600)).await;
     }
 }
 
