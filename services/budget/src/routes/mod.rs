@@ -48,6 +48,10 @@ impl IntoResponse for Error {
                 StatusCode::NOT_FOUND,
                 format!("Recurrence id {id} not found."),
             ),
+            Self::FinancialPlanNotFound(id) => (
+                StatusCode::NOT_FOUND,
+                format!("Financial plan id {id} not found."),
+            ),
         }
         .into_response()
     }

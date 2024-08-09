@@ -1,5 +1,7 @@
+use uuid::Uuid;
+
 use crate::domains::{
-    errors::Result,
+    errors::{Error, Result},
     financial_plans::{CreateFinancialPlan, FinancialPlan},
 };
 
@@ -18,5 +20,21 @@ impl Handler {
             .await?;
 
         Ok(financial_plan)
+    }
+
+    pub async fn list_financial_plans(&self) -> Result<Vec<FinancialPlan>> {
+        let financial_plans = self
+            .financial_plan_repository
+            .list_financial_plans()
+            .await?;
+
+        Ok(financial_plans)
+    }
+
+    pub async fn get_financial_plan_by_id(&self, financial_plan_id: Uuid) -> Result<FinancialPlan> {
+        self.financial_plan_repository
+            .get_financial_plan_by_id(financial_plan_id)
+            .await?
+            .ok_or(Error::FinancialPlanNotFound(financial_plan_id))
     }
 }

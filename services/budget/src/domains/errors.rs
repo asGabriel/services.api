@@ -19,6 +19,8 @@ pub enum Error {
     InstallmentFinished(Uuid),
     #[error("Recurrence not found")]
     RecurrenceNotFound(Uuid),
+    #[error("Financial plan not found")]
+    FinancialPlanNotFound(Uuid),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

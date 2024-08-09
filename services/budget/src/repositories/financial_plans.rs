@@ -1,4 +1,5 @@
 use mockall::automock;
+use uuid::Uuid;
 
 use crate::domains::{
     errors::Result,
@@ -11,10 +12,38 @@ use super::SqlxRepository;
 #[async_trait::async_trait]
 pub trait FinancialPlanRepository {
     async fn create_financial_plan(&self, payload: FinancialPlan) -> Result<FinancialPlan>;
+    async fn list_financial_plans(&self) -> Result<Vec<FinancialPlan>>;
+    async fn get_financial_plan_by_id(
+        &self,
+        financial_plan_id: Uuid,
+    ) -> Result<Option<FinancialPlan>>;
 }
 
 #[async_trait::async_trait]
 impl FinancialPlanRepository for SqlxRepository {
+    async fn list_financial_plans(&self) -> Result<Vec<FinancialPlan>> {
+        let result = sqlx::query_as!(
+            FinancialPlan,
+            r#"
+                SELECT
+                    financial_plan_id,
+                    title,
+                    month as "month!: MonthReference",
+                    year,
+                    created_at,
+                    updated_at,
+                    deleted_at
+                FROM financial_plans
+            "#
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        log::info!("List financial plans: {:?}", result);
+
+        Ok(result)
+    }
+
     async fn create_financial_plan(&self, payload: FinancialPlan) -> Result<FinancialPlan> {
         let financial_plan = sqlx::query_as!(
             FinancialPlan,
@@ -38,6 +67,32 @@ impl FinancialPlanRepository for SqlxRepository {
             payload.created_at
         )
         .fetch_one(&self.pool)
+        .await?;
+
+        Ok(financial_plan)
+    }
+
+    async fn get_financial_plan_by_id(
+        &self,
+        financial_plan_id: Uuid,
+    ) -> Result<Option<FinancialPlan>> {
+        let financial_plan = sqlx::query_as!(
+            FinancialPlan,
+            r#"
+                SELECT
+                    financial_plan_id,
+                    title,
+                    month as "month!: MonthReference",
+                    year,
+                    created_at,
+                    updated_at,
+                    deleted_at
+                FROM financial_plans
+                WHERE financial_plan_id = $1
+            "#,
+            financial_plan_id
+        )
+        .fetch_optional(&self.pool)
         .await?;
 
         Ok(financial_plan)
