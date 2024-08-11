@@ -1,6 +1,6 @@
+use log::{debug, error, info, trace, warn};
 use std::env;
 use std::fs;
-use log::{debug, error, info, trace, warn};
 
 pub fn init() -> Result<(), fern::InitError> {
     let log_level = env::var("LOG_LEVEL").unwrap_or("INFO".into());

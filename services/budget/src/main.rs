@@ -7,9 +7,9 @@ use sqlx::postgres::PgPoolOptions;
 use tower_http::cors::CorsLayer;
 mod domains;
 mod handlers;
+mod logger;
 mod repositories;
 mod routes;
-mod logger;
 
 #[tokio::main]
 async fn main() {

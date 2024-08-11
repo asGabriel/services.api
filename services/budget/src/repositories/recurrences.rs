@@ -221,7 +221,7 @@ impl RecurrenceRepository for SqlxRepository {
             payload.recurrence_id
         )
         .fetch_one(&self.pool)
-        .await 
+        .await
         {
             Ok(record) => {
                 println!("Registro criado com sucesso: {:?}", record);

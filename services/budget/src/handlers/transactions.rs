@@ -87,6 +87,15 @@ impl Handler {
             .await?
             .ok_or(Error::TransactionNotFound(transaction_id))
     }
+
+    pub async fn bulk_transactions_into_financial_plan(
+        &self,
+        payload: Vec<Transaction>,
+    ) -> Result<()> {
+        self.transaction_repository
+            .bulk_transactions_into_financial_plan(payload)
+            .await
+    }
 }
 
 #[cfg(test)]
@@ -96,7 +105,9 @@ mod tests {
     use super::*;
 
     use crate::repositories::{
-        accounts::MockAccountRepository, financial_plans::MockFinancialPlanRepository, installments::MockInstallmentRepository, recurrences::MockRecurrenceRepository, settlements::MockSettlementRepository, transactions::MockTransactionRepository
+        accounts::MockAccountRepository, financial_plans::MockFinancialPlanRepository,
+        installments::MockInstallmentRepository, recurrences::MockRecurrenceRepository,
+        settlements::MockSettlementRepository, transactions::MockTransactionRepository,
     };
 
     #[tokio::test]
