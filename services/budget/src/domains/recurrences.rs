@@ -36,7 +36,7 @@ pub struct RecurrenceLink {
 #[derive(Debug, Serialize)]
 pub struct CreateRecurrenceLink {
     pub recurrence_id: Uuid,
-    pub transaction_id: Uuid
+    pub transaction_id: Uuid,
 }
 
 #[derive(Debug, Deserialize, Serialize, Type, Clone)]
@@ -92,7 +92,11 @@ impl Recurrence {
         }
     }
 
-    pub fn new_recurrency_transaction(&self, next_due_date: NaiveDate, financial_plan_id: Uuid) -> CreateTransaction {
+    pub fn new_recurrency_transaction(
+        &self,
+        next_due_date: NaiveDate,
+        financial_plan_id: Uuid,
+    ) -> CreateTransaction {
         CreateTransaction {
             account_id: self.account_id,
             financial_plan_id: financial_plan_id,
@@ -101,7 +105,7 @@ impl Recurrence {
             due_date: next_due_date,
             installments: 0,
             movement_type: self.movement_type,
-            value: self.value.normalized()
+            value: self.value.normalized(),
         }
     }
 

@@ -3,8 +3,7 @@ use uuid::Uuid;
 
 use crate::domains::{
     errors::{Error, Result},
-    recurrences::{CreateRecurrence, CreateRecurrenceLink, Recurrence, UpdateRecurrence},
-    transactions::Transaction,
+    recurrences::{CreateRecurrence, Recurrence, UpdateRecurrence},
 };
 
 use super::Handler;
@@ -52,6 +51,8 @@ impl Handler {
 
     // REFAC: change logic to financial_plan
     pub async fn generate_recurrences(&self) -> Result<()> {
+        let today = Utc::now().date_naive();
+
         todo!()
         // let recurrences = self.recurrence_repository.list_recurrences().await?;
 

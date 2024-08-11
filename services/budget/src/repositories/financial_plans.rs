@@ -39,8 +39,6 @@ impl FinancialPlanRepository for SqlxRepository {
         .fetch_all(&self.pool)
         .await?;
 
-        log::info!("List financial plans: {:?}", result);
-
         Ok(result)
     }
 

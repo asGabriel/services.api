@@ -43,7 +43,7 @@ pub enum Bank {
     Itau,
     Bradesco,
     BancoDoBrasil,
-    Swile
+    Swile,
 }
 
 #[derive(Debug, Serialize, Deserialize, Type)]

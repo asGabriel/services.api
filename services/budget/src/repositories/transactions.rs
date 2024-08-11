@@ -24,7 +24,7 @@ pub trait TransactionRepository {
         transaction_id: Uuid,
         status: TransactionStatus,
     ) -> Result<Option<Transaction>>;
-    async fn bulk_transactions_into_financial_plan(&self, payload: Vec<Transaction>);
+    async fn bulk_transactions_into_financial_plan(&self, payload: Vec<Transaction>) -> Result<()>;
 }
 
 #[async_trait::async_trait]
@@ -239,7 +239,35 @@ impl TransactionRepository for SqlxRepository {
         Ok(transaction)
     }
 
-    async fn bulk_transactions_into_financial_plan(&self, payload: Vec<Transaction>) {
-        todo!()
+    async fn bulk_transactions_into_financial_plan(&self, payload: Vec<Transaction>) -> Result<()> {
+        let mut query = String::from("INSERT INTO transactions (transaction_id, financial_plan_id, movement_type, description, value, due_date, category, account_id, status) VALUES ");
+
+        for (i, transaction) in payload.iter().enumerate() {
+            let values = format!(
+                "('{}', '{}', '{:?}', '{}', '{}', '{}', '{:?}', '{}', '{:?}')",
+                transaction.transaction_id,
+                transaction.financial_plan_id,
+                transaction.movement_type as MovementType,
+                transaction.description,
+                transaction.value.normalized(),
+                transaction.due_date,
+                transaction.category as Category,
+                transaction.account_id,
+                transaction.status as TransactionStatus
+            );
+
+            query = if i == payload.len() - 1 {
+                format!("{} {}", query, values)
+            } else {
+                format!("{}, {}", query, values)
+            };
+        }
+
+        sqlx::query(&query)
+            .execute(&self.pool)
+            .await
+            .expect("Failed to insert transactions");
+
+        Ok(())
     }
 }

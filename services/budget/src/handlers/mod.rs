@@ -7,11 +7,11 @@ use crate::repositories::{
 };
 
 pub mod accounts;
+pub mod financial_plans;
 pub mod installments;
 pub mod recurrences;
 pub mod settlements;
 pub mod transactions;
-pub mod financial_plans;
 
 #[derive(Clone)]
 pub struct Handler {
