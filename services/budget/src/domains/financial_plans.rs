@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Datelike, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -40,6 +40,20 @@ pub struct CreateFinancialPlan {
     pub year: i16,
 }
 
+impl CreateFinancialPlan {
+    pub fn new(due_date: NaiveDate) -> Self {
+        CreateFinancialPlan {
+            title: Some(format!(
+                "Financial plan - {:?}-{}",
+                due_date.month(),
+                due_date.year()
+            )),
+            month: MonthReference::from(due_date.month() as i16),
+            year: due_date.year() as i16,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "month_reference", rename_all = "SCREAMING_SNAKE_CASE")]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -56,4 +70,24 @@ pub enum MonthReference {
     October = 10,
     November = 11,
     December = 12,
+}
+
+impl From<i16> for MonthReference {
+    fn from(value: i16) -> Self {
+        match value {
+            1 => MonthReference::January,
+            2 => MonthReference::February,
+            3 => MonthReference::March,
+            4 => MonthReference::April,
+            5 => MonthReference::May,
+            6 => MonthReference::June,
+            7 => MonthReference::July,
+            8 => MonthReference::August,
+            9 => MonthReference::September,
+            10 => MonthReference::October,
+            11 => MonthReference::November,
+            12 => MonthReference::December,
+            _ => panic!("Invalid value for MonthReference: {}", value),
+        }
+    }
 }

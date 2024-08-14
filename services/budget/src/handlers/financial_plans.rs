@@ -26,7 +26,9 @@ impl Handler {
         let financial_plans = self
             .financial_plan_repository
             .list_financial_plans()
-            .await?;
+            .await?
+            .into_values()
+            .collect();
 
         Ok(financial_plans)
     }

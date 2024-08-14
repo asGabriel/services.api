@@ -10,6 +10,7 @@ use super::transactions::{Transaction, TransactionStatus};
 pub struct Installment {
     pub installment_id: Uuid,
     pub transaction_id: Uuid,
+    pub financial_plan_id: Uuid,
     pub installment_number: i16,
     pub total_installment: i16,
     pub due_date: NaiveDate,
@@ -25,6 +26,7 @@ pub struct Installment {
 #[derive(Debug, Deserialize)]
 pub struct PartialInstallment {
     pub transaction_id: Uuid,
+    pub financial_plan_id: Uuid,
     pub due_date: NaiveDate,
     pub value: BigDecimal,
     pub status: TransactionStatus,
@@ -40,6 +42,7 @@ pub struct InstallmentParams {
 #[derive(Debug, Deserialize)]
 pub struct CreateInstallment {
     pub transaction_id: Uuid,
+    pub financial_plan_id: Uuid,
     pub installment_number: i16,
     pub due_date: NaiveDate,
     pub value: BigDecimal,
@@ -56,9 +59,10 @@ impl InstallmentParams {
 }
 
 impl PartialInstallment {
-    pub fn from_payload(payload: &Transaction, params: &InstallmentParams) -> Self {
+    pub fn from_payload(payload: &Transaction, params: &InstallmentParams, financial_plan_id: Uuid) -> Self {
         PartialInstallment {
             transaction_id: payload.transaction_id,
+            financial_plan_id: financial_plan_id,
             due_date: payload.due_date,
             status: payload.status,
             value: payload.value.normalized(),

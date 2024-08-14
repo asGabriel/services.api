@@ -21,7 +21,13 @@ impl Handler {
             params.installment_number = step;
             due_date = due_date.checked_add_months(Months::new(1)).unwrap();
 
-            let mut partial_installment = PartialInstallment::from_payload(&transaction, &params);
+            let financial_plan = self.generate_financial_plan_from_date(due_date).await?;
+
+            let mut partial_installment = PartialInstallment::from_payload(
+                &transaction,
+                &params,
+                financial_plan.financial_plan_id,
+            );
 
             partial_installment.due_date = due_date;
 

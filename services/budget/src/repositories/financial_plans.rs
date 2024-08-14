@@ -1,3 +1,6 @@
+use std::collections::BTreeMap;
+
+use chrono::NaiveDate;
 use mockall::automock;
 use uuid::Uuid;
 
@@ -12,7 +15,7 @@ use super::SqlxRepository;
 #[async_trait::async_trait]
 pub trait FinancialPlanRepository {
     async fn create_financial_plan(&self, payload: FinancialPlan) -> Result<FinancialPlan>;
-    async fn list_financial_plans(&self) -> Result<Vec<FinancialPlan>>;
+    async fn list_financial_plans(&self) -> Result<BTreeMap<NaiveDate, FinancialPlan>>;
     async fn get_financial_plan_by_id(
         &self,
         financial_plan_id: Uuid,
@@ -21,7 +24,7 @@ pub trait FinancialPlanRepository {
 
 #[async_trait::async_trait]
 impl FinancialPlanRepository for SqlxRepository {
-    async fn list_financial_plans(&self) -> Result<Vec<FinancialPlan>> {
+    async fn list_financial_plans(&self) -> Result<BTreeMap<NaiveDate, FinancialPlan>> {
         let result = sqlx::query_as!(
             FinancialPlan,
             r#"
@@ -39,7 +42,14 @@ impl FinancialPlanRepository for SqlxRepository {
         .fetch_all(&self.pool)
         .await?;
 
-        Ok(result)
+    let mut financial_plans: BTreeMap<NaiveDate, FinancialPlan> = BTreeMap::new();
+    for financial_plan in result {
+        let reference_date = NaiveDate::from_ymd_opt(financial_plan.year as i32, financial_plan.month as u32, 01).unwrap();
+
+        financial_plans.insert(reference_date, financial_plan);
+    }
+
+        Ok(financial_plans)
     }
 
     async fn create_financial_plan(&self, payload: FinancialPlan) -> Result<FinancialPlan> {
