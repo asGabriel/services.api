@@ -12,6 +12,7 @@ pub mod installments;
 pub mod recurrences;
 pub mod settlements;
 pub mod transactions;
+pub mod generator;
 
 #[derive(Clone)]
 pub struct Handler {

@@ -53,6 +53,12 @@ impl Handler {
     pub async fn generate_recurrences(&self) -> Result<()> {
         let today = Utc::now().date_naive();
 
+        let financial_plans = self.financial_plan_repository.list_financial_plans().await?;
+        
+        if let Some((_, fp)) = financial_plans.range(..=today).next_back() {
+            
+        }
+
         todo!()
         // let recurrences = self.recurrence_repository.list_recurrences().await?;
 

@@ -30,16 +30,18 @@ impl InstallmentRepository for SqlxRepository {
             INSERT INTO installments (
                 installment_id,
                 transaction_id, 
+                financial_plan_id,
                 installment_number, 
                 due_date, 
                 value, 
                 status,
                 total_installment
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7
+                $1, $2, $3, $4, $5, $6, $7, $8
             ) RETURNING
                 installment_id,
                 transaction_id,
+                financial_plan_id,
                 installment_number,
                 total_installment,
                 due_date,
@@ -51,6 +53,7 @@ impl InstallmentRepository for SqlxRepository {
             "#,
             Uuid::new_v4(),
             payload.transaction_id,
+            payload.financial_plan_id,
             payload.params.installment_number,
             payload.due_date,
             payload.value,
@@ -70,6 +73,7 @@ impl InstallmentRepository for SqlxRepository {
             SELECT  
                 installment_id,
                 transaction_id,
+                financial_plan_id,
                 installment_number,
                 total_installment,
                 due_date,
@@ -102,6 +106,7 @@ impl InstallmentRepository for SqlxRepository {
             RETURNING 
                 installment_id,
                 transaction_id,
+                financial_plan_id,
                 installment_number,
                 total_installment,
                 due_date,
