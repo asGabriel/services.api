@@ -1,0 +1,113 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO accounts (\n                account_id, bank_name, owner, account_type\n            ) VALUES (\n                $1, $2, $3, $4\n            ) RETURNING\n                account_id,\n                bank_name as \"bank_name!: Bank\",\n                owner,\n                account_type as \"account_type!: AccountType\",\n                created_at,\n                updated_at,\n                deleted_at\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "account_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "bank_name!: Bank",
+        "type_info": {
+          "Custom": {
+            "name": "bank_name",
+            "kind": {
+              "Enum": [
+                "NUBANK",
+                "INTER",
+                "SANTANDER",
+                "ITAÚ",
+                "BRADESCO",
+                "BANCO DO BRASIL",
+                "SWILE"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "owner",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "account_type!: AccountType",
+        "type_info": {
+          "Custom": {
+            "name": "account_type",
+            "kind": {
+              "Enum": [
+                "CREDIT",
+                "DEBIT",
+                "HYBRID"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "deleted_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        {
+          "Custom": {
+            "name": "bank_name",
+            "kind": {
+              "Enum": [
+                "NUBANK",
+                "INTER",
+                "SANTANDER",
+                "ITAÚ",
+                "BRADESCO",
+                "BANCO DO BRASIL",
+                "SWILE"
+              ]
+            }
+          }
+        },
+        "Text",
+        {
+          "Custom": {
+            "name": "account_type",
+            "kind": {
+              "Enum": [
+                "CREDIT",
+                "DEBIT",
+                "HYBRID"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "fd3e8b392e171432a5b462533145e7efb957da3d3b4cfea12ccd3c58f6082681"
+}

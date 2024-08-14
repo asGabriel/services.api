@@ -1,0 +1,93 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT  \n                installment_id,\n                transaction_id,\n                financial_plan_id,\n                installment_number,\n                total_installment,\n                due_date,\n                value,\n                status as \"status!: TransactionStatus\",\n                created_at,\n                updated_at,\n                deleted_at \n            FROM installments\n            WHERE\n                installment_id = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "installment_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "transaction_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "financial_plan_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "installment_number",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "total_installment",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 5,
+        "name": "due_date",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 6,
+        "name": "value",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 7,
+        "name": "status!: TransactionStatus",
+        "type_info": {
+          "Custom": {
+            "name": "status",
+            "kind": {
+              "Enum": [
+                "PENDING",
+                "CANCELED",
+                "COMPLETED"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 9,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 10,
+        "name": "deleted_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "5c2e8d107edf06e26452a59df6fcf1e584c4dc67b4f25f13e21e32ea404b02ef"
+}

@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                links.recurrence_id,\n                links.transaction_id,\n                tr.due_date\n            FROM \n                transaction_recurrence_links links\n            INNER JOIN transactions tr ON links.transaction_id = tr.transaction_id \n            WHERE\n                links.recurrence_id = any($1::uuid[])\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "recurrence_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "transaction_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "due_date",
+        "type_info": "Date"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "743bcb6395a3c25fb9b9017e59667b2d9b39acf0cac1da57d1ff392441f09f66"
+}

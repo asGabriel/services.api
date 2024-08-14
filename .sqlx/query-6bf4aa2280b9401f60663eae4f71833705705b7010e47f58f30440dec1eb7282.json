@@ -1,0 +1,176 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE TRANSACTIONS SET\n                movement_type = $2,\n                description = $3,\n                value = $4,\n                due_date = $5,\n                category = $6,\n                account_id = $7,\n                updated_at = $8\n            WHERE \n                transaction_id = $1\n            RETURNING\n                transaction_id, \n                financial_plan_id,\n                movement_type as \"movement_type!: MovementType\",\n                description, \n                value, \n                due_date, \n                category as \"category: Category\", \n                account_id, \n                status as \"status: TransactionStatus\", \n                created_at, \n                updated_at, \n                deleted_at\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "transaction_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "financial_plan_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "movement_type!: MovementType",
+        "type_info": {
+          "Custom": {
+            "name": "movement_type",
+            "kind": {
+              "Enum": [
+                "INCOME",
+                "EXPENSE"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "value",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 5,
+        "name": "due_date",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 6,
+        "name": "category: Category",
+        "type_info": {
+          "Custom": {
+            "name": "category",
+            "kind": {
+              "Enum": [
+                "FOOD",
+                "HOME",
+                "EDUCATION",
+                "ENTERTAINMENT",
+                "TRANSPORT",
+                "HEALTHY",
+                "SALARY",
+                "UTILITIES",
+                "INSURANCE",
+                "SAVINGS",
+                "DEBT_PAYMENTS",
+                "CHILD_CARE",
+                "GIFTS",
+                "SUBSCRIPTIONS",
+                "TRAVEL",
+                "CLOTHING",
+                "MAINTENANCE"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "account_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 8,
+        "name": "status: TransactionStatus",
+        "type_info": {
+          "Custom": {
+            "name": "status",
+            "kind": {
+              "Enum": [
+                "PENDING",
+                "CANCELED",
+                "COMPLETED"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 9,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 10,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 11,
+        "name": "deleted_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        {
+          "Custom": {
+            "name": "movement_type",
+            "kind": {
+              "Enum": [
+                "INCOME",
+                "EXPENSE"
+              ]
+            }
+          }
+        },
+        "Text",
+        "Numeric",
+        "Date",
+        {
+          "Custom": {
+            "name": "category",
+            "kind": {
+              "Enum": [
+                "FOOD",
+                "HOME",
+                "EDUCATION",
+                "ENTERTAINMENT",
+                "TRANSPORT",
+                "HEALTHY",
+                "SALARY",
+                "UTILITIES",
+                "INSURANCE",
+                "SAVINGS",
+                "DEBT_PAYMENTS",
+                "CHILD_CARE",
+                "GIFTS",
+                "SUBSCRIPTIONS",
+                "TRAVEL",
+                "CLOTHING",
+                "MAINTENANCE"
+              ]
+            }
+          }
+        },
+        "Uuid",
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "6bf4aa2280b9401f60663eae4f71833705705b7010e47f58f30440dec1eb7282"
+}

@@ -1,0 +1,84 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT \n                account_id,\n                bank_name as \"bank_name!: Bank\",\n                owner,\n                account_type as \"account_type!: AccountType\",\n                created_at, \n                updated_at, \n                deleted_at \n            FROM accounts WHERE account_id = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "account_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "bank_name!: Bank",
+        "type_info": {
+          "Custom": {
+            "name": "bank_name",
+            "kind": {
+              "Enum": [
+                "NUBANK",
+                "INTER",
+                "SANTANDER",
+                "ITAÚ",
+                "BRADESCO",
+                "BANCO DO BRASIL",
+                "SWILE"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "owner",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "account_type!: AccountType",
+        "type_info": {
+          "Custom": {
+            "name": "account_type",
+            "kind": {
+              "Enum": [
+                "CREDIT",
+                "DEBIT",
+                "HYBRID"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "deleted_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "04071a56e2c63654ae150ad4304bd83a0a61cf774a81509eb39104f74bbb3f1e"
+}

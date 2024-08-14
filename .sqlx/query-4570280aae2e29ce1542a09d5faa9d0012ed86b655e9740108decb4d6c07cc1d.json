@@ -1,0 +1,105 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE installments SET status = $2 WHERE installment_id = $1\n            RETURNING \n                installment_id,\n                transaction_id,\n                financial_plan_id,\n                installment_number,\n                total_installment,\n                due_date,\n                value,\n                status as \"status!: TransactionStatus\",\n                created_at,\n                updated_at,\n                deleted_at \n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "installment_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "transaction_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "financial_plan_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "installment_number",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "total_installment",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 5,
+        "name": "due_date",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 6,
+        "name": "value",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 7,
+        "name": "status!: TransactionStatus",
+        "type_info": {
+          "Custom": {
+            "name": "status",
+            "kind": {
+              "Enum": [
+                "PENDING",
+                "CANCELED",
+                "COMPLETED"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 9,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 10,
+        "name": "deleted_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        {
+          "Custom": {
+            "name": "status",
+            "kind": {
+              "Enum": [
+                "PENDING",
+                "CANCELED",
+                "COMPLETED"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "4570280aae2e29ce1542a09d5faa9d0012ed86b655e9740108decb4d6c07cc1d"
+}

@@ -1,0 +1,76 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT\n                    financial_plan_id,\n                    title,\n                    month as \"month!: MonthReference\",\n                    year,\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM financial_plans\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "financial_plan_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "month!: MonthReference",
+        "type_info": {
+          "Custom": {
+            "name": "month_reference",
+            "kind": {
+              "Enum": [
+                "JANUARY",
+                "FEBRUARY",
+                "MARCH",
+                "APRIL",
+                "MAY",
+                "JUNE",
+                "JULY",
+                "AUGUST",
+                "SEPTEMBER",
+                "OCTOBER",
+                "NOVEMBER",
+                "DECEMBER"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "year",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "deleted_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "cc2d0a5927028a3134c8fcaf70b5db42b02ac82f36e83c97dce9efcae248f8ad"
+}
