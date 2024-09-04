@@ -589,6 +589,22 @@ dependencies = [
 [[package]]
 name = "finance"
 version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "axum 0.7.5",
+ "bigdecimal",
+ "chrono",
+ "dotenv",
+ "fern",
+ "log",
+ "mockall",
+ "serde",
+ "sqlx",
+ "thiserror",
+ "tokio",
+ "tower-http",
+ "uuid",
+]
 
 [[package]]
 name = "finl_unicode"
