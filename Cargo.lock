@@ -587,6 +587,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "finance"
+version = "0.1.0"
+
+[[package]]
 name = "finl_unicode"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
