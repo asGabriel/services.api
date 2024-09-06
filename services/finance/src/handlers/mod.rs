@@ -1,18 +1,24 @@
 use std::sync::Arc;
 
+pub mod entries;
 pub mod invoices;
 
-use crate::repositories::invoices::InvoicesRepository;
+use crate::repositories::{entries::EntriesRepository, invoices::InvoicesRepository};
 
 #[derive(Clone)]
 pub struct Handler {
-    invoice_repository: Arc<dyn InvoicesRepository + Send + Sync>,
+    invoices_repository: Arc<dyn InvoicesRepository + Send + Sync>,
+    entries_repository: Arc<dyn EntriesRepository + Send + Sync>,
 }
 
 impl Handler {
-    pub const fn new(invoice_repository: Arc<dyn InvoicesRepository + Send + Sync>) -> Self {
+    pub const fn new(
+        invoice_repository: Arc<dyn InvoicesRepository + Send + Sync>,
+        entries_repository: Arc<dyn EntriesRepository + Send + Sync>,
+    ) -> Self {
         Self {
-            invoice_repository: invoice_repository
+            invoices_repository: invoice_repository,
+            entries_repository: entries_repository,
         }
     }
 }

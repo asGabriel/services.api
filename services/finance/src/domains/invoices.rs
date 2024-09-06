@@ -1,5 +1,5 @@
 use bigdecimal::FromPrimitive;
-use chrono::{Date, DateTime, Month, Utc};
+use chrono::{DateTime, Month, Utc};
 use serde::{de::{self, Unexpected}, Deserialize, Deserializer, Serialize};
 use uuid::Uuid;
 
@@ -25,8 +25,8 @@ pub struct InvoicePayload {
     pub year: i16
 }
 
-impl Invoice {
-    pub fn new_from_payload(payload: InvoicePayload) -> Self {
+impl From<InvoicePayload> for Invoice {
+    fn from(payload: InvoicePayload) -> Self {
         let month = Month::from_i32(payload.month).unwrap();
 
         Invoice {

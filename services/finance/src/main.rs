@@ -28,7 +28,7 @@ async fn main() {
 
     let sqlx_repository = Arc::new(SqlxRepository::new(pool));
     
-    let handler = Handler::new(sqlx_repository);
+    let handler = Handler::new(sqlx_repository.clone(), sqlx_repository);
     
     let port = std::env::var("PORT").expect("Could not fetch port data.");
     let url = format!("0.0.0.0:{}", port);

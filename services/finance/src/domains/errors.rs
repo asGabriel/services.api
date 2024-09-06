@@ -6,7 +6,9 @@ pub enum Error {
     #[error("Databse error")]
     DatabaseError(#[from] sqlx::Error),
     #[error("Invoice not found")]
-    InvoiceNotFound(Uuid)
+    InvoiceNotFound(Uuid),
+    #[error("Entry not found")]
+    EntryNotFound(Uuid)
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
