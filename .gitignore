@@ -4,3 +4,4 @@ env
 /migrations
 logs.log
 /services/finance/migrations
+/services/iam/migrations
