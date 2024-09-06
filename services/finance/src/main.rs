@@ -5,10 +5,10 @@ use repositories::SqlxRepository;
 use sqlx::postgres::PgPoolOptions;
 use tower_http::cors::CorsLayer;
 
-mod domains;
-mod handlers;
-mod repositories;
-mod routes;
+pub mod domains;
+pub mod handlers;
+pub mod repositories;
+pub mod routes;
 
 #[tokio::main]
 async fn main() {
@@ -26,10 +26,9 @@ async fn main() {
         .await
         .expect("Couldn't connect to the database");
 
-    
     let sqlx_repository = Arc::new(SqlxRepository::new(pool));
     
-    let handler = Handler::new();
+    let handler = Handler::new(sqlx_repository);
     
     let port = std::env::var("PORT").expect("Could not fetch port data.");
     let url = format!("0.0.0.0:{}", port);

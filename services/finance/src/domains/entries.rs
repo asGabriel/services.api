@@ -6,14 +6,14 @@ use uuid::Uuid;
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 #[serde(rename_all = "camelCase")]
-pub struct Entries {
-    pub transaction_id: Uuid,
-    pub financial_plan_id: Uuid,
+pub struct Entry {
+    pub entry_id: Uuid,
+    pub invoice_id: Uuid,
     pub entry_type: EntryType,
     pub description: String,
     pub value: BigDecimal,
     pub due_date: NaiveDate,
-    pub category: String, // TODO implement categories creation
+    pub tag: String, // TODO implement categories creation
     pub account_id: String, // TODO implement accounts creation
     pub status: EntryStatus,
     pub created_at: DateTime<Utc>,

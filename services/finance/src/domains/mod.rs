@@ -1,2 +1,3 @@
-mod invoices;
-mod entries;
+pub mod invoices;
+pub mod entries;
+pub mod errors;

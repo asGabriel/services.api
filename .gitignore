@@ -3,3 +3,4 @@
 env
 /migrations
 logs.log
+/services/finance/migrations
