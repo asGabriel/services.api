@@ -18,9 +18,4 @@ impl FinanceClient {
     }
 }
 
-#[async_trait::async_trait]
-pub trait InvoicesGateway {
-    async fn get_entries(&self) {
-        
-    }
-}
+// pub struct Invoice
