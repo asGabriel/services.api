@@ -39,12 +39,3 @@ pub enum EntryType {
     Revenue,
     Expense,
 }
-
-impl Entry {
-    pub fn get_value(&self) -> BigDecimal {
-        match self.entry_type {
-            EntryType::Expense => BigDecimal::from(self.value.inverse()),
-            EntryType::Revenue => BigDecimal::from(self.value.normalized())
-        }
-    }
-}

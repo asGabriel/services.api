@@ -6,7 +6,7 @@ use uuid::Uuid;
 #[serde(rename_all = "camelCase")]
 pub struct Invoice {
     pub invoice_id: Uuid,
-    pub title: Option<String>,
+    pub title: String,
     pub month: i32,
     pub year: i16,
     pub created_at: DateTime<Utc>,
