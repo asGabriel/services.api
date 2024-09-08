@@ -1,21 +1,8 @@
 use bigdecimal::FromPrimitive;
-use chrono::{DateTime, Month, Utc};
-use serde::{de::{self, Unexpected}, Deserialize, Deserializer, Serialize};
+use chrono::{Month, Utc};
+use finance_domains::Invoice;
+use serde::{de::{self, Unexpected}, Deserialize, Deserializer};
 use uuid::Uuid;
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[serde(rename_all = "camelCase")]
-pub struct Invoice {
-    pub invoice_id: Uuid,
-    pub title: Option<String>,
-    pub month: i32,
-    pub year: i16,
-    pub created_at: DateTime<Utc>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<DateTime<Utc>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted_at: Option<DateTime<Utc>>,
-}
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]

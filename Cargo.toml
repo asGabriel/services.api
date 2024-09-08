@@ -1,5 +1,5 @@
 [workspace]
-members = ["clients/*", "services/*"]
+members = ["clients/*", "libs/*", "services/*"]
 exclude = ["services/budget"]
 resolver = "2"
 
