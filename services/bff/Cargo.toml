@@ -18,6 +18,9 @@ tower-http.workspace = true
 reqwest = {version = "0.12.4", features = ["json"]}
 tonic = { workspace = true }
 prost = { workspace = true }
+finance_domains = { path = "../../libs/finance" }
+http-problems = { path = "../../libs/http-problems" }
+finance_client = { path = "../../clients/finance" }
 
 [build-dependencies]
 tonic-build = "0.11"

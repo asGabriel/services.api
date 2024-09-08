@@ -270,6 +270,7 @@ dependencies = [
  "dotenv",
  "finance_client",
  "finance_domains",
+ "http-problems",
  "prost",
  "reqwest",
  "serde",
@@ -924,6 +925,7 @@ dependencies = [
 name = "http-problems"
 version = "0.1.0"
 dependencies = [
+ "axum 0.7.5",
  "reqwest",
  "thiserror",
 ]
