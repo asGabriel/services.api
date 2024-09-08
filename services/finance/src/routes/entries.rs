@@ -13,7 +13,7 @@ use crate::{
 
 pub(super) fn configure_routes() -> Router<Handler> {
     Router::new().nest(
-        "entries",
+        "/entries",
         Router::new()
             .route("/", get(list_entries))
             .route("/{:id}", get(get_entry_by_id))
