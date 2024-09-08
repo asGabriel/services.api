@@ -268,6 +268,8 @@ dependencies = [
  "bigdecimal",
  "chrono",
  "dotenv",
+ "finance_client",
+ "finance_domains",
  "prost",
  "reqwest",
  "serde",
@@ -570,20 +572,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "finance-client"
+name = "finance_client"
 version = "0.1.0"
 dependencies = [
  "async-trait",
  "axum 0.7.5",
- "bigdecimal",
- "chrono",
  "dotenv",
+ "finance_domains",
+ "http-problems",
  "reqwest",
- "serde",
- "thiserror",
  "tokio",
- "tower-http",
- "uuid",
 ]
 
 [[package]]
@@ -920,6 +918,14 @@ dependencies = [
  "http 1.1.0",
  "http-body 1.0.0",
  "pin-project-lite",
+]
+
+[[package]]
+name = "http-problems"
+version = "0.1.0"
+dependencies = [
+ "reqwest",
+ "thiserror",
 ]
 
 [[package]]

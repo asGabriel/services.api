@@ -1,17 +1,13 @@
 [package]
-name = "finance-client"
+name = "finance_client"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+dotenv.workspace = true
 axum.workspace = true
 tokio.workspace = true
-chrono.workspace = true
-serde.workspace = true
-uuid.workspace = true
 async-trait.workspace = true
-thiserror.workspace = true
-bigdecimal.workspace = true
-tower-http.workspace = true
 reqwest.workspace = true
-dotenv.workspace = true
+finance_domains = { path = "../../libs/finance" }
+http-problems = { path = "../../libs/http-problems" }

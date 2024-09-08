@@ -1,3 +1,5 @@
+use finance_domains::Invoice;
+use http_problems::reqwest_errors::Result;
 use reqwest::Client;
 
 pub struct FinanceClient {
@@ -18,4 +20,17 @@ impl FinanceClient {
     }
 }
 
-// pub struct Invoice
+#[async_trait::async_trait]
+pub trait InvoicesGateway {
+    async fn list_invoices(&self) -> Result<Vec<Invoice>>;
+}
+
+#[async_trait::async_trait]
+impl InvoicesGateway for FinanceClient {
+    async fn list_invoices(&self) -> Result<Vec<Invoice>> {
+        let response = self.client.get(&self.url).send().await?;
+        let invoices = response.json().await?;
+        
+        Ok(invoices)
+    }
+}
