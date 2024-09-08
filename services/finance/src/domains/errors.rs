@@ -8,7 +8,7 @@ pub enum Error {
     #[error("Invoice not found")]
     InvoiceNotFound(Uuid),
     #[error("Entry not found")]
-    EntryNotFound(Uuid)
+    EntryNotFound(Uuid),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

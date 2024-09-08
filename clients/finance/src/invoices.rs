@@ -13,7 +13,7 @@ impl FinanceClient {
 
         FinanceClient {
             client: Client::new(),
-            url: base_url
+            url: base_url,
         }
     }
 }

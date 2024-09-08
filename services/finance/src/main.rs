@@ -27,16 +27,16 @@ async fn main() {
         .expect("Couldn't connect to the database");
 
     let sqlx_repository = Arc::new(SqlxRepository::new(pool));
-    
+
     let handler = Handler::new(sqlx_repository.clone(), sqlx_repository);
-    
+
     let port = std::env::var("PORT").expect("Could not fetch port data.");
     let url = format!("0.0.0.0:{}", port);
-    
+
     // TODO: remove layer when the CORS is solved also remove the tower lib
     let app = routes::configure_routes()
-    .with_state(handler)
-    .layer(CorsLayer::permissive());
+        .with_state(handler)
+        .layer(CorsLayer::permissive());
 
     let tpc_listener = tokio::net::TcpListener::bind(url).await.unwrap();
     axum::serve(tpc_listener, app).await.unwrap();

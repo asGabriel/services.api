@@ -1,7 +1,10 @@
 use bigdecimal::FromPrimitive;
 use chrono::{Month, Utc};
 use finance_domains::Invoice;
-use serde::{de::{self, Unexpected}, Deserialize, Deserializer};
+use serde::{
+    de::{self, Unexpected},
+    Deserialize, Deserializer,
+};
 use uuid::Uuid;
 
 #[derive(Debug, Deserialize)]
@@ -9,7 +12,7 @@ use uuid::Uuid;
 pub struct InvoicePayload {
     #[serde(deserialize_with = "validate_month")]
     pub month: i32,
-    pub year: i16
+    pub year: i16,
 }
 
 impl From<InvoicePayload> for Invoice {
@@ -23,7 +26,7 @@ impl From<InvoicePayload> for Invoice {
             year: payload.year,
             created_at: Utc::now(),
             updated_at: None,
-            deleted_at: None
+            deleted_at: None,
         }
     }
 }
@@ -36,6 +39,9 @@ where
     if (1..=12).contains(&month) {
         Ok(month)
     } else {
-        Err(de::Error::invalid_value(Unexpected::Signed(month as i64), &"a number between 1 and 12"))
+        Err(de::Error::invalid_value(
+            Unexpected::Signed(month as i64),
+            &"a number between 1 and 12",
+        ))
     }
 }

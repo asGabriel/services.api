@@ -1,5 +1,5 @@
-pub mod invoices;
 pub mod entries;
+pub mod invoices;
 
 use axum::{http::StatusCode, response::IntoResponse, Router};
 
@@ -13,8 +13,13 @@ impl IntoResponse for Error {
     fn into_response(self) -> axum::response::Response {
         match self {
             Self::DatabaseError(err) => (StatusCode::INTERNAL_SERVER_ERROR, format!("{err:?}")),
-            Self::InvoiceNotFound(id) => (StatusCode::NOT_FOUND, format!("Invoice id {id:?} not found")),
-            Self::EntryNotFound(id) => (StatusCode::NOT_FOUND, format!("Entry id {id:?} not found")),
+            Self::InvoiceNotFound(id) => (
+                StatusCode::NOT_FOUND,
+                format!("Invoice id {id:?} not found"),
+            ),
+            Self::EntryNotFound(id) => {
+                (StatusCode::NOT_FOUND, format!("Entry id {id:?} not found"))
+            }
         }
         .into_response()
     }

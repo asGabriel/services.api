@@ -7,3 +7,5 @@ edition = "2021"
 serde.workspace = true
 uuid.workspace = true
 chrono.workspace = true
+bigdecimal.workspace = true
+sqlx.workspace = true

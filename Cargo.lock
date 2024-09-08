@@ -590,8 +590,10 @@ dependencies = [
 name = "finance_domains"
 version = "0.1.0"
 dependencies = [
+ "bigdecimal",
  "chrono",
  "serde",
+ "sqlx",
  "uuid",
 ]
 

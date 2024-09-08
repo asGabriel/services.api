@@ -1,6 +1,6 @@
 use sqlx::PgPool;
-pub mod invoices;
 pub mod entries;
+pub mod invoices;
 
 #[derive(Clone)]
 pub struct SqlxRepository {
