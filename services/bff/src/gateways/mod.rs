@@ -1,1 +1,1 @@
-pub mod budget;
+pub mod finance;

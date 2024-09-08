@@ -1,0 +1,9 @@
+[package]
+name = "http-problems"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror.workspace = true
+reqwest.workspace = true
+axum.workspace = true

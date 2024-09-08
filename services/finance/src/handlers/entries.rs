@@ -1,7 +1,8 @@
+use finance_domains::Entry;
 use uuid::Uuid;
 
 use crate::domains::{
-    entries::{Entry, EntryPayload},
+    entries::EntryPayload,
     errors::{Error, Result},
 };
 

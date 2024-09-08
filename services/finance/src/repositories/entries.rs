@@ -1,6 +1,7 @@
+use finance_domains::{Entry, EntryStatus, EntryType};
 use uuid::Uuid;
 
-use crate::domains::{entries::{Entry, EntryStatus, EntryType}, errors::Result};
+use crate::domains::errors::Result;
 
 use super::SqlxRepository;
 
@@ -32,8 +33,10 @@ impl EntriesRepository for SqlxRepository {
                     deleted_at
                 FROM entries
             "#
-        ).fetch_all(&self.pool).await?;
-        
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
         Ok(entries)
     }
 
@@ -103,7 +106,7 @@ impl EntriesRepository for SqlxRepository {
             entry.entry_id,
             entry.invoice_id,
             entry.entry_type as EntryType,
-            entry.description, 
+            entry.description,
             entry.value.normalized(),
             entry.due_date,
             entry.tag,
@@ -118,5 +121,4 @@ impl EntriesRepository for SqlxRepository {
 
         Ok(entry)
     }
-
 }

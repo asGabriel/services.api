@@ -1,17 +1,11 @@
-use std::sync::Arc;
-pub mod budget;
+pub mod invoices;
 
 use axum::{http::StatusCode, response::IntoResponse, Router};
 
-use crate::{domains::errors::Error, handlers::budget::DynBudgetHandler};
+use crate::{domains::errors::Error, handlers::Handler};
 
-pub(crate) fn configure_services() -> Router<AppState> {
-    Router::new().nest("/bff", Router::new().merge(budget::configure_router()))
-}
-
-#[derive(Clone)]
-pub struct AppState {
-    pub budget_handler: Arc<DynBudgetHandler>,
+pub(crate) fn configure_services() -> Router<Handler> {
+    Router::new().nest("/bff", invoices::configure_routes())
 }
 
 impl IntoResponse for Error {

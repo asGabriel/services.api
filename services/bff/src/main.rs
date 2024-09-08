@@ -1,32 +1,25 @@
 use std::sync::Arc;
 
-use gateways::budget::ApiBudgetGateway;
-use handlers::budget::BudgetHandlerImpl;
-use routes::AppState;
+use finance_client::invoices::{FinanceClient, InvoicesGateway};
+use handlers::Handler;
 pub mod domains;
 pub mod gateways;
 pub mod handlers;
 pub mod routes;
 
-fn create_budget_handler() -> BudgetHandlerImpl {
-    let budget_gateway = Arc::new(ApiBudgetGateway::default());
-
-    BudgetHandlerImpl { budget_gateway }
-}
-
 #[tokio::main]
 async fn main() {
-    println!("bff-service");
+    let client = Arc::new(FinanceClient::new()) as Arc<dyn InvoicesGateway + Send + Sync>;
 
-    let budget = create_budget_handler();
+    // let app_state = AppState {
+    //     budget_handler: Arc::new(budget),
+    // };
 
-    let app_state = AppState {
-        budget_handler: Arc::new(budget),
-    };
+    let handler = Handler::new(client);
 
-    let router = routes::configure_services().with_state(app_state);
+    let router = routes::configure_services().with_state(handler);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3001").await.unwrap();
-
+    
     axum::serve(listener, router).await.unwrap();
 }

@@ -1,6 +1,7 @@
+use finance_domains::Invoice;
 use uuid::Uuid;
 
-use crate::domains::{errors::Result, invoices::Invoice};
+use crate::domains::errors::Result;
 
 use super::SqlxRepository;
 

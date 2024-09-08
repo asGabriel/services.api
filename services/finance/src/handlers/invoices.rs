@@ -1,8 +1,9 @@
+use finance_domains::Invoice;
 use uuid::Uuid;
 
 use crate::domains::{
     errors::{Error, Result},
-    invoices::{Invoice, InvoicePayload},
+    invoices::InvoicePayload,
 };
 
 use super::Handler;

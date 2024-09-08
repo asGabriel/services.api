@@ -15,7 +15,7 @@ pub(super) fn configure_routes() -> Router<Handler> {
     Router::new().nest(
         "/invoices",
         Router::new()
-            .route("", get(list_invoices))
+            .route("/", get(list_invoices))
             .route("/{id}", get(get_invoice_by_id))
             .route("/", post(create_invoice)),
     )
