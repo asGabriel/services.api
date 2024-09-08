@@ -21,7 +21,7 @@ impl FinanceGateway for FinanceClient {
     }
 
     async fn list_entries(&self) -> Result<Vec<Entry>> {
-        let url = format!("{}/invoices", &self.url);
+        let url = format!("{}/entries", &self.url);
 
         let response = self.client.get(url).send().await?;
         let entries = response.json().await?;
