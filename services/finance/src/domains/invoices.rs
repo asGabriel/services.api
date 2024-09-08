@@ -1,6 +1,6 @@
 use bigdecimal::FromPrimitive;
 use chrono::{Month, Utc};
-use finance_domains::Invoice;
+use finance_domains::invoices::Invoice;
 use serde::{
     de::{self, Unexpected},
     Deserialize, Deserializer,
@@ -21,7 +21,7 @@ impl From<InvoicePayload> for Invoice {
 
         Invoice {
             invoice_id: Uuid::new_v4(),
-            title: Some(format!("Fatura de {} / {}", month.name(), payload.year)),
+            title: format!("Fatura de {} / {}", month.name(), payload.year),
             month: payload.month,
             year: payload.year,
             created_at: Utc::now(),

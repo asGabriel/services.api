@@ -1,4 +1,4 @@
-use finance_domains::Invoice;
+use finance_domains::invoices::Invoice;
 use uuid::Uuid;
 
 use crate::domains::{

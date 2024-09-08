@@ -1,4 +1,4 @@
-use finance_domains::{Entry, EntryStatus, EntryType};
+use finance_domains::entries::{Entry, EntryStatus, EntryType};
 use uuid::Uuid;
 
 use crate::domains::errors::Result;

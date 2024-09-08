@@ -1,4 +1,4 @@
-use finance_domains::Entry;
+use finance_domains::entries::Entry;
 use uuid::Uuid;
 
 use crate::domains::{

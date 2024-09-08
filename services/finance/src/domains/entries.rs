@@ -1,6 +1,6 @@
 use bigdecimal::BigDecimal;
 use chrono::{NaiveDate, Utc};
-use finance_domains::{Entry, EntryStatus, EntryType};
+use finance_domains::entries::{Entry, EntryStatus, EntryType};
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -27,7 +27,7 @@ impl From<EntryPayload> for Entry {
             value: payload.value,
             tag: payload.tag,
             due_date: payload.due_date,
-            status: EntryStatus::Pending,
+            status: EntryStatus::Pending, // TODO: implement Default
             created_at: Utc::now(),
             updated_at: None,
             deleted_at: None,

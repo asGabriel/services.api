@@ -1,18 +1,18 @@
 use std::sync::Arc;
 
-use finance_client::invoices::InvoicesGateway;
+use finance_client::finance::FinanceGateway;
 
-pub mod invoices;
+pub mod finance;
 
 #[derive(Clone)]
 pub struct Handler {
-    invoices_gateway: Arc<dyn InvoicesGateway + Send + Sync>,
+    finance_gateway: Arc<dyn FinanceGateway + Send + Sync>,
 }
 
 impl Handler {
-    pub const fn new(invoices_gateway: Arc<dyn InvoicesGateway + Send + Sync>) -> Self {
+    pub const fn new(finance_gateway: Arc<dyn FinanceGateway + Send + Sync>) -> Self {
         Self {
-            invoices_gateway: invoices_gateway,
+            finance_gateway: finance_gateway,
         }
     }
 }

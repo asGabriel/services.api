@@ -1,16 +1,22 @@
-pub mod invoices;
+use reqwest::Client;
 
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+pub mod finance;
+
+#[derive(Debug, Clone)]
+pub struct FinanceClient {
+    client: Client,
+    url: String,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl FinanceClient {
+    pub fn new() -> Self {
+        dotenv::dotenv().ok();
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+        let base_url = std::env::var("BASE_URL").expect("missing BASE_URL");
+
+        FinanceClient {
+            client: Client::new(),
+            url: base_url,
+        }
     }
 }
