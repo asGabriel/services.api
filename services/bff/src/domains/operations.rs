@@ -1,13 +1,19 @@
 use bigdecimal::{BigDecimal, FromPrimitive};
 use chrono::Month;
-use finance_domains::{entries::{Entry, EntryStatus}, invoices::Invoice};
+use finance_domains::{
+    entries::{Entry, EntryStatus, EntryType},
+    invoices::Invoice,
+};
+use serde::Serialize;
 use uuid::Uuid;
 
+#[derive(Debug, Serialize)]
 pub struct OperationsPage {
-    total: i16,
-    operations: Vec<InvoiceWithEntriesDetails>,
+    pub total: usize,
+    pub operations: Vec<InvoiceWithEntriesDetails>,
 }
 
+#[derive(Debug, Serialize)]
 pub struct InvoiceWithEntriesDetails {
     invoice_id: Uuid,
     title: String,
@@ -16,22 +22,51 @@ pub struct InvoiceWithEntriesDetails {
     entries_summary: EntriesSummaryDetails,
 }
 
+#[derive(Debug, Serialize)]
 pub struct EntriesSummaryDetails {
     revenue: BigDecimal,
     expenses: BigDecimal,
-    total_entries: u16,
+    total_entries: usize,
 }
 
 impl InvoiceWithEntriesDetails {
-    pub fn build(invoice: Invoice, entries: Vec<Entry>) -> Self {
-        let total_revenue = entries.iter().fold(BigDecimal::from_f64(0.0).unwrap(), |acc, entry| {
-            if entry.status == EntryStatus::Completed {
-                acc + entry.get_value()
-            } else {
-                acc
-            }
-        });
-    }
+    pub fn build(invoice: &Invoice, entries: Vec<&Entry>) -> Self {
+        let total_revenue =
+            entries
+                .iter()
+                .fold(BigDecimal::from_f64(0.0).unwrap(), |acc, entry| {
+                    if entry.status == EntryStatus::Completed
+                        && entry.entry_type == EntryType::Revenue
+                    {
+                        acc + entry.value.normalized()
+                    } else {
+                        acc
+                    }
+                });
 
-    todo!()
+        let total_expenses =
+            entries
+                .iter()
+                .fold(BigDecimal::from_f64(0.0).unwrap(), |acc, entry| {
+                    if entry.status == EntryStatus::Completed
+                        && entry.entry_type == EntryType::Expense
+                    {
+                        acc + entry.value.normalized()
+                    } else {
+                        acc
+                    }
+                });
+
+        InvoiceWithEntriesDetails {
+            invoice_id: invoice.invoice_id,
+            title: String::from(&invoice.title),
+            month: Month::from_i32(invoice.month).unwrap(),
+            year: invoice.year,
+            entries_summary: EntriesSummaryDetails {
+                expenses: total_expenses,
+                revenue: total_revenue,
+                total_entries: entries.len(),
+            },
+        }
+    }
 }

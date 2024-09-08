@@ -11,7 +11,6 @@ pub mod routes;
 async fn main() {
     let finance_gateway = Arc::new(FinanceClient::new()) as Arc<dyn FinanceGateway + Send + Sync>;
 
-
     let handler = Handler::new(finance_gateway);
 
     let router = routes::configure_services().with_state(handler);
