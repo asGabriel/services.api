@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use finance_client::invoices::{FinanceClient, InvoicesGateway};
+use finance_client::{finance::FinanceGateway, FinanceClient};
 use handlers::Handler;
 pub mod domains;
 pub mod gateways;
@@ -9,17 +9,14 @@ pub mod routes;
 
 #[tokio::main]
 async fn main() {
-    let client = Arc::new(FinanceClient::new()) as Arc<dyn InvoicesGateway + Send + Sync>;
+    let finance_gateway = Arc::new(FinanceClient::new()) as Arc<dyn FinanceGateway + Send + Sync>;
 
-    // let app_state = AppState {
-    //     budget_handler: Arc::new(budget),
-    // };
 
-    let handler = Handler::new(client);
+    let handler = Handler::new(finance_gateway);
 
     let router = routes::configure_services().with_state(handler);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3001").await.unwrap();
-    
+
     axum::serve(listener, router).await.unwrap();
 }
