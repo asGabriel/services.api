@@ -9,5 +9,6 @@ axum.workspace = true
 tokio.workspace = true
 async-trait.workspace = true
 reqwest.workspace = true
+uuid.workspace = true
 finance_domains = { path = "../../libs/finance" }
 http-problems = { path = "../../libs/http-problems" }

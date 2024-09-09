@@ -10,10 +10,40 @@ pub trait EntriesRepository {
     async fn list_entries(&self) -> Result<Vec<Entry>>;
     async fn get_entry_by_id(&self, entry_id: Uuid) -> Result<Option<Entry>>;
     async fn create_entry(&self, entry: Entry) -> Result<Entry>;
+    async fn get_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<Vec<Entry>>;
 }
 
 #[async_trait::async_trait]
 impl EntriesRepository for SqlxRepository {
+    async fn get_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<Vec<Entry>> {
+        let entries = sqlx::query_as!(
+            Entry,
+            r#"
+                SELECT 
+                    entry_id,
+                    invoice_id,
+                    entry_type as "entry_type!: EntryType",
+                    description, 
+                    value,
+                    due_date,
+                    tag,
+                    account_id,
+                    status as "status!: EntryStatus",
+                    created_at,
+                    updated_at,
+                    deleted_at
+                FROM entries
+                WHERE
+                    invoice_id = $1
+            "#,
+            invoice_id
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(entries)
+    }
+
     async fn list_entries(&self) -> Result<Vec<Entry>> {
         let entries = sqlx::query_as!(
             Entry,

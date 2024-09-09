@@ -16,9 +16,19 @@ pub(super) fn configure_routes() -> Router<Handler> {
         "/entries",
         Router::new()
             .route("/", get(list_entries))
-            .route("/{:id}", get(get_entry_by_id))
-            .route("/", post(create_entry)),
+            .route("/:id", get(get_entry_by_id))
+            .route("/", post(create_entry))
+            .route("/invoice/:id", get(list_entries_by_invoice_id)),
     )
+}
+
+async fn list_entries_by_invoice_id(
+    State(handler): State<Handler>,
+    Path(id): Path<Uuid>,
+) -> Result<impl IntoResponse> {
+    let entries = handler.list_entries_by_invoice_id(id).await?;
+
+    Ok(Json::from(entries))
 }
 
 async fn list_entries(State(handler): State<Handler>) -> Result<impl IntoResponse> {

@@ -1,5 +1,6 @@
-use finance_domains::entries::EntryStatus;
-use http_problems::errors::Result;
+use finance_domains::entries::{Entry, EntryStatus};
+use http_problems::errors::{Error, Result};
+use uuid::Uuid;
 
 use crate::domains::operations::{InvoiceWithEntriesDetails, OperationsPage};
 
@@ -26,5 +27,23 @@ impl Handler {
             total: invoices.len(),
             operations: operations,
         })
+    }
+
+    pub async fn get_entries_by_invoice_id(
+        &self,
+        invoice_id: Uuid,
+    ) -> Result<InvoiceWithEntriesDetails> {
+        let invoice = self.finance_gateway.get_invoice_by_id(invoice_id).await?;
+
+        let entries = self
+            .finance_gateway
+            .list_entries_by_invoice_id(invoice_id)
+            .await?;
+
+        let entries_ref = entries.iter().collect::<Vec<&Entry>>();
+
+        let result = InvoiceWithEntriesDetails::build(&invoice, entries_ref);
+
+        Ok(result)
     }
 }
