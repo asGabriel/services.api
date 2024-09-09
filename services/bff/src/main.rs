@@ -3,7 +3,6 @@ use std::sync::Arc;
 use finance_client::{finance::FinanceGateway, FinanceClient};
 use handlers::Handler;
 pub mod domains;
-pub mod gateways;
 pub mod handlers;
 pub mod routes;
 
