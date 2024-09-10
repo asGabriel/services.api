@@ -1,5 +1,5 @@
 use finance_domains::entries::{Entry, EntryStatus};
-use http_problems::errors::{Error, Result};
+use http_problems::errors::Result;
 use uuid::Uuid;
 
 use crate::domains::operations::{InvoiceWithEntriesDetails, OperationsPage};
