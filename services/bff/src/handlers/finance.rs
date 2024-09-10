@@ -2,7 +2,7 @@ use finance_domains::entries::{Entry, EntryStatus};
 use http_problems::errors::Result;
 use uuid::Uuid;
 
-use crate::domains::operations::{InvoiceWithEntriesDetails, OperationsPage};
+use crate::domains::operations::{InvoiceDetailsPage, InvoiceWithEntriesDetails, OperationsPage};
 
 use super::Handler;
 
@@ -32,7 +32,7 @@ impl Handler {
     pub async fn get_entries_by_invoice_id(
         &self,
         invoice_id: Uuid,
-    ) -> Result<InvoiceWithEntriesDetails> {
+    ) -> Result<InvoiceDetailsPage> {
         let invoice = self.finance_gateway.get_invoice_by_id(invoice_id).await?;
 
         let entries = self
@@ -41,9 +41,13 @@ impl Handler {
             .await?;
 
         let entries_ref = entries.iter().collect::<Vec<&Entry>>();
+        let details = InvoiceWithEntriesDetails::build(&invoice, entries_ref);
 
-        let result = InvoiceWithEntriesDetails::build(&invoice, entries_ref);
+        let details_page = InvoiceDetailsPage {
+            invoice: details,
+            entries: entries
+        };
 
-        Ok(result)
+        Ok(details_page)
     }
 }

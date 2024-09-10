@@ -14,6 +14,12 @@ pub struct OperationsPage {
 }
 
 #[derive(Debug, Serialize)]
+pub struct InvoiceDetailsPage {
+    pub invoice: InvoiceWithEntriesDetails,
+    pub entries: Vec<Entry>
+}
+
+#[derive(Debug, Serialize)]
 pub struct InvoiceWithEntriesDetails {
     invoice_id: Uuid,
     title: String,
