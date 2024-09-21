@@ -30,7 +30,7 @@ jobs:
       - name: Build Docker image
         run: |
           cd services/finance
-          docker build -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME -f Dockerfile .
 
       # push image to registry
       - name: Push Docker image
