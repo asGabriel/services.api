@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy_finance_service:
-    name: Setup Gcloud Account
+    name: deploy finance_service
     runs-on: ubuntu-latest
     environment: gcp-production
     env:
