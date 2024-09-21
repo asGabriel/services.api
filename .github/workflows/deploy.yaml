@@ -1,0 +1,41 @@
+name: deploy services
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy_finance_service:
+    name: finance service
+    runs-on: ubuntu-latest
+    environment: gcp-production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Build finance service Docker Image
+        run: |
+          cd services/finance
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/finance:v1 .
+
+      - name: Push finance service Docker Image
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/finance:v1
+
+      - name: Deploy finance service to Cloud Run
+        run: |
+          gcloud run deploy finance \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/finance:v1 \
+            --platform managed \
+            --region us-central1 \
+            --memory 256Mi \
+            --port 8080
+
+      - name: Clean Up
+        run: docker rmi gcr.io/${{ secrets.GCP_PROJECT_ID }}/finance:v1
+

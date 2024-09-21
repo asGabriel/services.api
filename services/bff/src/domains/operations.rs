@@ -8,18 +8,21 @@ use serde::Serialize;
 use uuid::Uuid;
 
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct OperationsPage {
     pub total: usize,
     pub operations: Vec<InvoiceWithEntriesDetails>,
 }
 
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct InvoiceDetailsPage {
     pub invoice: InvoiceWithEntriesDetails,
     pub entries: Vec<Entry>
 }
 
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct InvoiceWithEntriesDetails {
     invoice_id: Uuid,
     title: String,
@@ -29,6 +32,7 @@ pub struct InvoiceWithEntriesDetails {
 }
 
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct EntriesSummaryDetails {
     revenue: BigDecimal,
     expenses: BigDecimal,

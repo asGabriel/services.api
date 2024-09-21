@@ -12,7 +12,7 @@ pub mod routes;
 async fn main() {
     dotenv::dotenv().ok();
 
-    let conn_str = std::env::var("IAM_DATABASE_URL").expect("missing IAM_DATABASE_URL.");
+    let conn_str = std::env::var("DATABASE_URL").expect("missing env DATABASE_URL.");
 
     let pool = PgPoolOptions::new()
         .max_connections(5)
@@ -20,11 +20,5 @@ async fn main() {
         .await
         .expect("Couldn't connect to the database");
 
-    // execute_migration(&pool).await.expect("error running migrations");
-
     // let sqlx_repository = Arc::new(SqlxRepository::new(pool));
 }
-
-// async fn execute_migration(pool: &Pool<Postgres>) -> Result<(), MigrateError> {
-//     sqlx::migrate!().run(pool).await
-// }
