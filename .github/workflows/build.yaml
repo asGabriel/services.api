@@ -13,18 +13,18 @@ jobs:
   
   steps:
   - name: Checkout code
-      uses: actions/checkout@v3
+    uses: actions/checkout@v3
 
   - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+    uses: actions-rs/toolchain@v1
+    with:
+      toolchain: stable
 
-    - name: Cargo Check
-      run: cargo check
+  - name: Cargo Check
+    run: cargo check
 
-    - name: Tests
-      run: cargo test
+  - name: Tests
+    run: cargo test
 
   - name: GCP authentication
       uses: google-github-actions/auth@v1
