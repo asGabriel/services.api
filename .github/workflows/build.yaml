@@ -27,36 +27,36 @@ jobs:
     run: cargo test
 
   - name: GCP authentication
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+    uses: google-github-actions/auth@v1
+    with:
+      credentials_json: ${{ secrets.GCP_CREDENTIALS }}
   
   - name: Set up GCP SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        version: 'latest'
-        project_id: ${{ secrets.PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+    uses: google-github-actions/setup-gcloud@v1
+    with:
+      version: 'latest'
+      project_id: ${{ secrets.PROJECT_ID }}
+      service_account_key: ${{ secrets.GCP_CREDENTIALS }}
   
   - name: Authenticate Docker with GCR
-      run: |
-        gcloud auth configure-docker --quiet
+    run: |
+      gcloud auth configure-docker --quiet
 
   ## BUILD FINANCE SERVICE
   - name: Build Docker image
-      run: |
-        docker build -t $FINANCE_IMAGE_NAME .
+    run: |
+      docker build -t $FINANCE_IMAGE_NAME .
   
   - name: Push Docker image to GCR
-      run: |
-        docker push $FINANCE_IMAGE_NAME
+    run: |
+      docker push $FINANCE_IMAGE_NAME
 
   - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy finance-service \
-          --image gcr.io/${{ secrets.PROJECT_ID }}/finance_service:latest \
-          --region us-central1 \
-          --platform managed \
-          --allow-unauthenticated \
-          --service-account ${{ secrets.GCP_SA_USER }}
-          --set-env-vars PORT=${{ env.FINANCE_PORT }}
+    run: |
+      gcloud run deploy finance-service \
+        --image gcr.io/${{ secrets.PROJECT_ID }}/finance_service:latest \
+        --region us-central1 \
+        --platform managed \
+        --allow-unauthenticated \
+        --service-account ${{ secrets.GCP_SA_USER }}
+        --set-env-vars PORT=${{ env.FINANCE_PORT }}
