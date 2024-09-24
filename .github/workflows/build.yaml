@@ -17,17 +17,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # - name: Set up Rust
-    #   uses: actions-rs/toolchain@v1
-    #   with:
-    #     toolchain: stable
-
-    # - name: Cargo Check
-    #   run: cargo check
-
-    # - name: Tests
-    #   run: cargo test
-
     - name: GCP authentication
       uses: google-github-actions/auth@v1
       with:
@@ -47,7 +36,7 @@ jobs:
     ## BUILD FINANCE SERVICE
     - name: Build Docker finance_service image
       run: |
-        docker build -t $FINANCE_IMAGE_NAME .
+        docker build -t $FINANCE_IMAGE_NAME -f ./services/finance/Dockerfile ./services/finance
   
     - name: Push Docker finance_service image to GCR
       run: |
@@ -56,7 +45,7 @@ jobs:
     - name: Deploy finance_service to Cloud Run
       run: |
         gcloud run deploy finance-service \
-          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/finance_service:latest \
+          --image $FINANCE_IMAGE_NAME \
           --region us-central1 \
           --platform managed \
           --allow-unauthenticated \
@@ -66,7 +55,7 @@ jobs:
     ## BUILD BFF SERVICE
     - name: Build Docker bff_service image
       run: |
-        docker build -t $BFF_IMAGE_NAME .
+        docker build -t $BFF_IMAGE_NAME -f ./services/bff/Dockerfile ./services/bff
   
     - name: Push Docker bff_service image to GCR
       run: |
@@ -75,7 +64,7 @@ jobs:
     - name: Deploy bff_service to Cloud Run
       run: |
         gcloud run deploy bff-service \
-          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/bff_service:latest \
+          --image $BFF_IMAGE_NAME \
           --region us-central1 \
           --platform managed \
           --allow-unauthenticated \
