@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: gcp-production
     env:
-      FINANCE_IMAGE_NAME: gcr.io/${{ secrets.PROJECT_ID }}/finance_service:latest
-      BFF_IMAGE_NAME: gcr.io/${{ secrets.PROJECT_ID }}/bff_service:latest
+      FINANCE_IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/finance_service:latest
+      BFF_IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/bff_service:latest
   
     steps:
     - name: Checkout code
@@ -37,7 +37,7 @@ jobs:
       uses: google-github-actions/setup-gcloud@v1
       with:
         version: 'latest'
-        project_id: ${{ secrets.PROJECT_ID }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
         service_account_key: ${{ secrets.GCP_CREDENTIALS }}
   
     - name: Authenticate Docker with GCR
@@ -56,7 +56,7 @@ jobs:
     - name: Deploy finance_service to Cloud Run
       run: |
         gcloud run deploy finance-service \
-          --image gcr.io/${{ secrets.PROJECT_ID }}/finance_service:latest \
+          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/finance_service:latest \
           --region us-central1 \
           --platform managed \
           --allow-unauthenticated \
@@ -75,7 +75,7 @@ jobs:
     - name: Deploy bff_service to Cloud Run
       run: |
         gcloud run deploy bff-service \
-          --image gcr.io/${{ secrets.PROJECT_ID }}/bff_service:latest \
+          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/bff_service:latest \
           --region us-central1 \
           --platform managed \
           --allow-unauthenticated \
