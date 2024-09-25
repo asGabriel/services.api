@@ -66,8 +66,7 @@ jobs:
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated \
-            --service-account ${{ secrets.GCP_SA_USER }} \
-            --set-env-vars PORT=${{ env.FINANCE_PORT }}
+            --service-account ${{ secrets.GCP_SA_USER }}
 
       ## BUILD BFF SERVICE
       - name: Build Docker bff_service image
@@ -85,5 +84,4 @@ jobs:
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated \
-            --service-account ${{ secrets.GCP_SA_USER }} \
-            --set-env-vars PORT=${{ env.BFF_PORT }}
+            --service-account ${{ secrets.GCP_SA_USER }}
