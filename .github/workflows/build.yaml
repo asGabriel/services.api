@@ -53,7 +53,7 @@ jobs:
       ## BUILD DOCKER FINANCE SERVICE
       - name: Build Docker finance_service image
         run: |
-          docker build -t $FINANCE_IMAGE_NAME -f .
+          docker build -t $FINANCE_IMAGE_NAME -f ./Dockerfile .
 
       - name: Push Docker finance_service image to GCR
         run: |
@@ -72,7 +72,7 @@ jobs:
       ## BUILD BFF SERVICE
       - name: Build Docker bff_service image
         run: |
-          docker build -t $BFF_IMAGE_NAME -f .
+          docker build -t $BFF_IMAGE_NAME -f ./Dockerfile .
 
       - name: Push Docker bff_service image to GCR
         run: |
