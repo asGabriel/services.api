@@ -45,10 +45,15 @@ jobs:
         run: |
           gcloud auth configure-docker --quiet
 
-      ## BUILD FINANCE SERVICE
+      ## Build services
+      - name: Build the Rust project
+        run: |
+          cargo build --release --workspace
+
+      ## BUILD DOCKER FINANCE SERVICE
       - name: Build Docker finance_service image
         run: |
-          docker build -t $FINANCE_IMAGE_NAME -f ./services/finance/Dockerfile ./services/finance
+          docker build -t $FINANCE_IMAGE_NAME -f .
 
       - name: Push Docker finance_service image to GCR
         run: |
@@ -67,7 +72,7 @@ jobs:
       ## BUILD BFF SERVICE
       - name: Build Docker bff_service image
         run: |
-          docker build -t $BFF_IMAGE_NAME -f ./services/bff/Dockerfile ./services/bff
+          docker build -t $BFF_IMAGE_NAME -f .
 
       - name: Push Docker bff_service image to GCR
         run: |
