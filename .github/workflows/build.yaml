@@ -35,12 +35,6 @@ jobs:
           chmod +x cloud-sql-proxy
           ./cloud-sql-proxy ${{ secrets.GCP_DB_CONNECTION }} -p 5432 &
 
-      - name: Install SQLx CLI
-        run: cargo install sqlx-cli --no-default-features --features postgres
-
-      - name: Run migrations
-        run: cargo sqlx migrate run --database-url ${{ secrets.DATABASE_URL }}
-
       - name: Authenticate Docker with GCR
         run: |
           gcloud auth configure-docker --quiet
@@ -49,6 +43,9 @@ jobs:
       - name: Build the Rust project
         run: |
           cargo build --release --workspace
+
+      - name: Run migrations
+        run: cargo sqlx migrate run
 
       ## BUILD DOCKER FINANCE SERVICE
       - name: Build Docker finance_service image
