@@ -12,7 +12,6 @@ jobs:
     env:
       FINANCE_IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/finance_service:latest
       BFF_IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/bff_service:latest
-      DATABASE_URL: postgres://postgres:${{ secrets.GCP_DB_PW }}@127.0.0.1:5440/app-registry
 
     steps:
       - name: Checkout code
@@ -36,14 +35,11 @@ jobs:
           chmod +x cloud-sql-proxy
           ./cloud-sql-proxy ${{ secrets.GCP_DB_CONNECTION }} -p 5432 &
 
-      - name: Verify db connection with psql
-        run: |
-          sudo apt-get install -y postgresql-client
-          sleep 3
-          psql "host=127.0.0.1 port=5432 user=postgres dbname=app-registry password=${{ secrets.GCP_DB_PW }}" -c "SELECT 1"
+      - name: Install SQLx CLI
+        run: cargo install sqlx-cli --no-default-features --features postgres
 
       - name: Run migrations
-        run: cargo sqlx migrate run --database-url $DATABASE_URL
+        run: cargo sqlx migrate run --database-url ${{ secrets.DATABASE_URL }}
 
       - name: Authenticate Docker with GCR
         run: |
