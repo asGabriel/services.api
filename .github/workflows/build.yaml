@@ -44,9 +44,6 @@ jobs:
         run: |
           cargo build --release --workspace
 
-      - name: Run migrations
-        run: cargo sqlx migrate run
-
       ## BUILD DOCKER FINANCE SERVICE
       - name: Build Docker finance_service image
         run: |
