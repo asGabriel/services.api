@@ -1,11 +1,17 @@
 FROM debian:latest
 
+RUN apt-get update && apt-get install -y \
+ca-certificates \
+&& rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && \
+    apt-get install -y postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY target/release/finance ./finance
-COPY target/release/bff ./bff
 
 EXPOSE 8080
-EXPOSE 8081
 
-CMD ["sh", "-c", "./finance & ./bff"]
+CMD ./cloud-sql-proxy $GCP_DB_CONNECTION -p 5432 & ./finance

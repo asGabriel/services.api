@@ -12,7 +12,7 @@ impl FinanceClient {
     pub fn new() -> Self {
         dotenv::dotenv().ok();
 
-        let base_url = std::env::var("BASE_URL").expect("missing BASE_URL");
+        let base_url = std::env::var("BASE_URL").ok().and_then(|v| Some(v)).unwrap_or(String::from("http://localhost:8000"));
 
         FinanceClient {
             client: Client::new(),
