@@ -1,17 +1,22 @@
-FROM debian:latest
+FROM rustlang/rust:nightly-slim as builder
 
-RUN apt-get update && apt-get install -y \
-ca-certificates \
-&& rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y musl-tools --no-install-recommends
 
-RUN apt-get update && \
-    apt-get install -y postgresql-client && \
-    rm -rf /var/lib/apt/lists/*
+WORKDIR /usr/src/app
 
-WORKDIR /app
+RUN rustup target add x86_64-unknown-linux-musl
 
-COPY target/release/finance ./finance
+COPY . .
 
-EXPOSE 8080
+RUN cargo build --release --target x86_64-unknown-linux-musl
 
-CMD ./cloud-sql-proxy $GCP_DB_CONNECTION -p 5432 & ./finance
+FROM scratch
+
+ENV PORT 8080
+ENV FINANCE_PORT $PORT
+
+WORKDIR /usr/bin
+
+COPY --from=builder /usr/src/app/target/x86_64-unknown-linux-musl/release/finance_service .
+
+CMD ["finance_service"]
