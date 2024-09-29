@@ -31,7 +31,7 @@ async fn main() {
     let handler = Handler::new(sqlx_repository.clone(), sqlx_repository);
 
     let port = std::env::var("PORT").expect("Could not fetch port data.");
-    let addr = SocketAddr::from(([0, 0, 0, 0], port));
+    let addr = SocketAddr::from(([0, 0, 0, 0], port.to_string()));
 
     // TODO: remove layer when the CORS is solved also remove the tower lib
     let app = routes::configure_routes()
