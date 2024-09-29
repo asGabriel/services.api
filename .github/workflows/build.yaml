@@ -40,7 +40,7 @@ jobs:
       ## BUILD DOCKER FINANCE SERVICE
       - name: Build Docker finance_service image
         run: |
-          docker build -t $FINANCE_IMAGE_NAME -f ./Dockerfile .
+          docker build --platform linux/amd64 -t $FINANCE_IMAGE_NAME
 
       - name: Push Docker finance_service image to GCR
         run: |
