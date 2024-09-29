@@ -39,11 +39,6 @@ jobs:
         run: |
           gcloud auth configure-docker --quiet
 
-      ## Build services
-      - name: Build the Rust project
-        run: |
-          cargo build --release --workspace
-
       ## BUILD DOCKER FINANCE SERVICE
       - name: Build Docker finance_service image
         run: |
