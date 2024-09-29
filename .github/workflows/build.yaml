@@ -29,15 +29,13 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: Set up Cloud SQL Proxy
-        run: |
-          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.13.0/cloud-sql-proxy.linux.amd64
-          chmod +x cloud-sql-proxy
-          ./cloud-sql-proxy ${{ secrets.GCP_DB_CONNECTION }} -p 5432 &
-
       - name: Authenticate Docker with GCR
         run: |
           gcloud auth configure-docker --quiet
+
+      - name: Build the Rust project
+        run: |
+          cargo build --release --workspace
 
       ## BUILD DOCKER FINANCE SERVICE
       - name: Build Docker finance_service image
