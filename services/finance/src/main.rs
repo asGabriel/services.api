@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{net::SocketAddr, sync::Arc};
 
 use handlers::Handler;
 use repositories::SqlxRepository;
