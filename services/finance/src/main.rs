@@ -20,6 +20,7 @@ async fn main() {
     //     .unwrap();
 
     let conn_str = std::env::var("DATABASE_URL").expect("Could not fetch connection string.");
+    
     let pool = PgPoolOptions::new()
         .max_connections(10)
         .connect(&conn_str)
