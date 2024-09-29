@@ -30,7 +30,11 @@ async fn main() {
 
     let handler = Handler::new(sqlx_repository.clone(), sqlx_repository);
 
-    let port = std::env::var("PORT").expect("Could not fetch port data.");
+    let port: u16 = std::env::var("PORT")
+        .unwrap_or_else(|_| "8080".to_string())
+        .parse()
+        .expect("PORT must be a number");
+    
     let addr = SocketAddr::from(([0, 0, 0, 0], port.to_string()));
 
     // TODO: remove layer when the CORS is solved also remove the tower lib
