@@ -37,6 +37,7 @@ async fn create_invoice(
     Ok(Json::from(invoice))
 }
 
+// TODO: implements an route to search with params: (year+month) or (uuid)
 async fn get_invoice_by_id(
     State(handler): State<Handler>,
     Path(id): Path<Uuid>,
@@ -45,3 +46,4 @@ async fn get_invoice_by_id(
 
     Ok(Json::from(invoice))
 }
+

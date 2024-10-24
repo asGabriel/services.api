@@ -11,6 +11,7 @@ impl IntoResponse for Error {
             Self::NotFoundError(message) => (StatusCode::NOT_FOUND, format!("{message:?}")),
             Self::BadRequestError(message) => (StatusCode::BAD_REQUEST, format!("{message:?}")),
             Self::UnauthorizedError(message) => (StatusCode::UNAUTHORIZED, format!("{message:?}")),
+            Self::ConflictError(message) => (StatusCode::CONFLICT, format!("{message:?}")),
         }
         .into_response()
     }
@@ -28,6 +29,8 @@ pub enum Error {
     BadRequestError(String),
     #[error("UnauthorizedError")]
     UnauthorizedError(String),
+    #[error("ConflictError")]
+    ConflictError(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

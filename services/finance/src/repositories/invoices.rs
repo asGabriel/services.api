@@ -2,17 +2,46 @@ use app_shared::finance::invoices::Invoice;
 use http_problems::Result;
 use uuid::Uuid;
 
+use crate::domains::invoices::InvoicePayload;
+
 use super::SqlxRepository;
 
 #[async_trait::async_trait]
 pub trait InvoicesRepository {
     async fn list_invoices(&self) -> Result<Vec<Invoice>>;
     async fn get_invoice_by_id(&self, invoice_id: Uuid) -> Result<Option<Invoice>>;
+    async fn get_invoice_by_reference(&self, params: &InvoicePayload) -> Result<Option<Invoice>>;
     async fn create_invoice(&self, invoice: Invoice) -> Result<Invoice>;
 }
 
 #[async_trait::async_trait]
 impl InvoicesRepository for SqlxRepository {
+    async fn get_invoice_by_reference(&self, params: &InvoicePayload) -> Result<Option<Invoice>> {
+        let invoice = sqlx::query_as!(
+            Invoice,
+            r#"
+                SELECT
+                    invoice_id,
+                    title,
+                    month,
+                    year,
+                    created_at,
+                    updated_at,
+                    deleted_at
+                FROM invoices
+                WHERE
+                    year = $1
+                    AND month = $2
+            "#,
+            params.year,
+            params.month
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(invoice)
+    }
+
     async fn create_invoice(&self, invoice: Invoice) -> Result<Invoice> {
         let invoice = sqlx::query_as!(
             Invoice,

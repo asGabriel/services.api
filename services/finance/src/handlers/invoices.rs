@@ -22,6 +22,18 @@ impl Handler {
     }
 
     pub async fn create_invoice(&self, payload: InvoicePayload) -> Result<Invoice> {
+        let exists_invoice = self
+            .invoices_repository
+            .get_invoice_by_reference(&payload)
+            .await?;
+
+        if exists_invoice.is_some() {
+            return Err(Error::ConflictError(format!(
+                "Already exists an invoice of {}-{}",
+                payload.year, payload.month
+            )));
+        }
+
         let invoice = payload.into();
 
         self.invoices_repository.create_invoice(invoice).await

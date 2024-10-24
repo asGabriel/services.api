@@ -1,5 +1,6 @@
 use sqlx::PgPool;
 
+
 pub struct SqlxRepository {
     pool: PgPool,
 }
