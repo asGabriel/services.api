@@ -7,3 +7,4 @@ edition = "2021"
 thiserror.workspace = true
 reqwest.workspace = true
 axum.workspace = true
+sqlx.workspace = true

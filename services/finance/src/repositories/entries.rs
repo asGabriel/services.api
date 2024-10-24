@@ -1,7 +1,6 @@
-use finance_domains::entries::{Entry, EntryStatus, EntryType};
+use app_shared::finance::entries::{Entry, EntryStatus, EntryType};
+use http_problems::Result;
 use uuid::Uuid;
-
-use crate::domains::errors::Result;
 
 use super::SqlxRepository;
 

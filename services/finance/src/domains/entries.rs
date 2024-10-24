@@ -1,6 +1,6 @@
 use bigdecimal::BigDecimal;
 use chrono::{NaiveDate, Utc};
-use finance_domains::entries::{Entry, EntryStatus, EntryType};
+use app_shared::finance::entries::{Entry, EntryStatus, EntryType};
 use serde::Deserialize;
 use uuid::Uuid;
 

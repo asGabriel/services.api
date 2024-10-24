@@ -1,5 +1,5 @@
 [package]
-name = "finance_domains"
+name = "app-shared"
 version = "0.1.0"
 edition = "2021"
 

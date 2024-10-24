@@ -1,5 +1,5 @@
-use finance_domains::{entries::Entry, invoices::Invoice};
-use http_problems::errors::Result;
+use app_shared::finance::{entries::Entry, invoices::Invoice};
+use http_problems::Result;
 use uuid::Uuid;
 
 use crate::FinanceClient;

@@ -73,6 +73,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b3d1d046238990b9cf5bcde22a3fb3584ee5cf65fb2765f454ed428c7a0063da"
 
 [[package]]
+name = "app-shared"
+version = "0.1.0"
+dependencies = [
+ "bigdecimal",
+ "chrono",
+ "serde",
+ "sqlx",
+ "uuid",
+]
+
+[[package]]
 name = "async-stream"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -263,13 +274,13 @@ checksum = "8c3c1a368f70d6cf7302d78f8f7093da241fb8e8807c05cc9e51a125895a6d5b"
 name = "bff"
 version = "0.1.0"
 dependencies = [
+ "app-shared",
  "async-trait",
  "axum 0.7.5",
  "bigdecimal",
  "chrono",
  "dotenv",
- "finance_client",
- "finance_domains",
+ "finance-client",
  "http-problems",
  "prost",
  "reqwest",
@@ -555,13 +566,14 @@ dependencies = [
 name = "finance"
 version = "0.1.0"
 dependencies = [
+ "app-shared",
  "async-trait",
  "axum 0.7.5",
  "bigdecimal",
  "chrono",
  "dotenv",
  "fern",
- "finance_domains",
+ "http-problems",
  "log",
  "mockall",
  "serde",
@@ -573,27 +585,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "finance_client"
+name = "finance-client"
 version = "0.1.0"
 dependencies = [
+ "app-shared",
  "async-trait",
  "axum 0.7.5",
  "dotenv",
- "finance_domains",
  "http-problems",
  "reqwest",
  "tokio",
- "uuid",
-]
-
-[[package]]
-name = "finance_domains"
-version = "0.1.0"
-dependencies = [
- "bigdecimal",
- "chrono",
- "serde",
- "sqlx",
  "uuid",
 ]
 
@@ -928,6 +929,7 @@ version = "0.1.0"
 dependencies = [
  "axum 0.7.5",
  "reqwest",
+ "sqlx",
  "thiserror",
 ]
 

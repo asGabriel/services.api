@@ -1,26 +1,10 @@
 pub mod entries;
 pub mod invoices;
 
-use axum::{http::StatusCode, response::IntoResponse, Router};
+use axum::Router;
 
-use crate::{domains::errors::Error, handlers::Handler};
+use crate::handlers::Handler;
 
 pub(super) fn configure_routes() -> Router<Handler> {
     Router::new().merge(invoices::configure_routes().merge(entries::configure_routes()))
-}
-
-impl IntoResponse for Error {
-    fn into_response(self) -> axum::response::Response {
-        match self {
-            Self::DatabaseError(err) => (StatusCode::INTERNAL_SERVER_ERROR, format!("{err:?}")),
-            Self::InvoiceNotFound(id) => (
-                StatusCode::NOT_FOUND,
-                format!("Invoice id {id:?} not found"),
-            ),
-            Self::EntryNotFound(id) => {
-                (StatusCode::NOT_FOUND, format!("Entry id {id:?} not found"))
-            }
-        }
-        .into_response()
-    }
 }

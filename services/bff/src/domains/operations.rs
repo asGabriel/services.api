@@ -1,9 +1,6 @@
+use app_shared::finance::{entries::{Entry, EntryStatus, EntryType}, invoices::Invoice};
 use bigdecimal::{BigDecimal, FromPrimitive};
 use chrono::Month;
-use finance_domains::{
-    entries::{Entry, EntryStatus, EntryType},
-    invoices::Invoice,
-};
 use serde::Serialize;
 use uuid::Uuid;
 

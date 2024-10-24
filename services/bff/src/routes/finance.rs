@@ -4,7 +4,7 @@ use axum::{
     routing::get,
     Json, Router,
 };
-use http_problems::errors::Result;
+use http_problems::Result;
 use uuid::Uuid;
 
 use crate::handlers::Handler;

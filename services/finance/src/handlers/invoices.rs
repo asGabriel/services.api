@@ -1,10 +1,8 @@
-use finance_domains::invoices::Invoice;
+use app_shared::finance::invoices::Invoice;
+use http_problems::{Error, Result};
 use uuid::Uuid;
 
-use crate::domains::{
-    errors::{Error, Result},
-    invoices::InvoicePayload,
-};
+use crate::domains::invoices::InvoicePayload;
 
 use super::Handler;
 
@@ -17,7 +15,10 @@ impl Handler {
         self.invoices_repository
             .get_invoice_by_id(invoice_id)
             .await?
-            .ok_or(Error::InvoiceNotFound(invoice_id))
+            .ok_or(Error::NotFoundError(format!(
+                "Entry id {} not found.",
+                invoice_id.to_string()
+            )))
     }
 
     pub async fn create_invoice(&self, payload: InvoicePayload) -> Result<Invoice> {

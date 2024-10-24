@@ -4,10 +4,11 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
+use http_problems::Result;
 use uuid::Uuid;
 
 use crate::{
-    domains::{entries::EntryPayload, errors::Result},
+    domains::entries::EntryPayload,
     handlers::Handler,
 };
 

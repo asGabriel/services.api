@@ -1,10 +1,8 @@
-use finance_domains::entries::Entry;
+use app_shared::finance::entries::Entry;
+use http_problems::{Error, Result};
 use uuid::Uuid;
 
-use crate::domains::{
-    entries::EntryPayload,
-    errors::{Error, Result},
-};
+use crate::domains::entries::EntryPayload;
 
 use super::Handler;
 
@@ -17,7 +15,7 @@ impl Handler {
         self.entries_repository
             .get_entry_by_id(entry_id)
             .await?
-            .ok_or(Error::EntryNotFound(entry_id))
+            .ok_or(Error::NotFoundError(format!("Entry id {} not found.", entry_id.to_string())))
     }
 
     pub async fn create_entry(&self, payload: EntryPayload) -> Result<Entry> {

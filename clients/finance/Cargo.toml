@@ -1,5 +1,5 @@
 [package]
-name = "finance_client"
+name = "finance-client"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,5 +10,7 @@ tokio.workspace = true
 async-trait.workspace = true
 reqwest.workspace = true
 uuid.workspace = true
-finance_domains = { path = "../../libs/finance" }
-http-problems = { path = "../../libs/http-problems" }
+
+## libs
+app-shared.workspace = true
+http-problems.workspace = true

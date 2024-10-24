@@ -18,4 +18,7 @@ tower-http.workspace = true
 mockall = { workspace = true }
 log = { workspace = true }
 fern = { workspace = true }
-finance_domains = { path = "../../libs/finance" }
+
+## libs
+app-shared.workspace = true
+http-problems.workspace = true
