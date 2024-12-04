@@ -29,10 +29,7 @@ impl Handler {
         })
     }
 
-    pub async fn get_entries_by_invoice_id(
-        &self,
-        invoice_id: Uuid,
-    ) -> Result<InvoiceDetailsPage> {
+    pub async fn get_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<InvoiceDetailsPage> {
         let invoice = self.finance_gateway.get_invoice_by_id(invoice_id).await?;
 
         let entries = self
@@ -45,7 +42,7 @@ impl Handler {
 
         let details_page = InvoiceDetailsPage {
             invoice: details,
-            entries: entries
+            entries: entries,
         };
 
         Ok(details_page)

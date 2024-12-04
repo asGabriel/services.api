@@ -1,6 +1,6 @@
+use app_shared::finance::invoices::Invoice;
 use bigdecimal::FromPrimitive;
 use chrono::{Month, Utc};
-use app_shared::finance::invoices::Invoice;
 use serde::{
     de::{self, Unexpected},
     Deserialize, Deserializer,

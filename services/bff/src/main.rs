@@ -13,9 +13,11 @@ async fn main() {
 
     let handler = Handler::new(finance_gateway);
 
-    let router = routes::configure_services().with_state(handler).layer(CorsLayer::permissive());
+    let router = routes::configure_services()
+        .with_state(handler)
+        .layer(CorsLayer::permissive());
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3001").await.unwrap();
-    
+
     axum::serve(listener, router).await.unwrap();
 }

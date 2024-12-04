@@ -1,4 +1,7 @@
-use app_shared::finance::{entries::{Entry, EntryStatus, EntryType}, invoices::Invoice};
+use app_shared::finance::{
+    entries::{Entry, EntryStatus, EntryType},
+    invoices::Invoice,
+};
 use bigdecimal::{BigDecimal, FromPrimitive};
 use chrono::Month;
 use serde::Serialize;
@@ -15,7 +18,7 @@ pub struct OperationsPage {
 #[serde(rename_all = "camelCase")]
 pub struct InvoiceDetailsPage {
     pub invoice: InvoiceWithEntriesDetails,
-    pub entries: Vec<Entry>
+    pub entries: Vec<Entry>,
 }
 
 #[derive(Debug, Serialize)]

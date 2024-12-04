@@ -1,4 +1,0 @@
-ALTER TABLE entries
-    ALTER COLUMN tag SET NOT NULL,
-    ALTER COLUMN account_id SET NOT NULL,
-    ALTER COLUMN invoice_id SET NOT NULL;

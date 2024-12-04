@@ -20,7 +20,7 @@ async fn main() {
     //     .unwrap();
 
     let conn_str = std::env::var("DATABASE_URL").expect("Could not fetch connection string.");
-    
+
     let pool = PgPoolOptions::new()
         .max_connections(10)
         .connect(&conn_str)
@@ -29,7 +29,11 @@ async fn main() {
 
     let sqlx_repository = Arc::new(SqlxRepository::new(pool));
 
-    let handler = Handler::new(sqlx_repository.clone(), sqlx_repository);
+    let handler = Handler::new(
+        sqlx_repository.clone(),
+        sqlx_repository.clone(),
+        sqlx_repository,
+    );
 
     let port: u16 = std::env::var("PORT")
         .unwrap_or_else(|_| "8080".to_string())
