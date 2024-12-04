@@ -16,8 +16,7 @@ impl Handler {
             .get_entry_by_id(entry_id)
             .await?
             .ok_or(Error::NotFoundError(format!(
-                "Entry id {} not found.",
-                entry_id.to_string()
+                "Entry id {entry_id} not found.",
             )))
     }
 

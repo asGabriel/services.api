@@ -11,8 +11,6 @@ pub struct Handler {
 
 impl Handler {
     pub const fn new(finance_gateway: Arc<dyn FinanceGateway + Send + Sync>) -> Self {
-        Self {
-            finance_gateway: finance_gateway,
-        }
+        Self { finance_gateway }
     }
 }

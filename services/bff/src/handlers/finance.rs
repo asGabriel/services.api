@@ -19,13 +19,13 @@ impl Handler {
                     .filter(|e| e.status == EntryStatus::Completed)
                     .collect::<Vec<_>>();
 
-                return InvoiceWithEntriesDetails::build(invoice, related_entries);
+                InvoiceWithEntriesDetails::build(invoice, related_entries)
             })
             .collect::<Vec<InvoiceWithEntriesDetails>>();
 
         Ok(OperationsPage {
             total: invoices.len(),
-            operations: operations,
+            operations,
         })
     }
 
@@ -42,7 +42,7 @@ impl Handler {
 
         let details_page = InvoiceDetailsPage {
             invoice: details,
-            entries: entries,
+            entries,
         };
 
         Ok(details_page)
