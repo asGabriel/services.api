@@ -1,6 +1,6 @@
 [workspace]
 members = ["clients/*", "libs/*", "services/*"]
-exclude = ["services/budget"]
+exclude = ["services/budget", "services/iam"]
 resolver = "2"
 
 [workspace.dependencies]

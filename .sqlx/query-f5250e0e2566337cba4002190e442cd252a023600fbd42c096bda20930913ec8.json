@@ -1,0 +1,65 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT \n                    account_id,\n                    bank_name as \"bank_name!: Bank\",\n                    owner,\n                    created_at, \n                    updated_at,\n                    deleted_at\n                FROM accounts\n                WHERE\n                    deleted_at is null\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "account_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "bank_name!: Bank",
+        "type_info": {
+          "Custom": {
+            "name": "bank",
+            "kind": {
+              "Enum": [
+                "NUBANK",
+                "INTER",
+                "SANTANDER",
+                "ITAU",
+                "BRADESCO",
+                "BANCO_DO_BRASIL",
+                "SWILE"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "owner",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "deleted_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "f5250e0e2566337cba4002190e442cd252a023600fbd42c096bda20930913ec8"
+}

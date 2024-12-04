@@ -15,7 +15,9 @@ impl Handler {
         self.entries_repository
             .get_entry_by_id(entry_id)
             .await?
-            .ok_or(Error::NotFoundError(format!("Entry id {} not found.", entry_id.to_string())))
+            .ok_or(Error::NotFoundError(format!(
+                "Entry id {entry_id} not found.",
+            )))
     }
 
     pub async fn create_entry(&self, payload: EntryPayload) -> Result<Entry> {

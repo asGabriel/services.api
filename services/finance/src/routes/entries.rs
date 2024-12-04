@@ -7,10 +7,7 @@ use axum::{
 use http_problems::Result;
 use uuid::Uuid;
 
-use crate::{
-    domains::entries::EntryPayload,
-    handlers::Handler,
-};
+use crate::{domains::entries::EntryPayload, handlers::Handler};
 
 pub(super) fn configure_routes() -> Router<Handler> {
     Router::new().nest(

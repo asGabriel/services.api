@@ -1,6 +1,6 @@
+use app_shared::finance::entries::{Entry, EntryStatus, EntryType};
 use bigdecimal::BigDecimal;
 use chrono::{NaiveDate, Utc};
-use app_shared::finance::entries::{Entry, EntryStatus, EntryType};
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -12,8 +12,9 @@ pub struct EntryPayload {
     pub description: String,
     pub value: BigDecimal,
     pub due_date: NaiveDate,
-    pub tag: String,        // TODO implement categories creation
-    pub account_id: String, // TODO implement accounts creation
+    // TODO implement categories creation
+    pub tag: String,
+    pub account_id: Uuid,
 }
 
 impl From<EntryPayload> for Entry {

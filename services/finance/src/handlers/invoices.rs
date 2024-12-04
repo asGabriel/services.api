@@ -16,8 +16,7 @@ impl Handler {
             .get_invoice_by_id(invoice_id)
             .await?
             .ok_or(Error::NotFoundError(format!(
-                "Entry id {} not found.",
-                invoice_id.to_string()
+                "Entry id {invoice_id} not found.",
             )))
     }
 

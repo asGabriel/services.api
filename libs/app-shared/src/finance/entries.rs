@@ -13,8 +13,9 @@ pub struct Entry {
     pub description: String,
     pub value: BigDecimal,
     pub due_date: NaiveDate,
-    pub tag: String,        // TODO implement categories creation
-    pub account_id: String, // TODO implement accounts creation
+    // TODO implement categories creation
+    pub tag: String,
+    pub account_id: Uuid,
     pub status: EntryStatus,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]

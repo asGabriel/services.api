@@ -7,10 +7,7 @@ use axum::{
 use http_problems::Result;
 use uuid::Uuid;
 
-use crate::{
-    domains::invoices::InvoicePayload,
-    handlers::Handler,
-};
+use crate::{domains::invoices::InvoicePayload, handlers::Handler};
 
 pub(super) fn configure_routes() -> Router<Handler> {
     Router::new().nest(
@@ -46,4 +43,3 @@ async fn get_invoice_by_id(
 
     Ok(Json::from(invoice))
 }
-

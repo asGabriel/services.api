@@ -19,20 +19,17 @@ impl Handler {
                     .filter(|e| e.status == EntryStatus::Completed)
                     .collect::<Vec<_>>();
 
-                return InvoiceWithEntriesDetails::build(invoice, related_entries);
+                InvoiceWithEntriesDetails::build(invoice, related_entries)
             })
             .collect::<Vec<InvoiceWithEntriesDetails>>();
 
         Ok(OperationsPage {
             total: invoices.len(),
-            operations: operations,
+            operations,
         })
     }
 
-    pub async fn get_entries_by_invoice_id(
-        &self,
-        invoice_id: Uuid,
-    ) -> Result<InvoiceDetailsPage> {
+    pub async fn get_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<InvoiceDetailsPage> {
         let invoice = self.finance_gateway.get_invoice_by_id(invoice_id).await?;
 
         let entries = self
@@ -45,7 +42,7 @@ impl Handler {
 
         let details_page = InvoiceDetailsPage {
             invoice: details,
-            entries: entries
+            entries,
         };
 
         Ok(details_page)

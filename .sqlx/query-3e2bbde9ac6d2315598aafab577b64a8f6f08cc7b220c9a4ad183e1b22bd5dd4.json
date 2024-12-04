@@ -51,7 +51,7 @@
       {
         "ordinal": 7,
         "name": "account_id",
-        "type_info": "Text"
+        "type_info": "Uuid"
       },
       {
         "ordinal": 8,
@@ -104,7 +104,7 @@
         "Numeric",
         "Date",
         "Text",
-        "Text",
+        "Uuid",
         {
           "Custom": {
             "name": "entry_status",

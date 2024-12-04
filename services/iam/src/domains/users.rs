@@ -16,5 +16,5 @@ pub struct User {
 }
 
 pub struct Profile {
-    pub name: String
+    pub name: String,
 }
