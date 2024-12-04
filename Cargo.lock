@@ -1039,21 +1039,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "iam"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "axum 0.7.5",
- "chrono",
- "dotenv",
- "serde",
- "sqlx",
- "thiserror",
- "tokio",
- "uuid",
-]
-
-[[package]]
 name = "iana-time-zone"
 version = "0.1.60"
 source = "registry+https://github.com/rust-lang/crates.io-index"
