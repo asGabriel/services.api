@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    invoice_id,\n                    title,\n                    month,\n                    year,\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM invoices\n                WHERE\n                    year = $1\n                    AND month = $2\n            ",
+  "query": "\n                SELECT\n                    invoice_id,\n                    title,\n                    month,\n                    year,\n                    is_parent,\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM invoices\n            ",
   "describe": {
     "columns": [
       {
@@ -25,27 +25,30 @@
       },
       {
         "ordinal": 4,
+        "name": "is_parent",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "updated_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "deleted_at",
         "type_info": "Timestamptz"
       }
     ],
     "parameters": {
-      "Left": [
-        "Int2",
-        "Int4"
-      ]
+      "Left": []
     },
     "nullable": [
+      false,
       false,
       false,
       false,
@@ -55,5 +58,5 @@
       true
     ]
   },
-  "hash": "2b2185f8586ea021d8555f4e61a79fffcac01ce472b7f48ef306de4e9bad759d"
+  "hash": "342ed3b8a67382cc4c092c883d8ffed74b55776b1a47780c83e570a00c290f95"
 }

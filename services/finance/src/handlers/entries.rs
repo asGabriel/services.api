@@ -1,8 +1,7 @@
-use app_shared::finance::entries::Entry;
 use http_problems::{Error, Result};
 use uuid::Uuid;
 
-use crate::domains::entries::EntryPayload;
+use crate::domains::entries::{Entry, EntryPayload};
 
 use super::Handler;
 

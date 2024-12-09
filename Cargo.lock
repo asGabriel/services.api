@@ -566,7 +566,6 @@ dependencies = [
 name = "finance"
 version = "0.1.0"
 dependencies = [
- "app-shared",
  "async-trait",
  "axum 0.7.5",
  "bigdecimal",
