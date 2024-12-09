@@ -20,5 +20,4 @@ log = { workspace = true }
 fern = { workspace = true }
 
 ## libs
-app-shared.workspace = true
 http-problems.workspace = true

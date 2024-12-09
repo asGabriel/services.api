@@ -1,8 +1,7 @@
-use app_shared::finance::invoices::Invoice;
 use http_problems::Result;
 use uuid::Uuid;
 
-use crate::domains::invoices::InvoicePayload;
+use crate::domains::invoices::{Invoice, InvoicePayload};
 
 use super::SqlxRepository;
 
@@ -25,6 +24,7 @@ impl InvoicesRepository for SqlxRepository {
                     title,
                     month,
                     year,
+                    is_parent,
                     created_at,
                     updated_at,
                     deleted_at
@@ -32,6 +32,7 @@ impl InvoicesRepository for SqlxRepository {
                 WHERE
                     year = $1
                     AND month = $2
+                    AND is_parent IS TRUE
             "#,
             params.year,
             params.month
@@ -51,16 +52,18 @@ impl InvoicesRepository for SqlxRepository {
                     title,
                     month,
                     year,
+                    is_parent,
                     created_at,
                     updated_at,
                     deleted_at
                     ) VALUES (
-                        $1, $2, $3, $4, $5, $6, $7
+                        $1, $2, $3, $4, $5, $6, $7, $8
                     ) RETURNING
                         invoice_id,
                         title,
                         month,
                         year,
+                        is_parent,
                         created_at,
                         updated_at,
                         deleted_at
@@ -70,6 +73,7 @@ impl InvoicesRepository for SqlxRepository {
             invoice.title,
             invoice.month,
             invoice.year,
+            invoice.is_parent,
             invoice.created_at,
             invoice.updated_at,
             invoice.deleted_at
@@ -89,6 +93,7 @@ impl InvoicesRepository for SqlxRepository {
                     title,
                     month,
                     year,
+                    is_parent,
                     created_at,
                     updated_at,
                     deleted_at
@@ -113,6 +118,7 @@ impl InvoicesRepository for SqlxRepository {
                     title,
                     month,
                     year,
+                    is_parent,
                     created_at,
                     updated_at,
                     deleted_at

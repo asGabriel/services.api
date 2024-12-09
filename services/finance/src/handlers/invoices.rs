@@ -1,8 +1,7 @@
-use app_shared::finance::invoices::Invoice;
 use http_problems::{Error, Result};
 use uuid::Uuid;
 
-use crate::domains::invoices::InvoicePayload;
+use crate::domains::invoices::{Invoice, InvoicePayload};
 
 use super::Handler;
 
@@ -21,12 +20,18 @@ impl Handler {
     }
 
     pub async fn create_invoice(&self, payload: InvoicePayload) -> Result<Invoice> {
+        if payload.check_invalid_child_invoice() {
+            return Err(Error::BadRequestError(
+                "Child invoice must have a title".to_string(),
+            ));
+        }
+
         let exists_invoice = self
             .invoices_repository
             .get_invoice_by_reference(&payload)
             .await?;
 
-        if exists_invoice.is_some() {
+        if exists_invoice.is_some() && payload.is_parent() {
             return Err(Error::ConflictError(format!(
                 "Already exists an invoice of {}-{}",
                 payload.year, payload.month
