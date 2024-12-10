@@ -14,15 +14,15 @@ pub mod routes;
 async fn main() {
     dotenv::dotenv().ok();
 
-    // let max_pool_conections = std::env::var("MAX_POOL_CONECTIONS")
-    //     .expect("Could not fetch max pool connections.")
-    //     .parse::<u32>()
-    //     .unwrap();
+    let max_pool_conections = std::env::var("MAX_POOL_CONECTIONS")
+        .expect("Could not fetch max pool connections.")
+        .parse::<u32>()
+        .unwrap();
 
     let conn_str = std::env::var("DATABASE_URL").expect("Could not fetch connection string.");
 
     let pool = PgPoolOptions::new()
-        .max_connections(10)
+        .max_connections(max_pool_conections)
         .connect(&conn_str)
         .await
         .expect("Couldn't connect to the database");
@@ -30,6 +30,7 @@ async fn main() {
     let sqlx_repository = Arc::new(SqlxRepository::new(pool));
 
     let handler = Handler::new(
+        sqlx_repository.clone(),
         sqlx_repository.clone(),
         sqlx_repository.clone(),
         sqlx_repository,

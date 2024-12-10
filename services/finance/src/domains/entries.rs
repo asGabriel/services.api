@@ -13,8 +13,6 @@ pub struct Entry {
     pub description: String,
     pub value: BigDecimal,
     pub due_date: NaiveDate,
-    // TODO implement categories creation
-    pub tag: String,
     pub account_id: Uuid,
     pub status: EntryStatus,
     pub created_at: DateTime<Utc>,
@@ -49,7 +47,6 @@ pub struct EntryPayload {
     pub description: String,
     pub value: BigDecimal,
     pub due_date: NaiveDate,
-    // TODO implement categories creation
     pub tag: String,
     pub account_id: Uuid,
 }
@@ -63,7 +60,6 @@ impl From<EntryPayload> for Entry {
             entry_type: payload.entry_type,
             description: payload.description,
             value: payload.value,
-            tag: payload.tag,
             due_date: payload.due_date,
             status: EntryStatus::Pending, // TODO: implement Default
             created_at: Utc::now(),

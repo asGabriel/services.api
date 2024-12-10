@@ -54,12 +54,24 @@ CREATE TABLE entries (
     description TEXT NOT NULL,
     value NUMERIC NOT NULL,
     due_date DATE NOT NULL,
-    tag TEXT NOT NULL, 
     account_id UUID NOT NULL REFERENCES accounts(account_id),
     status entry_status NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE,
     deleted_at TIMESTAMP WITH TIME ZONE
+);
+
+-- TAGS TABLE
+CREATE TABLE tags(
+    tag_id INT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+
+-- ENTRIES TAGS TABLE
+CREATE TABLE entries_tags (
+    entry_id UUID NOT NULL REFERENCES entries(entry_id),
+    tag_id INT NOT NULL REFERENCES tags(tag_id),
+    PRIMARY KEY (entry_id, tag_id)
 );
 
 -- SUB INVOICES TABLE
@@ -70,3 +82,26 @@ CREATE TABLE invoice_relations (
     FOREIGN KEY (parent_invoice_id) REFERENCES invoices(invoice_id),
     FOREIGN KEY (child_invoice_id) REFERENCES invoices(invoice_id)
 );
+
+-- INDEXES
+-- INVOICES TABLE
+CREATE INDEX idx_invoices_month_year ON invoices (month, year);
+CREATE INDEX idx_invoices_is_parent ON invoices (is_parent);
+
+-- ENTRIES TABLE
+CREATE INDEX idx_entries_invoice_id ON entries (invoice_id);
+CREATE INDEX idx_entries_entry_type ON entries (entry_type);
+CREATE INDEX idx_entries_due_date ON entries (due_date);
+CREATE INDEX idx_entries_account_id ON entries (account_id);
+CREATE INDEX idx_entries_status ON entries (status);
+
+-- INVOICE RELATIONS TABLES
+CREATE INDEX idx_invoice_relations_parent ON invoice_relations (parent_invoice_id);
+CREATE INDEX idx_invoice_relations_child ON invoice_relations (child_invoice_id);
+
+-- TAGS
+CREATE INDEX idx_tags_value ON tags (value);
+
+-- ENTRIES TAGS
+CREATE INDEX idx_entries_tags_entry_id ON entries_tags (entry_id);
+CREATE INDEX idx_entries_tags_tag_id ON entries_tags (tag_id);
