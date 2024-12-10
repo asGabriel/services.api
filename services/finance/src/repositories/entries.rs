@@ -26,7 +26,6 @@ impl EntriesRepository for SqlxRepository {
                     description, 
                     value,
                     due_date,
-                    tag,
                     account_id,
                     status as "status!: EntryStatus",
                     created_at,
@@ -55,7 +54,6 @@ impl EntriesRepository for SqlxRepository {
                     description, 
                     value,
                     due_date,
-                    tag,
                     account_id,
                     status as "status!: EntryStatus",
                     created_at,
@@ -81,7 +79,6 @@ impl EntriesRepository for SqlxRepository {
                     description, 
                     value,
                     due_date,
-                    tag,
                     account_id,
                     status as "status!: EntryStatus",
                     created_at,
@@ -110,14 +107,13 @@ impl EntriesRepository for SqlxRepository {
                         description, 
                         value,
                         due_date,
-                        tag,
                         account_id,
                         status,
                         created_at,
                         updated_at,
                         deleted_at
                     ) VALUES (
-                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
                     ) RETURNING
                         entry_id,
                         invoice_id,
@@ -125,7 +121,6 @@ impl EntriesRepository for SqlxRepository {
                         description, 
                         value,
                         due_date,
-                        tag,
                         account_id,
                         status as "status!: EntryStatus",
                         created_at,
@@ -139,7 +134,6 @@ impl EntriesRepository for SqlxRepository {
             entry.description,
             entry.value.normalized(),
             entry.due_date,
-            entry.tag,
             entry.account_id,
             entry.status as EntryStatus,
             entry.created_at,

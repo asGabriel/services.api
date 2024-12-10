@@ -1,6 +1,7 @@
 pub mod accounts;
 pub mod entries;
 pub mod invoices;
+pub mod tags;
 
 use axum::Router;
 
@@ -12,6 +13,7 @@ pub(super) fn configure_routes() -> Router<Handler> {
         Router::new()
             .merge(invoices::configure_routes())
             .merge(entries::configure_routes())
-            .merge(accounts::configure_routes()),
+            .merge(accounts::configure_routes())
+            .merge(tags::configure_routes()),
     )
 }
