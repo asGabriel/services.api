@@ -10,7 +10,7 @@ impl Handler {
     }
 
     pub async fn insert_many_tags(&self, tags: Vec<String>) -> Result<()> {
-        let new_tags = tags.into_iter().enumerate().map(|(i, t)| (i, t)).collect();
+        let new_tags = tags.into_iter().enumerate().collect();
 
         self.tags_repository.insert_many_tags(new_tags).await
     }
