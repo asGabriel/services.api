@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO entries (\n                        entry_id,\n                        invoice_id,\n                        entry_type,\n                        description, \n                        value,\n                        due_date,\n                        tag,\n                        account_id,\n                        status,\n                        created_at,\n                        updated_at,\n                        deleted_at\n                    ) VALUES (\n                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12\n                    ) RETURNING\n                        entry_id,\n                        invoice_id,\n                        entry_type as \"entry_type!: EntryType\",\n                        description, \n                        value,\n                        due_date,\n                        tag,\n                        account_id,\n                        status as \"status!: EntryStatus\",\n                        created_at,\n                        updated_at,\n                        deleted_at\n                \n            ",
+  "query": "\n                INSERT INTO entries (\n                        entry_id,\n                        invoice_id,\n                        entry_type,\n                        description, \n                        value,\n                        due_date,\n                        account_id,\n                        status,\n                        created_at,\n                        updated_at,\n                        deleted_at\n                    ) VALUES (\n                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11\n                    ) RETURNING\n                        entry_id,\n                        invoice_id,\n                        entry_type as \"entry_type!: EntryType\",\n                        description, \n                        value,\n                        due_date,\n                        account_id,\n                        status as \"status!: EntryStatus\",\n                        created_at,\n                        updated_at,\n                        deleted_at\n                \n            ",
   "describe": {
     "columns": [
       {
@@ -45,16 +45,11 @@
       },
       {
         "ordinal": 6,
-        "name": "tag",
-        "type_info": "Text"
-      },
-      {
-        "ordinal": 7,
         "name": "account_id",
         "type_info": "Uuid"
       },
       {
-        "ordinal": 8,
+        "ordinal": 7,
         "name": "status!: EntryStatus",
         "type_info": {
           "Custom": {
@@ -70,17 +65,17 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 8,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 10,
+        "ordinal": 9,
         "name": "updated_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 11,
+        "ordinal": 10,
         "name": "deleted_at",
         "type_info": "Timestamptz"
       }
@@ -103,7 +98,6 @@
         "Text",
         "Numeric",
         "Date",
-        "Text",
         "Uuid",
         {
           "Custom": {
@@ -132,10 +126,9 @@
       false,
       false,
       false,
-      false,
       true,
       true
     ]
   },
-  "hash": "3e2bbde9ac6d2315598aafab577b64a8f6f08cc7b220c9a4ad183e1b22bd5dd4"
+  "hash": "466f2d78a4a5b10eca89c93511d810034e4c7216cfff000aacf24bb778611d8e"
 }

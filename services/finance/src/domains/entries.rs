@@ -39,7 +39,7 @@ pub enum EntryType {
     Expense,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct EntryPayload {
     pub invoice_id: Uuid,
@@ -47,7 +47,7 @@ pub struct EntryPayload {
     pub description: String,
     pub value: BigDecimal,
     pub due_date: NaiveDate,
-    pub tag: String,
+    pub tag: Vec<String>,
     pub account_id: Uuid,
 }
 

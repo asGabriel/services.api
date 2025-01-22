@@ -18,6 +18,7 @@ tower-http.workspace = true
 mockall = { workspace = true }
 log = { workspace = true }
 fern = { workspace = true }
+tokio-cron-scheduler = { workspace = true }
 
 ## libs
 http-problems.workspace = true

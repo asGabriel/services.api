@@ -1,0 +1,20 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT MAX(tag_id) as max_id FROM tags",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "max_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "130a330885aef32daf7d1066ead82ddf0ee08ff1325b597d4da7b5981d2c8826"
+}

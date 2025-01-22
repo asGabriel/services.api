@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    entry_id,\n                    invoice_id,\n                    entry_type as \"entry_type!: EntryType\",\n                    description, \n                    value,\n                    due_date,\n                    tag,\n                    account_id,\n                    status as \"status!: EntryStatus\",\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM entries\n            ",
+  "query": "\n                SELECT\n                    entry_id,\n                    invoice_id,\n                    entry_type as \"entry_type!: EntryType\",\n                    description, \n                    value,\n                    due_date,\n                    account_id,\n                    status as \"status!: EntryStatus\",\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM entries\n            ",
   "describe": {
     "columns": [
       {
@@ -45,16 +45,11 @@
       },
       {
         "ordinal": 6,
-        "name": "tag",
-        "type_info": "Text"
-      },
-      {
-        "ordinal": 7,
         "name": "account_id",
         "type_info": "Uuid"
       },
       {
-        "ordinal": 8,
+        "ordinal": 7,
         "name": "status!: EntryStatus",
         "type_info": {
           "Custom": {
@@ -70,17 +65,17 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 8,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 10,
+        "ordinal": 9,
         "name": "updated_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 11,
+        "ordinal": 10,
         "name": "deleted_at",
         "type_info": "Timestamptz"
       }
@@ -98,10 +93,9 @@
       false,
       false,
       false,
-      false,
       true,
       true
     ]
   },
-  "hash": "b8b215531f10a106147d71edb5bc0a31f6f1ccf8841671118d7fb807f329145f"
+  "hash": "09c486db6a0ee802bb5b5ad0c706dbc83cf9f56316b62dfdc4bb8f98600b02db"
 }

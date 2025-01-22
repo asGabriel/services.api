@@ -1,5 +1,5 @@
 use bigdecimal::FromPrimitive;
-use chrono::{DateTime, Month, Utc};
+use chrono::{DateTime, Datelike, Month, Utc};
 use serde::{
     de::{self, Unexpected},
     Deserialize, Deserializer, Serialize,
@@ -13,7 +13,7 @@ pub struct Invoice {
     pub title: String,
     pub month: i32,
     pub year: i16,
-    pub is_parent: bool,
+    pub is_main: bool,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -21,40 +21,44 @@ pub struct Invoice {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
+impl Default for Invoice {
+    fn default() -> Self {
+        let now = Utc::now();
+        let (year, month) = (now.year(), now.month());
+
+        let month_name = Month::from_u32(month).unwrap();
+
+        Self {
+            invoice_id: Uuid::new_v4(),
+            title: format!("Fatura de {} / {}", month_name.name(), year),
+            month: month as i32,
+            year: year as i16,
+            is_main: true,
+            created_at: Utc::now(),
+            updated_at: None,
+            deleted_at: None,
+        }
+    }
+}
+
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InvoicePayload {
-    pub title: Option<String>,
+    pub title: String,
     #[serde(deserialize_with = "validate_month")]
     pub month: i32,
     pub year: i16,
-    pub is_parent: bool,
-}
-
-impl InvoicePayload {
-    pub fn is_parent(&self) -> bool {
-        self.is_parent
-    }
-
-    pub fn check_invalid_child_invoice(&self) -> bool {
-        !self.is_parent && self.title.is_none()
-    }
+    pub main_invoice: Option<Uuid>
 }
 
 impl From<InvoicePayload> for Invoice {
     fn from(payload: InvoicePayload) -> Self {
-        let month = Month::from_i32(payload.month).unwrap();
-
         Invoice {
             invoice_id: Uuid::new_v4(),
-            title: payload.title.unwrap_or(format!(
-                "Fatura de {} / {}",
-                month.name(),
-                payload.year
-            )),
+            title: payload.title,
             month: payload.month,
             year: payload.year,
-            is_parent: payload.is_parent,
+            is_main: false,
             created_at: Utc::now(),
             updated_at: None,
             deleted_at: None,

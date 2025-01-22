@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    invoice_id,\n                    title,\n                    month,\n                    year,\n                    is_parent,\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM invoices\n                WHERE\n                    invoice_id = $1\n            ",
+  "query": "\n                INSERT INTO invoices (\n                    invoice_id,\n                    title,\n                    month,\n                    year,\n                    is_main,\n                    created_at,\n                    updated_at,\n                    deleted_at\n                    ) VALUES (\n                        $1, $2, $3, $4, $5, $6, $7, $8\n                    ) RETURNING\n                        invoice_id,\n                        title,\n                        month,\n                        year,\n                        is_main,\n                        created_at,\n                        updated_at,\n                        deleted_at\n                \n            ",
   "describe": {
     "columns": [
       {
@@ -25,7 +25,7 @@
       },
       {
         "ordinal": 4,
-        "name": "is_parent",
+        "name": "is_main",
         "type_info": "Bool"
       },
       {
@@ -46,7 +46,14 @@
     ],
     "parameters": {
       "Left": [
-        "Uuid"
+        "Uuid",
+        "Text",
+        "Int4",
+        "Int2",
+        "Bool",
+        "Timestamptz",
+        "Timestamptz",
+        "Timestamptz"
       ]
     },
     "nullable": [
@@ -60,5 +67,5 @@
       true
     ]
   },
-  "hash": "dd23ab9d8833c9c9c2e25de1627d76693a80e939960f2a78e94f6877952f33b7"
+  "hash": "123f5b97dedafe6601f96f4602b3f7335e344837d2bef2f1e53887be58a93d48"
 }

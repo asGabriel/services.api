@@ -1,7 +1,7 @@
 use http_problems::Result;
 use uuid::Uuid;
 
-use crate::domains::invoices::{Invoice, InvoicePayload};
+use crate::{domains::invoices::Invoice, handlers::invoices::InvoiceReferenceParams};
 
 use super::SqlxRepository;
 
@@ -9,13 +9,13 @@ use super::SqlxRepository;
 pub trait InvoicesRepository {
     async fn list_invoices(&self) -> Result<Vec<Invoice>>;
     async fn get_invoice_by_id(&self, invoice_id: Uuid) -> Result<Option<Invoice>>;
-    async fn get_invoice_by_reference(&self, params: &InvoicePayload) -> Result<Option<Invoice>>;
+    async fn get_main_invoice_by_reference(&self, params: InvoiceReferenceParams) -> Result<Option<Invoice>>;
     async fn create_invoice(&self, invoice: Invoice) -> Result<Invoice>;
 }
 
 #[async_trait::async_trait]
 impl InvoicesRepository for SqlxRepository {
-    async fn get_invoice_by_reference(&self, params: &InvoicePayload) -> Result<Option<Invoice>> {
+    async fn get_main_invoice_by_reference(&self, params: InvoiceReferenceParams) -> Result<Option<Invoice>> {
         let invoice = sqlx::query_as!(
             Invoice,
             r#"
@@ -24,7 +24,7 @@ impl InvoicesRepository for SqlxRepository {
                     title,
                     month,
                     year,
-                    is_parent,
+                    is_main,
                     created_at,
                     updated_at,
                     deleted_at
@@ -32,10 +32,10 @@ impl InvoicesRepository for SqlxRepository {
                 WHERE
                     year = $1
                     AND month = $2
-                    AND is_parent IS TRUE
+                    AND is_main IS true
             "#,
-            params.year,
-            params.month
+            params.year as i16,
+            params.month as i32
         )
         .fetch_optional(&self.pool)
         .await?;
@@ -52,7 +52,7 @@ impl InvoicesRepository for SqlxRepository {
                     title,
                     month,
                     year,
-                    is_parent,
+                    is_main,
                     created_at,
                     updated_at,
                     deleted_at
@@ -63,7 +63,7 @@ impl InvoicesRepository for SqlxRepository {
                         title,
                         month,
                         year,
-                        is_parent,
+                        is_main,
                         created_at,
                         updated_at,
                         deleted_at
@@ -73,7 +73,7 @@ impl InvoicesRepository for SqlxRepository {
             invoice.title,
             invoice.month,
             invoice.year,
-            invoice.is_parent,
+            invoice.is_main,
             invoice.created_at,
             invoice.updated_at,
             invoice.deleted_at
@@ -93,7 +93,7 @@ impl InvoicesRepository for SqlxRepository {
                     title,
                     month,
                     year,
-                    is_parent,
+                    is_main,
                     created_at,
                     updated_at,
                     deleted_at
@@ -118,7 +118,7 @@ impl InvoicesRepository for SqlxRepository {
                     title,
                     month,
                     year,
-                    is_parent,
+                    is_main,
                     created_at,
                     updated_at,
                     deleted_at

@@ -26,7 +26,7 @@ CREATE TABLE invoices (
     title TEXT NOT NULL,
     month INT NOT NULL CHECK (month BETWEEN 1 AND 12),
     year SMALLINT NOT NULL,
-    is_parent BOOLEAN NOT NULL DEFAULT FALSE,
+    is_main BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE,
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -34,7 +34,7 @@ CREATE TABLE invoices (
 
 CREATE UNIQUE INDEX unique_parent_per_month_year
 ON invoices (month, year)
-WHERE is_parent = TRUE;
+WHERE is_main = true;
 
 -- ACCOUNT TABLE
 CREATE TABLE accounts (
@@ -64,7 +64,7 @@ CREATE TABLE entries (
 -- TAGS TABLE
 CREATE TABLE tags(
     tag_id INT PRIMARY KEY,
-    value TEXT NOT NULL
+    value TEXT NOT NULL UNIQUE
 );
 
 -- ENTRIES TAGS TABLE
@@ -86,7 +86,7 @@ CREATE TABLE invoice_relations (
 -- INDEXES
 -- INVOICES TABLE
 CREATE INDEX idx_invoices_month_year ON invoices (month, year);
-CREATE INDEX idx_invoices_is_parent ON invoices (is_parent);
+CREATE INDEX idx_invoices_is_main ON invoices (is_main);
 
 -- ENTRIES TABLE
 CREATE INDEX idx_entries_invoice_id ON entries (invoice_id);
