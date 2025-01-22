@@ -20,7 +20,10 @@ impl Handler {
     }
 
     pub async fn create_entry(&self, payload: EntryPayload) -> Result<Entry> {
-        let entry = payload.into();
+        let tags = self.insert_many_tags(payload.clone().tag).await?;
+        
+        let entry: Entry = payload.into();
+        self.tags_repository.insert_many_entries_tags_relation(tags, entry.entry_id).await?;
 
         self.entries_repository.create_entry(entry).await
     }

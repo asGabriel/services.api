@@ -1,11 +1,44 @@
+use chrono::{Datelike, Utc};
 use http_problems::{Error, Result};
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::domains::invoices::{Invoice, InvoicePayload};
+use crate::domains::{
+    invoice_relations::InvoiceRelations,
+    invoices::{Invoice, InvoicePayload},
+};
 
 use super::Handler;
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct InvoiceReferenceParams {
+    pub year: i32,
+    pub month: u32,
+}
+
 impl Handler {
+    pub async fn create_monthly_main_invoice(&self) -> Result<()> {
+        let now = Utc::now();
+        let (year, month) = (now.year(), now.month());
+
+        let current_invoice = self
+            .invoices_repository
+            .get_main_invoice_by_reference(InvoiceReferenceParams { year, month })
+            .await?;
+
+        if current_invoice.is_some() {
+            // TODO: implementar log
+            Ok(())
+        } else {
+            let _invoice = self
+                .invoices_repository
+                .create_invoice(Invoice::default())
+                .await?;
+
+            Ok(())
+        }
+    }
+
     pub async fn list_invoices(&self) -> Result<Vec<Invoice>> {
         self.invoices_repository.list_invoices().await
     }
@@ -20,26 +53,30 @@ impl Handler {
     }
 
     pub async fn create_invoice(&self, payload: InvoicePayload) -> Result<Invoice> {
-        if payload.check_invalid_child_invoice() {
-            return Err(Error::BadRequestError(
-                "Child invoice must have a title".to_string(),
-            ));
-        }
+        let current_invoice = if let Some(id) = payload.main_invoice {
+            self.get_invoice_by_id(id).await?
+        } else {
+            let now = Utc::now();
+            let (year, month) = (now.year(), now.month());
 
-        let exists_invoice = self
+            self.invoices_repository
+                .get_main_invoice_by_reference(InvoiceReferenceParams { year, month })
+                .await?
+                .unwrap()
+        };
+
+        let new_invoice = self
             .invoices_repository
-            .get_invoice_by_reference(&payload)
+            .create_invoice(payload.into())
             .await?;
 
-        if exists_invoice.is_some() && payload.is_parent() {
-            return Err(Error::ConflictError(format!(
-                "Already exists an invoice of {}-{}",
-                payload.year, payload.month
-            )));
-        }
+        self.invoice_relations_repository
+            .create_relations(InvoiceRelations {
+                parent_invoice_id: current_invoice.invoice_id,
+                child_invoice_id: new_invoice.invoice_id,
+            })
+            .await?;
 
-        let invoice = payload.into();
-
-        self.invoices_repository.create_invoice(invoice).await
+        Ok(new_invoice)
     }
 }

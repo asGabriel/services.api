@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT \n                    entry_id,\n                    invoice_id,\n                    entry_type as \"entry_type!: EntryType\",\n                    description, \n                    value,\n                    due_date,\n                    tag,\n                    account_id,\n                    status as \"status!: EntryStatus\",\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM entries\n                WHERE\n                    invoice_id = $1\n            ",
+  "query": "\n                SELECT\n                    entry_id,\n                    invoice_id,\n                    entry_type as \"entry_type!: EntryType\",\n                    description, \n                    value,\n                    due_date,\n                    account_id,\n                    status as \"status!: EntryStatus\",\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM entries\n                WHERE\n                    entry_id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -45,16 +45,11 @@
       },
       {
         "ordinal": 6,
-        "name": "tag",
-        "type_info": "Text"
-      },
-      {
-        "ordinal": 7,
         "name": "account_id",
         "type_info": "Uuid"
       },
       {
-        "ordinal": 8,
+        "ordinal": 7,
         "name": "status!: EntryStatus",
         "type_info": {
           "Custom": {
@@ -70,17 +65,17 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 8,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 10,
+        "ordinal": 9,
         "name": "updated_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 11,
+        "ordinal": 10,
         "name": "deleted_at",
         "type_info": "Timestamptz"
       }
@@ -100,10 +95,9 @@
       false,
       false,
       false,
-      false,
       true,
       true
     ]
   },
-  "hash": "b333992c8efbc8708dda6be0e108b072cf3b30e049147e0da10cb97bfb5139a6"
+  "hash": "8cfaa2cc5abaae527b5771cb92d59264671516517f6d6a52234a99f6f9a88269"
 }

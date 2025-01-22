@@ -29,6 +29,7 @@ log = "0.4"
 fern = "0.6"
 reqwest = { version = "0.12.4", features = ["json"] }
 jsonwebtoken = "9.3.0"
+tokio-cron-scheduler = "0.9"
 
 ## libs
 app-shared.path = "./libs/app-shared"

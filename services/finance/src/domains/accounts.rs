@@ -38,7 +38,7 @@ impl From<CreateAccountPayload> for Account {
 
 #[derive(Debug, Serialize, Deserialize, Type)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-#[sqlx(type_name = "bank_name", rename_all = "SCREAMING_SNAKE_CASE")]
+#[sqlx(type_name = "bank", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Bank {
     Nubank,
     Inter,
