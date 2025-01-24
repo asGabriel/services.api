@@ -54,30 +54,21 @@ impl TagRepository for SqlxRepository {
     }
 
     async fn insert_many_tags(&self, tags: Vec<String>) -> Result<Vec<Tag>> {
-        let max_result = sqlx::query!("SELECT MAX(tag_id) as max_id FROM tags")
-            .fetch_one(&self.pool)
-            .await?;
-
-        let mut max = max_result.max_id.unwrap_or(0);
-
-        let mut query = r#"
-            INSERT INTO tags (tag_id, value) VALUES 
-        "#
-        .to_string();
-
-        for (i, tag) in tags.iter().enumerate() {
-            max += max;
-
-            let value = format!("({}, '{}')", max, tag.replace("'", "''"));
-            query.push_str(&value);
-
+        let mut query = String::from("INSERT INTO tags (value) VALUES ");
+        for (i, _) in tags.iter().enumerate() {
+            query.push_str(&format!("(${})", i + 1));
             if i != tags.len() - 1 {
                 query.push_str(", ");
             }
         }
         query.push_str(" RETURNING *");
 
-        let tags: Vec<Tag> = sqlx::query_as(&query).fetch_all(&self.pool).await?;
+        let mut query_builder = sqlx::query_as::<_, Tag>(&query);
+        for tag in tags {
+            query_builder = query_builder.bind(tag);
+        }
+
+        let tags: Vec<Tag> = query_builder.fetch_all(&self.pool).await?;
 
         Ok(tags)
     }
