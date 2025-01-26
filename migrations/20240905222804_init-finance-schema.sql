@@ -63,7 +63,7 @@ CREATE TABLE entries (
 
 -- TAGS TABLE
 CREATE TABLE tags(
-    tag_id INT PRIMARY KEY,
+    tag_id SERIAL PRIMARY KEY,
     value TEXT NOT NULL UNIQUE
 );
 

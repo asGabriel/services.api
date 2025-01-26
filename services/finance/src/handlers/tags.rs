@@ -9,14 +9,22 @@ impl Handler {
         self.tags_repository.list_tags().await
     }
 
-    pub async fn insert_many_tags(&self, mut tags: Vec<String>) -> Result<Vec<Tag>> {
+    pub async fn insert_many_tags(&self, tags: Vec<String>) -> Result<Vec<Tag>> {
         let exists_tags = self.tags_repository.list_tags().await?;
-        for (index, tag) in exists_tags.iter().enumerate() {
-            if tags.contains(&tag.value) {
-                tags.remove(index);
-            }
+
+        let filtered_tags: Vec<String> = tags
+            .into_iter()
+            .filter(|tag| {
+                !exists_tags
+                    .iter()
+                    .any(|existing_tag| existing_tag.value == *tag)
+            })
+            .collect();
+
+        if filtered_tags.is_empty() {
+            return Ok(exists_tags);
         }
 
-        self.tags_repository.insert_many_tags(tags.to_vec()).await
+        self.tags_repository.insert_many_tags(filtered_tags).await
     }
 }

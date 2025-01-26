@@ -22,10 +22,10 @@ impl Handler {
     pub async fn create_entry(&self, payload: EntryPayload) -> Result<Entry> {
         let tags = self.insert_many_tags(payload.clone().tag).await?;
         
-        let entry: Entry = payload.into();
+        let entry = self.entries_repository.create_entry(payload.into()).await?;
         self.tags_repository.insert_many_entries_tags_relation(tags, entry.entry_id).await?;
 
-        self.entries_repository.create_entry(entry).await
+        Ok(entry)
     }
 
     pub async fn list_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<Vec<Entry>> {
