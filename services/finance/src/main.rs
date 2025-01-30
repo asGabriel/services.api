@@ -59,6 +59,14 @@ async fn main() {
 pub async fn start_scheduler(handler: Arc<Handler>) {
     let sched = JobScheduler::new().await.unwrap();
 
+    let start_execution = handler.create_monthly_main_invoice().await;
+    match start_execution {
+        Ok(_) => {
+            println!("Start invoice execution executed at {:?}", chrono::Utc::now());
+        }
+        Err(e) => eprintln!("Failed to start invoice execution job: {:?}", e),
+    }
+
     let job_result = Job::new("* * 12 * * * *", move |_uuid, _l| {
         let handler = Arc::clone(&handler);
         tokio::spawn(async move {
