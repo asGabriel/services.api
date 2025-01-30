@@ -12,6 +12,9 @@ impl IntoResponse for Error {
             Self::BadRequestError(message) => (StatusCode::BAD_REQUEST, format!("{message:?}")),
             Self::UnauthorizedError(message) => (StatusCode::UNAUTHORIZED, format!("{message:?}")),
             Self::ConflictError(message) => (StatusCode::CONFLICT, format!("{message:?}")),
+            Self::InvalidEntityError(message) => {
+                (StatusCode::UNPROCESSABLE_ENTITY, format!("{message:?}"))
+            }
         }
         .into_response()
     }
@@ -31,6 +34,8 @@ pub enum Error {
     UnauthorizedError(String),
     #[error("ConflictError")]
     ConflictError(String),
+    #[error("InvalidEntityError")]
+    InvalidEntityError(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
