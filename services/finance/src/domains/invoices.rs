@@ -1,9 +1,7 @@
 use bigdecimal::FromPrimitive;
 use chrono::{DateTime, Datelike, Month, Utc};
-use serde::{
-    de::{self, Unexpected},
-    Deserialize, Deserializer, Serialize,
-};
+use http_problems::{Error, Result};
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -41,14 +39,37 @@ impl Default for Invoice {
     }
 }
 
+impl Invoice {
+    pub fn update(&mut self, payload: InvoiceUpdatePayload) {
+        if let Some(title) = payload.title {
+            self.title = title;
+        }
+        if let Some(month) = payload.month {
+            self.month = month;
+        }
+        if let Some(year) = payload.year {
+            self.year = year;
+        }
+
+        self.updated_at = Some(Utc::now());
+    }
+}
+
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InvoicePayload {
     pub title: String,
-    #[serde(deserialize_with = "validate_month")]
     pub month: i32,
     pub year: i16,
-    pub main_invoice: Option<Uuid>
+    pub main_invoice: Option<Uuid>,
+}
+
+impl InvoicePayload {
+    pub fn sanitize(&self) -> Result<()> {
+        is_valid_month(self.month)?;
+
+        Ok(())
+    }
 }
 
 impl From<InvoicePayload> for Invoice {
@@ -66,17 +87,30 @@ impl From<InvoicePayload> for Invoice {
     }
 }
 
-fn validate_month<'de, D>(deserializer: D) -> Result<i32, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let month = i32::deserialize(deserializer)?;
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InvoiceUpdatePayload {
+    pub title: Option<String>,
+    pub month: Option<i32>,
+    pub year: Option<i16>,
+}
+
+impl InvoiceUpdatePayload {
+    pub fn sanitize(&self) -> Result<()> {
+        if let Some(month) = self.month {
+            is_valid_month(month)?;
+        }
+
+        Ok(())
+    }
+}
+
+fn is_valid_month(month: i32) -> Result<i32> {
     if (1..=12).contains(&month) {
         Ok(month)
     } else {
-        Err(de::Error::invalid_value(
-            Unexpected::Signed(month as i64),
-            &"a number between 1 and 12",
+        Err(Error::InvalidEntityError(
+            "Month value must be a number between 1 and 12".to_string(),
         ))
     }
 }

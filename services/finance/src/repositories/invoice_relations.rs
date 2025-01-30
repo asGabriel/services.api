@@ -21,7 +21,9 @@ impl InvoiceRelationsRepository for SqlxRepository {
             "#,
             payload.parent_invoice_id,
             payload.child_invoice_id
-        ).fetch_one(&self.pool).await?;
+        )
+        .fetch_one(&self.pool)
+        .await?;
 
         Ok(relation)
     }

@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::domains::{
     invoice_relations::InvoiceRelations,
-    invoices::{Invoice, InvoicePayload},
+    invoices::{Invoice, InvoicePayload, InvoiceUpdatePayload},
 };
 
 use super::Handler;
@@ -17,6 +17,23 @@ pub struct InvoiceReferenceParams {
 }
 
 impl Handler {
+    pub async fn update_invoice_by_id(
+        &self,
+        invoice_id: Uuid,
+        payload: InvoiceUpdatePayload,
+    ) -> Result<Invoice> {
+        payload.sanitize()?;
+        let mut invoice = self.get_invoice_by_id(invoice_id).await?;
+        invoice.update(payload);
+
+        self.invoices_repository
+            .update_invoice_by_id(invoice)
+            .await?
+            .ok_or(Error::NotFoundError(format!(
+                "Could not found invoice id {invoice_id} when update."
+            )))
+    }
+
     pub async fn create_monthly_main_invoice(&self) -> Result<()> {
         let now = Utc::now();
         let (year, month) = (now.year(), now.month());
@@ -48,7 +65,7 @@ impl Handler {
             .get_invoice_by_id(invoice_id)
             .await?
             .ok_or(Error::NotFoundError(format!(
-                "Entry id {invoice_id} not found.",
+                "Invoice id {invoice_id} not found.",
             )))
     }
 

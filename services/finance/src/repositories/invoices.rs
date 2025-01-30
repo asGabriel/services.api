@@ -9,13 +9,46 @@ use super::SqlxRepository;
 pub trait InvoicesRepository {
     async fn list_invoices(&self) -> Result<Vec<Invoice>>;
     async fn get_invoice_by_id(&self, invoice_id: Uuid) -> Result<Option<Invoice>>;
-    async fn get_main_invoice_by_reference(&self, params: InvoiceReferenceParams) -> Result<Option<Invoice>>;
+    async fn get_main_invoice_by_reference(
+        &self,
+        params: InvoiceReferenceParams,
+    ) -> Result<Option<Invoice>>;
     async fn create_invoice(&self, invoice: Invoice) -> Result<Invoice>;
+    async fn update_invoice_by_id(&self, invoice: Invoice) -> Result<Option<Invoice>>;
 }
 
 #[async_trait::async_trait]
 impl InvoicesRepository for SqlxRepository {
-    async fn get_main_invoice_by_reference(&self, params: InvoiceReferenceParams) -> Result<Option<Invoice>> {
+    async fn update_invoice_by_id(&self, invoice: Invoice) -> Result<Option<Invoice>> {
+        let invoice = sqlx::query_as!(
+            Invoice,
+            r#"
+                UPDATE 
+                    invoices
+                SET
+                    title = $2,
+                    month = $3,
+                    year = $4
+                WHERE
+                    invoice_id = $1
+                RETURNING
+                    *
+            "#,
+            invoice.invoice_id,
+            invoice.title,
+            invoice.month,
+            invoice.year
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(invoice)
+    }
+
+    async fn get_main_invoice_by_reference(
+        &self,
+        params: InvoiceReferenceParams,
+    ) -> Result<Option<Invoice>> {
         let invoice = sqlx::query_as!(
             Invoice,
             r#"
