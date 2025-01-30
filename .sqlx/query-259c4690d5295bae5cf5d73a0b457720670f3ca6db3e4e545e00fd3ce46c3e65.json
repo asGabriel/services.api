@@ -1,0 +1,67 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE \n                    invoices\n                SET\n                    title = $2,\n                    month = $3,\n                    year = $4\n                WHERE\n                    invoice_id = $1\n                RETURNING\n                    *\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "invoice_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "month",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "year",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "is_main",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "deleted_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Int4",
+        "Int2"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "259c4690d5295bae5cf5d73a0b457720670f3ca6db3e4e545e00fd3ce46c3e65"
+}
