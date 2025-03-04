@@ -21,7 +21,7 @@
       {
         "ordinal": 3,
         "name": "year",
-        "type_info": "Int2"
+        "type_info": "Int4"
       },
       {
         "ordinal": 4,
@@ -49,7 +49,7 @@
         "Uuid",
         "Text",
         "Int4",
-        "Int2",
+        "Int4",
         "Bool",
         "Timestamptz",
         "Timestamptz",

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    invoice_id,\n                    title,\n                    month,\n                    year,\n                    is_main,\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM invoices\n                WHERE\n                    year = $1\n                    AND month = $2\n                    AND is_main IS true\n            ",
+  "query": "\n                SELECT\n                    invoice_id,\n                    title,\n                    month,\n                    year,\n                    is_main,\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM invoices\n                WHERE (year, month) IN (\n                    SELECT * FROM UNNEST($1::int[], $2::int[])\n                ) \n                AND is_main IS true\n            ",
   "describe": {
     "columns": [
       {
@@ -21,7 +21,7 @@
       {
         "ordinal": 3,
         "name": "year",
-        "type_info": "Int2"
+        "type_info": "Int4"
       },
       {
         "ordinal": 4,
@@ -46,8 +46,8 @@
     ],
     "parameters": {
       "Left": [
-        "Int2",
-        "Int4"
+        "Int4Array",
+        "Int4Array"
       ]
     },
     "nullable": [
@@ -61,5 +61,5 @@
       true
     ]
   },
-  "hash": "66c2ba1ad2dd87a23414238d8b148f8fa378fbac8786e14804ea4014c327e84d"
+  "hash": "9bfc33280c327635d42ce2a8c52f82410f683c1b9fab0a19ade025a58aa49809"
 }
