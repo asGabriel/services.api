@@ -25,7 +25,7 @@ CREATE TABLE invoices (
     invoice_id UUID PRIMARY KEY,
     title TEXT NOT NULL,
     month INT NOT NULL CHECK (month BETWEEN 1 AND 12),
-    year SMALLINT NOT NULL,
+    year INT NOT NULL,
     is_main BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE,
