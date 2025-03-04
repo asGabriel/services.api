@@ -21,7 +21,7 @@
       {
         "ordinal": 3,
         "name": "year",
-        "type_info": "Int2"
+        "type_info": "Int4"
       },
       {
         "ordinal": 4,

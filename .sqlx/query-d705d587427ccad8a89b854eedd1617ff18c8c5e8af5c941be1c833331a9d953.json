@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE \n                    invoices\n                SET\n                    title = $2,\n                    month = $3,\n                    year = $4\n                WHERE\n                    invoice_id = $1\n                RETURNING\n                    *\n            ",
+  "query": "\n                SELECT * FROM invoices WHERE year = $1 AND month = $2\n            ",
   "describe": {
     "columns": [
       {
@@ -46,8 +46,6 @@
     ],
     "parameters": {
       "Left": [
-        "Uuid",
-        "Text",
         "Int4",
         "Int4"
       ]
@@ -63,5 +61,5 @@
       true
     ]
   },
-  "hash": "259c4690d5295bae5cf5d73a0b457720670f3ca6db3e4e545e00fd3ce46c3e65"
+  "hash": "d705d587427ccad8a89b854eedd1617ff18c8c5e8af5c941be1c833331a9d953"
 }

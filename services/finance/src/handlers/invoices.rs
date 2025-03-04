@@ -1,6 +1,5 @@
-use chrono::{Datelike, Utc};
+use chrono::{Datelike, Months, NaiveDate, Utc};
 use http_problems::{Error, Result};
-use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::domains::{
@@ -9,12 +8,6 @@ use crate::domains::{
 };
 
 use super::Handler;
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InvoiceReferenceParams {
-    pub year: i32,
-    pub month: u32,
-}
 
 impl Handler {
     pub async fn update_invoice_by_id(
@@ -35,25 +28,36 @@ impl Handler {
     }
 
     pub async fn create_monthly_main_invoice(&self) -> Result<()> {
+        let mut current = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
         let now = Utc::now();
-        let (year, month) = (now.year(), now.month());
+        let mut references = Vec::new();
 
-        let current_invoice = self
+        while current <= now.date_naive() {
+            let month = current.month();
+            let year = current.year_ce().1;
+
+            references.push((year as i32, month as i32));
+            current = current.checked_add_months(Months::new(1)).unwrap();
+        }
+
+        let current_invoices = self
             .invoices_repository
-            .get_main_invoice_by_reference(InvoiceReferenceParams { year, month })
+            .list_main_invoices_by_references(references.as_slice())
             .await?;
 
-        if current_invoice.is_some() {
-            // TODO: implementar log
-            Ok(())
-        } else {
+        // TODO: implementar log
+        for reference in references {
+            if current_invoices.contains_key(&reference) {
+                continue;
+            }
+
             let _invoice = self
                 .invoices_repository
-                .create_invoice(Invoice::default())
+                .create_invoice(Invoice::new(reference.0, reference.1, Some(true)))
                 .await?;
-
-            Ok(())
         }
+
+        Ok(())
     }
 
     pub async fn list_invoices(&self) -> Result<Vec<Invoice>> {
@@ -74,10 +78,10 @@ impl Handler {
             self.get_invoice_by_id(id).await?
         } else {
             let now = Utc::now();
-            let (year, month) = (now.year(), now.month());
+            let current = (now.year(), now.month() as i32);
 
             self.invoices_repository
-                .get_main_invoice_by_reference(InvoiceReferenceParams { year, month })
+                .get_invoice_by_referece(current)
                 .await?
                 .unwrap()
         };

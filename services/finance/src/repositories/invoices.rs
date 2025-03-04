@@ -1,24 +1,43 @@
+use std::collections::HashMap;
+
 use http_problems::Result;
 use uuid::Uuid;
 
-use crate::{domains::invoices::Invoice, handlers::invoices::InvoiceReferenceParams};
+use crate::domains::invoices::Invoice;
 
 use super::SqlxRepository;
 
+// TODO: chage the tuple (i32, i32) to something that represents year and month
 #[async_trait::async_trait]
 pub trait InvoicesRepository {
     async fn list_invoices(&self) -> Result<Vec<Invoice>>;
     async fn get_invoice_by_id(&self, invoice_id: Uuid) -> Result<Option<Invoice>>;
-    async fn get_main_invoice_by_reference(
+    async fn list_main_invoices_by_references(
         &self,
-        params: InvoiceReferenceParams,
-    ) -> Result<Option<Invoice>>;
+        references: &[(i32, i32)],
+    ) -> Result<HashMap<(i32, i32), Invoice>>;
     async fn create_invoice(&self, invoice: Invoice) -> Result<Invoice>;
     async fn update_invoice_by_id(&self, invoice: Invoice) -> Result<Option<Invoice>>;
+    async fn get_invoice_by_referece(&self, reference: (i32, i32)) -> Result<Option<Invoice>>;
 }
 
 #[async_trait::async_trait]
 impl InvoicesRepository for SqlxRepository {
+    async fn get_invoice_by_referece(&self, reference: (i32, i32)) -> Result<Option<Invoice>> {
+        let invoice = sqlx::query_as!(
+            Invoice,
+            r#"
+                SELECT * FROM invoices WHERE year = $1 AND month = $2
+            "#,
+            reference.0,
+            reference.1
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(invoice)
+    }
+
     async fn update_invoice_by_id(&self, invoice: Invoice) -> Result<Option<Invoice>> {
         let invoice = sqlx::query_as!(
             Invoice,
@@ -45,11 +64,17 @@ impl InvoicesRepository for SqlxRepository {
         Ok(invoice)
     }
 
-    async fn get_main_invoice_by_reference(
+    async fn list_main_invoices_by_references(
         &self,
-        params: InvoiceReferenceParams,
-    ) -> Result<Option<Invoice>> {
-        let invoice = sqlx::query_as!(
+        references: &[(i32, i32)],
+    ) -> Result<HashMap<(i32, i32), Invoice>> {
+        if references.is_empty() {
+            return Ok(HashMap::new());
+        }
+
+        let (years, months): (Vec<i32>, Vec<i32>) = references.iter().cloned().unzip();
+
+        let invoices = sqlx::query_as!(
             Invoice,
             r#"
                 SELECT
@@ -62,18 +87,23 @@ impl InvoicesRepository for SqlxRepository {
                     updated_at,
                     deleted_at
                 FROM invoices
-                WHERE
-                    year = $1
-                    AND month = $2
-                    AND is_main IS true
+                WHERE (year, month) IN (
+                    SELECT * FROM UNNEST($1::int[], $2::int[])
+                ) 
+                AND is_main IS true
             "#,
-            params.year as i16,
-            params.month as i32
+            &years,
+            &months
         )
-        .fetch_optional(&self.pool)
+        .fetch_all(&self.pool)
         .await?;
 
-        Ok(invoice)
+        let invoices_map: HashMap<(i32, i32), Invoice> = invoices
+            .into_iter()
+            .map(|i| ((i.year, i.month), i))
+            .collect();
+
+        Ok(invoices_map)
     }
 
     async fn create_invoice(&self, invoice: Invoice) -> Result<Invoice> {

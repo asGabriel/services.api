@@ -10,7 +10,7 @@ pub struct Invoice {
     pub invoice_id: Uuid,
     pub title: String,
     pub month: i32,
-    pub year: i16,
+    pub year: i32,
     pub is_main: bool,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -30,7 +30,7 @@ impl Default for Invoice {
             invoice_id: Uuid::new_v4(),
             title: format!("Fatura de {} / {}", month_name.name(), year),
             month: month as i32,
-            year: year as i16,
+            year: year as i32,
             is_main: true,
             created_at: Utc::now(),
             updated_at: None,
@@ -40,6 +40,19 @@ impl Default for Invoice {
 }
 
 impl Invoice {
+    pub fn new(year: i32, month: i32, main: Option<bool>) -> Self {
+        Self {
+            invoice_id: Uuid::new_v4(),
+            title: format!("Fatura de {}/{}", month, year),
+            month,
+            year,
+            is_main: main.unwrap_or(false),
+            created_at: Utc::now(),
+            updated_at: None,
+            deleted_at: None,
+        }
+    }
+
     pub fn update(&mut self, payload: InvoiceUpdatePayload) {
         if let Some(title) = payload.title {
             self.title = title;
@@ -60,7 +73,7 @@ impl Invoice {
 pub struct InvoicePayload {
     pub title: String,
     pub month: i32,
-    pub year: i16,
+    pub year: i32,
     pub main_invoice: Option<Uuid>,
 }
 
@@ -92,7 +105,7 @@ impl From<InvoicePayload> for Invoice {
 pub struct InvoiceUpdatePayload {
     pub title: Option<String>,
     pub month: Option<i32>,
-    pub year: Option<i16>,
+    pub year: Option<i32>,
 }
 
 impl InvoiceUpdatePayload {

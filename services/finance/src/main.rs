@@ -39,7 +39,7 @@ async fn main() {
     );
 
     let port: u16 = std::env::var("PORT")
-        .unwrap_or_else(|_| "8080".to_string())
+        .unwrap_or_else(|_| "5010".to_string())
         .parse()
         .expect("PORT must be a number");
 
