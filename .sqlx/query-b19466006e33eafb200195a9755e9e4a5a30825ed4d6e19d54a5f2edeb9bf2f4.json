@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    entry_id,\n                    invoice_id,\n                    entry_type as \"entry_type!: EntryType\",\n                    description, \n                    value,\n                    due_date,\n                    account_id,\n                    status as \"status!: EntryStatus\",\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM entries\n                WHERE\n                    entry_id = $1\n            ",
+  "query": "\n                SELECT\n                    entry_id,\n                    invoice_id,\n                    entry_type as \"entry_type!: EntryType\",\n                    description, \n                    value,\n                    due_date,\n                    account_id,\n                    status as \"status!: EntryStatus\",\n                    created_at,\n                    updated_at,\n                    deleted_at\n                FROM entries\n                WHERE\n                    entry_id = $1\n                    AND deleted_at is null\n            ",
   "describe": {
     "columns": [
       {
@@ -99,5 +99,5 @@
       true
     ]
   },
-  "hash": "8cfaa2cc5abaae527b5771cb92d59264671516517f6d6a52234a99f6f9a88269"
+  "hash": "b19466006e33eafb200195a9755e9e4a5a30825ed4d6e19d54a5f2edeb9bf2f4"
 }

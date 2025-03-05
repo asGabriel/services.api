@@ -1,8 +1,5 @@
 use axum::{
-    extract::{Path, State},
-    response::IntoResponse,
-    routing::{get, post},
-    Json, Router,
+    extract::{Path, State}, http::StatusCode, response::IntoResponse, routing::{delete, get, post}, Json, Router
 };
 use http_problems::Result;
 use uuid::Uuid;
@@ -16,8 +13,18 @@ pub(super) fn configure_routes() -> Router<Handler> {
             .route("/", get(list_entries))
             .route("/:id", get(get_entry_by_id))
             .route("/", post(create_entry))
-            .route("/invoice/:id", get(list_entries_by_invoice_id)),
+            .route("/invoice/:id", get(list_entries_by_invoice_id))
+            .route("/:id", delete(delete_entry_by_id)),
     )
+}
+
+async fn delete_entry_by_id(
+    State(handler): State<Handler>,
+    Path(id): Path<Uuid>,
+) -> Result<impl IntoResponse> {
+    let _entry = handler.delete_entry_by_id(id).await?;
+
+    Ok(StatusCode::NO_CONTENT)
 }
 
 async fn list_entries_by_invoice_id(

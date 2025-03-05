@@ -11,10 +11,27 @@ pub trait EntriesRepository {
     async fn get_entry_by_id(&self, entry_id: Uuid) -> Result<Option<Entry>>;
     async fn create_entry(&self, entry: Entry) -> Result<Entry>;
     async fn get_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<Vec<Entry>>;
+    async fn delete_entry_by_id(&self, entry_id: Uuid) -> Result<()>;
 }
 
 #[async_trait::async_trait]
 impl EntriesRepository for SqlxRepository {
+    async fn delete_entry_by_id(&self, entry_id: Uuid) -> Result<()> {
+        let _entry = sqlx::query!(
+            r#"
+                UPDATE entries
+                SET
+                    deleted_at = now()
+                WHERE
+                    entry_id = $1
+                    
+            "#,
+            entry_id
+        ).execute(&self.pool).await?;
+
+        Ok(())
+    }
+
     async fn get_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<Vec<Entry>> {
         let entries = sqlx::query_as!(
             Entry,
@@ -34,6 +51,7 @@ impl EntriesRepository for SqlxRepository {
                 FROM entries
                 WHERE
                     invoice_id = $1
+                    AND deleted_at is null
             "#,
             invoice_id
         )
@@ -60,6 +78,8 @@ impl EntriesRepository for SqlxRepository {
                     updated_at,
                     deleted_at
                 FROM entries
+                WHERE
+                    deleted_at is null
             "#
         )
         .fetch_all(&self.pool)
@@ -87,6 +107,7 @@ impl EntriesRepository for SqlxRepository {
                 FROM entries
                 WHERE
                     entry_id = $1
+                    AND deleted_at is null
             "#,
             entry_id
         )
