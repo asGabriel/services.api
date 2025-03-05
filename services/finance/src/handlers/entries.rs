@@ -6,6 +6,12 @@ use crate::domains::entries::{Entry, EntryPayload};
 use super::Handler;
 
 impl Handler {
+    pub async fn delete_entry_by_id(&self, entry_id: Uuid) -> Result<()> {
+        self.entries_repository.delete_entry_by_id(entry_id).await?;
+
+        Ok(())
+    }
+
     pub async fn list_entries(&self) -> Result<Vec<Entry>> {
         self.entries_repository.list_entries().await
     }

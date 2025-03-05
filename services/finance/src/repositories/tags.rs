@@ -20,6 +20,10 @@ impl TagRepository for SqlxRepository {
         tags: Vec<Tag>,
         entry_id: Uuid,
     ) -> Result<()> {
+        if tags.is_empty() {
+            return Ok(())
+        }
+
         let mut query = r#"
             INSERT INTO entries_tags (entry_id, tag_id) VALUES 
         "#
