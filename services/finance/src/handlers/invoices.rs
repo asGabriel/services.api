@@ -74,21 +74,12 @@ impl Handler {
     }
 
     pub async fn create_invoice(&self, payload: InvoicePayload) -> Result<Invoice> {
-        let current_invoice = if let Some(id) = payload.main_invoice {
-            self.get_invoice_by_id(id).await?
-        } else {
-            let now = Utc::now();
-            let current = (now.year(), now.month() as i32);
-
-            self.invoices_repository
-                .get_invoice_by_referece(current)
-                .await?
-                .unwrap()
-        };
+        let current_invoice = self.get_invoice_by_id(payload.main_invoice).await?;
+        let new_invoice = current_invoice.new_from_payload(payload.title);
 
         let new_invoice = self
             .invoices_repository
-            .create_invoice(payload.into())
+            .create_invoice(new_invoice)
             .await?;
 
         self.invoice_relations_repository
