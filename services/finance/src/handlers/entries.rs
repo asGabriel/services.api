@@ -35,10 +35,4 @@ impl Handler {
 
         Ok(entry)
     }
-
-    pub async fn list_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<Vec<Entry>> {
-        self.entries_repository
-            .get_entries_by_invoice_id(invoice_id)
-            .await
-    }
 }

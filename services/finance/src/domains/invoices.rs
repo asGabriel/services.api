@@ -19,6 +19,7 @@ pub struct Invoice {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
+// TODO: verificar necessidade
 impl Default for Invoice {
     fn default() -> Self {
         let now = Utc::now();
@@ -53,6 +54,19 @@ impl Invoice {
         }
     }
 
+    pub fn new_from_payload(&self, title: String) -> Self {
+        Self {
+            invoice_id: Uuid::new_v4(),
+            title,
+            month: self.month,
+            year: self.year,
+            is_main: false,
+            created_at: Utc::now(),
+            updated_at: None,
+            deleted_at: None,
+        }
+    }
+
     pub fn update(&mut self, payload: InvoiceUpdatePayload) {
         if let Some(title) = payload.title {
             self.title = title;
@@ -72,32 +86,7 @@ impl Invoice {
 #[serde(rename_all = "camelCase")]
 pub struct InvoicePayload {
     pub title: String,
-    pub month: i32,
-    pub year: i32,
-    pub main_invoice: Option<Uuid>,
-}
-
-impl InvoicePayload {
-    pub fn sanitize(&self) -> Result<()> {
-        is_valid_month(self.month)?;
-
-        Ok(())
-    }
-}
-
-impl From<InvoicePayload> for Invoice {
-    fn from(payload: InvoicePayload) -> Self {
-        Invoice {
-            invoice_id: Uuid::new_v4(),
-            title: payload.title,
-            month: payload.month,
-            year: payload.year,
-            is_main: false,
-            created_at: Utc::now(),
-            updated_at: None,
-            deleted_at: None,
-        }
-    }
+    pub main_invoice: Uuid,
 }
 
 #[derive(Debug, Deserialize)]

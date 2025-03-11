@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use crate::domains::{
     invoice_relations::InvoiceRelations,
-    invoices::{Invoice, InvoicePayload, InvoiceUpdatePayload},
+    invoices::{Invoice, InvoicePayload, InvoiceUpdatePayload}, views::views::{InvoiceDetails, InvoiceDetailsView},
 };
 
 use super::Handler;
@@ -74,21 +74,12 @@ impl Handler {
     }
 
     pub async fn create_invoice(&self, payload: InvoicePayload) -> Result<Invoice> {
-        let current_invoice = if let Some(id) = payload.main_invoice {
-            self.get_invoice_by_id(id).await?
-        } else {
-            let now = Utc::now();
-            let current = (now.year(), now.month() as i32);
-
-            self.invoices_repository
-                .get_invoice_by_referece(current)
-                .await?
-                .unwrap()
-        };
+        let current_invoice = self.get_invoice_by_id(payload.main_invoice).await?;
+        let new_invoice = current_invoice.new_from_payload(payload.title);
 
         let new_invoice = self
             .invoices_repository
-            .create_invoice(payload.into())
+            .create_invoice(new_invoice)
             .await?;
 
         self.invoice_relations_repository
@@ -99,5 +90,42 @@ impl Handler {
             .await?;
 
         Ok(new_invoice)
+    }
+
+    pub async fn get_invoice_and_subinvoices_entries(&self, invoice_id: Uuid) -> Result<InvoiceDetailsView> {
+        let mut invoice_details: Vec<InvoiceDetails> = Vec::new();
+
+        let invoice = self.get_invoice_by_id(invoice_id).await?;
+
+        let entries = self
+            .entries_repository
+            .get_entries_by_invoice_id(invoice_id)
+            .await?;
+
+        let main_invoice = InvoiceDetails {
+            invoice: invoice.clone(),
+            entries
+        };
+
+        let sub_invoices = self
+            .invoice_relations_repository
+            .list_related_invoices(&invoice)
+            .await?;
+        for sub_invoice in sub_invoices {
+            let invoice = self
+                .get_invoice_by_id(sub_invoice.child_invoice_id)
+                .await?;
+            let entries = self
+                .entries_repository
+                .get_entries_by_invoice_id(invoice.invoice_id)
+                .await?;
+
+            invoice_details.push(InvoiceDetails { invoice, entries });
+        }
+
+        Ok(InvoiceDetailsView {
+            main_invoice,
+            sub_invoices: invoice_details,
+        })
     }
 }
