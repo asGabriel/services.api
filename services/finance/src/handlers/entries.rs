@@ -1,7 +1,10 @@
 use http_problems::{Error, Result};
 use uuid::Uuid;
 
-use crate::domains::entries::{Entry, EntryPayload};
+use crate::domains::{
+    entries::{Entry, EntryPayload},
+    views::views::{InvoiceDetails, InvoiceDetailsView},
+};
 
 use super::Handler;
 
@@ -36,9 +39,40 @@ impl Handler {
         Ok(entry)
     }
 
-    pub async fn list_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<Vec<Entry>> {
-        self.entries_repository
+    pub async fn list_entries_by_invoice_id(&self, invoice_id: Uuid) -> Result<InvoiceDetailsView> {
+        let mut invoice_details: Vec<InvoiceDetails> = Vec::new();
+
+        let invoice = self.get_invoice_by_id(invoice_id).await?;
+
+        let entries = self
+            .entries_repository
             .get_entries_by_invoice_id(invoice_id)
-            .await
+            .await?;
+
+        let main_invoice = InvoiceDetails {
+            invoice: invoice.clone(),
+            entries
+        };
+
+        let sub_invoices = self
+            .invoice_relations_repository
+            .list_related_invoices(&invoice)
+            .await?;
+        for sub_invoice in sub_invoices {
+            let invoice = self
+                .get_invoice_by_id(sub_invoice.child_invoice_id)
+                .await?;
+            let entries = self
+                .entries_repository
+                .get_entries_by_invoice_id(invoice.invoice_id)
+                .await?;
+
+            invoice_details.push(InvoiceDetails { invoice, entries });
+        }
+
+        Ok(InvoiceDetailsView {
+            main_invoice,
+            sub_invoices: invoice_details,
+        })
     }
 }

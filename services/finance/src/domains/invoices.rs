@@ -19,6 +19,7 @@ pub struct Invoice {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
+// TODO: verificar necessidade
 impl Default for Invoice {
     fn default() -> Self {
         let now = Utc::now();
