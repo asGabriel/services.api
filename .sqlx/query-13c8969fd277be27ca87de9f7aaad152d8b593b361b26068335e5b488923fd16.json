@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT \n                    * \n                FROM invoice_relations \n                WHERE \n                    parent_invoice_id = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "parent_invoice_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "child_invoice_id",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "13c8969fd277be27ca87de9f7aaad152d8b593b361b26068335e5b488923fd16"
+}
