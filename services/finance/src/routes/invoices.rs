@@ -15,7 +15,8 @@ pub(super) fn configure_routes() -> Router<Handler> {
         Router::new()
             .route("/", get(list_invoices))
             .route("/:id", get(get_invoice_by_id))
-            .route("/", post(create_invoice)),
+            .route("/", post(create_invoice))
+            .route(":id/entries", get(get_invoice_and_subinvoices_entries)),
     )
 }
 
@@ -42,4 +43,13 @@ async fn get_invoice_by_id(
     let invoice = handler.get_invoice_by_id(id).await?;
 
     Ok(Json::from(invoice))
+}
+
+async fn get_invoice_and_subinvoices_entries(
+    State(handler): State<Handler>,
+    Path(id): Path<Uuid>,
+) -> Result<impl IntoResponse> {
+    let invoice_details = handler.get_invoice_and_subinvoices_entries(id).await?;
+
+    Ok(Json(invoice_details))
 }

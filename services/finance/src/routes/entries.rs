@@ -13,7 +13,6 @@ pub(super) fn configure_routes() -> Router<Handler> {
             .route("/", get(list_entries))
             .route("/:id", get(get_entry_by_id))
             .route("/", post(create_entry))
-            .route("/invoice/:id", get(list_entries_by_invoice_id))
             .route("/:id", delete(delete_entry_by_id)),
     )
 }
@@ -25,15 +24,6 @@ async fn delete_entry_by_id(
     let _entry = handler.delete_entry_by_id(id).await?;
 
     Ok(StatusCode::NO_CONTENT)
-}
-
-async fn list_entries_by_invoice_id(
-    State(handler): State<Handler>,
-    Path(id): Path<Uuid>,
-) -> Result<impl IntoResponse> {
-    let entries = handler.list_entries_by_invoice_id(id).await?;
-
-    Ok(Json::from(entries))
 }
 
 async fn list_entries(State(handler): State<Handler>) -> Result<impl IntoResponse> {
