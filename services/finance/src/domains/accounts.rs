@@ -9,6 +9,7 @@ pub struct Account {
     pub account_id: Uuid,
     pub bank_name: Bank,
     pub owner: String,
+    pub identification: String,
     pub created_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<DateTime<Utc>>,
@@ -21,6 +22,7 @@ pub struct Account {
 pub struct CreateAccountPayload {
     pub bank_name: Bank,
     pub owner: String,
+    pub identification: String
 }
 
 impl From<CreateAccountPayload> for Account {
@@ -29,6 +31,7 @@ impl From<CreateAccountPayload> for Account {
             account_id: Uuid::new_v4(),
             bank_name: value.bank_name,
             owner: value.owner,
+            identification: value.identification,
             created_at: Utc::now(),
             updated_at: None,
             deleted_at: None,
