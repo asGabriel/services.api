@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO accounts (\n                    account_id,\n                    bank_name,\n                    owner,\n                    created_at,\n                    updated_at,\n                    deleted_at\n                ) \n                VALUES ($1, $2, $3, $4, $5, $6)\n                RETURNING\n                account_id,\n                    bank_name as \"bank_name!: Bank\",\n                    owner,\n                    created_at, \n                    updated_at,\n                    deleted_at\n            ",
+  "query": "\n                INSERT INTO accounts (\n                    account_id,\n                    bank_name,\n                    owner,\n                    created_at,\n                    updated_at,\n                    deleted_at,\n                    identification\n                ) \n                VALUES ($1, $2, $3, $4, $5, $6, $7)\n                RETURNING\n                account_id,\n                    bank_name as \"bank_name!: Bank\",\n                    owner,\n                    created_at, \n                    updated_at,\n                    deleted_at,\n                    identification\n            ",
   "describe": {
     "columns": [
       {
@@ -47,6 +47,11 @@
         "ordinal": 5,
         "name": "deleted_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "identification",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -71,7 +76,8 @@
         "Text",
         "Timestamptz",
         "Timestamptz",
-        "Timestamptz"
+        "Timestamptz",
+        "Text"
       ]
     },
     "nullable": [
@@ -80,8 +86,9 @@
       false,
       false,
       true,
-      true
+      true,
+      false
     ]
   },
-  "hash": "66bf9df2caf433f8df3d1672133e75fda5640167a2bc2559985b0d2052b80d02"
+  "hash": "147505410c655a42817f6f0d027219c74bc09af553e163366c4e14b472d133f9"
 }

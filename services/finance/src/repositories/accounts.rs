@@ -23,6 +23,7 @@ impl AccountRepository for SqlxRepository {
                     account_id,
                     bank_name as "bank_name!: Bank",
                     owner,
+                    identification,
                     created_at, 
                     updated_at,
                     deleted_at
@@ -47,23 +48,26 @@ impl AccountRepository for SqlxRepository {
                     owner,
                     created_at,
                     updated_at,
-                    deleted_at
+                    deleted_at,
+                    identification
                 ) 
-                VALUES ($1, $2, $3, $4, $5, $6)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
                 RETURNING
                 account_id,
                     bank_name as "bank_name!: Bank",
                     owner,
                     created_at, 
                     updated_at,
-                    deleted_at
+                    deleted_at,
+                    identification
             "#,
             account.account_id,
             account.bank_name as Bank,
             account.owner,
             account.created_at,
             account.updated_at,
-            account.deleted_at
+            account.deleted_at,
+            account.identification
         )
         .fetch_one(&self.pool)
         .await?;
@@ -79,6 +83,7 @@ impl AccountRepository for SqlxRepository {
                     account_id,
                     bank_name as "bank_name!: Bank",
                     owner,
+                    identification,
                     created_at, 
                     updated_at,
                     deleted_at
